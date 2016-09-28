@@ -1,2 +1,2 @@
-#' @useDynLib cuda_rpackage
+#' @useDynLib cudarpackage
 NULL

@@ -1,5 +1,5 @@
-Package: cuda_rpackage
-Title: cuda_rpackage
+Package: cudarpackage
+Title: cudarpackage
 Description: Just getting familiar with calling CUDA from R
 URL: https://github.com/emittman/cuda_rpackage
 Version: 0.0
