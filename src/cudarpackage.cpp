@@ -7,22 +7,24 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 
-extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust){
+extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
   int n_row = nrows(mat),
       n_col = ncols(mat),
-      n_clustC = INT(n_clust)[0];
-  thrust::host_vector<int> hmat(INT(mat), INT(mat) + n_row*n_col);
+      n_clustC = INTEGER(n_clust)[0],
+      verboseC = INTEGER(verbose)[0];
+  thrust::host_vector<int> hkey(key, key + n_row);
+  thrust::host_vector<int> hmat(INTEGER(mat), INTEGER(mat) + n_row*n_col);
   summary hsumm(n_row, n_clustC, n_col);
   hsumm.all(hmat);
   
-  hsumm.update();
+  hsumm.update(hkey, verboseC);
   
   SEXP clust_sums = PROTECT(allocVector(INTSXP, n_clustC*n_col));
   SEXP clust_occ  = PROTECT(allocVector(INTSXP, n_clustC));
   
-  for(int i=0; i<n_clustC){
+  for(int i=0; i<n_clustC; ++i){
     clust_occ[i] = hsumm.occupancy_count[i];
-    for(int j=0; j<n_col){
+    for(int j=0; j<n_col; ++j){
       clust_sums[j*n_clustC + i] = hsumm.clust_sums[j*n_clustC + i];
     }
   }
