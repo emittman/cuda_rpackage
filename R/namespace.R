@@ -1,4 +1,2 @@
-#' @useDynLib fbseqCUDA
-#' @import fbseq
-#' @import methods
+#' @useDynLib cuda_rpackage
 NULL
