@@ -41,5 +41,6 @@ extern "C" SEXP Rmy_reduce(SEXP Rvec){
   thrust::host_vector<double> hvec(vecp, vecp + len);
   SEXP result = PROTECT(allocVector(REALSXP, 1));
   REAL(result)[0] = my_reduce(hvec);
+  UNPROTECT(1);
   return result;
 }
