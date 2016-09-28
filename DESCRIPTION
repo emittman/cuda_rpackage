@@ -4,7 +4,7 @@ Description: Just getting familiar with calling CUDA from R
 URL: https://github.com/emittman/cuda_rpackage
 Version: 0.0
 Author: Eric Mittman
-Maintainer: Eric Mittman
+Maintainer: Eric Mittman<emittman@iastate.edu>
 Depends:
     R (>= 3.2.3)
 Suggests:
