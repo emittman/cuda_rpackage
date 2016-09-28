@@ -4,7 +4,7 @@
 #' @export
 #' @return Number of CUDA-capable GPUs.
 RgetDevice = function(){
-  .Call("RgetDevice", PACKAGE = "fbseqCUDA")
+  .Call("RgetDevice", PACKAGE = "cudarpackage")
 }
 
 #' @title Function \code{RgetDeviceCount}
@@ -13,7 +13,7 @@ RgetDevice = function(){
 #' @export
 #' @return Number of CUDA-capable GPUs.
 RgetDeviceCount = function(){
-  .Call("RgetDeviceCount", PACKAGE = "fbseqCUDA")
+  .Call("RgetDeviceCount", PACKAGE = "cudarpackage")
 }
 
 #' @title Function \code{RsetDevice}
@@ -24,5 +24,5 @@ RgetDeviceCount = function(){
 #' < number of devices.
 #' @param device Index of the GPU to use. Must be an integer from 0 to number of GPUs - 1.
 RsetDevice = function(device){
-  .Call("RsetDevice", PACKAGE = "fbseqCUDA", device)
+  .Call("RsetDevice", PACKAGE = "cudarpackage", device)
 }
