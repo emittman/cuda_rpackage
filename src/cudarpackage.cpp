@@ -28,7 +28,7 @@ extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
       INTEGER(clust_sums)[j*n_clustC + i] = hsumm.clust_sums[j*n_clustC + i];
     }
   }
-  SEXP toreturn = PROTECT(allocVector(LISTSXP, 2));
+  SEXP toreturn = PROTECT(allocVector(VECSXP, 2));
   SET_VECTOR_ELT(toreturn, 0, clust_occ);
   SET_VECTOR_ELT(toreturn, 1, clust_sums);
   UNPROTECT(3);
