@@ -26,3 +26,13 @@ RgetDeviceCount = function(){
 RsetDevice = function(device){
   .Call("RsetDevice", PACKAGE = "cudarpackage", device)
 }
+
+#' @title Function \code{Rmy_reduce}
+#' @description reduce a vector on the device
+#' 
+#' @export
+#' @return Double sum of vector elements
+#' @param vec vector of doubles
+Rmy_reduce = function(vec){
+  .Call("Rmy_reduce", PACKAGE = "cudarpackage", vec)
+}
