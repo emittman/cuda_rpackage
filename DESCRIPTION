@@ -1,19 +1,14 @@
-Package: fbseqCUDA
-Title: fbseqCUDA
-Description: Internal CUDA code for package fbseq.
-URL: https://github.com/wlandau/fbseqCUDA
+Package: cuda_rpackage
+Title: cuda_rpackage
+Description: Just getting familiar with calling CUDA from R
+URL: https://github.com/emittman/cuda_rpackage
 Version: 0.0
-Author: Will Landau <will.landau@gmail.com>
-Maintainer: Will Landau <will.landau@gmail.com>
+Author: Eric Mittman
+Maintainer: Eric Mittman
 Depends:
     R (>= 3.2.3)
-Imports:
-    fbseq,
-    methods
 Suggests:
     knitr
-Remotes:
-    wlandau/fbseq
 VignetteBuilder: knitr
 License: GPL (>= 3)
 RoxygenNote: 5.0.1

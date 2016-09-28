@@ -7,3 +7,5 @@
 README.md
 vignettes/install.html
 vignettes/install.log
+^.*\.Rproj$
+^\.Rproj\.user$
