@@ -15,7 +15,7 @@ extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
   thrust::host_vector<int> hkey(INTEGER(key), INTEGER(key) + n_row);
   thrust::host_vector<int> hmat(INTEGER(mat), INTEGER(mat) + n_row*n_col);
   summary hsumm(n_row, n_clustC, n_col);
-  hsumm.all(hmat);
+  thrust::copy(hmat.begin(), hmat.end(), hsumm.all.begin());
   
   hsumm.update(hkey, verboseC);
   
@@ -23,9 +23,9 @@ extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
   SEXP clust_occ  = PROTECT(allocVector(INTSXP, n_clustC));
   
   for(int i=0; i<n_clustC; ++i){
-    clust_occ[i] = hsumm.occupancy_count[i];
+    INTEGER(clust_occ)[i] = hsumm.occupancy_count[i];
     for(int j=0; j<n_col; ++j){
-      clust_sums[j*n_clustC + i] = hsumm.clust_sums[j*n_clustC + i];
+      INTEGER(clust_sums)[j*n_clustC + i] = hsumm.clust_sums[j*n_clustC + i];
     }
   }
   SEXP toreturn = PROTECT(allocVector(LISTSXP, 2));
