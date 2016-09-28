@@ -47,6 +47,6 @@ Rmy_reduce = function(vec){
 #' @param num_clusts integer
 Rsummary = function(all, key, num_clusts){
   out <-.Call("summary_stats", t(all), as.integer(key), as.integer(num_clusts))
-  out[[2]] <- matrix(out[[2]], nrow(all), num_clusts)
+  out[[2]] <- matrix(out[[2]], num_clusts, nrow(all))
   return(out)
 }
