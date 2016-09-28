@@ -12,7 +12,7 @@ extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
       n_col = ncols(mat),
       n_clustC = INTEGER(n_clust)[0],
       verboseC = INTEGER(verbose)[0];
-  thrust::host_vector<int> hkey(key, key + n_row);
+  thrust::host_vector<int> hkey(INTEGER(key), INTEGER(key) + n_row);
   thrust::host_vector<int> hmat(INTEGER(mat), INTEGER(mat) + n_row*n_col);
   summary hsumm(n_row, n_clustC, n_col);
   hsumm.all(hmat);
