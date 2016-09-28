@@ -36,3 +36,15 @@ RsetDevice = function(device){
 Rmy_reduce = function(vec){
   .Call("Rmy_reduce", PACKAGE = "cudarpackage", vec)
 }
+
+#' @title Function \code{Rsummary}
+#' @description summarize clusters
+#' 
+#' @export
+#' @return List a matrix with sums of rows by cluster, table of occupancy counts
+#' @param all matrix of ints (data)
+#' @param key vector of ints
+#' @param num_clusts integer
+Rsummary = function(all, key, num_clusts){
+  .Call("summary_stats", all, key, num_clusts)
+}

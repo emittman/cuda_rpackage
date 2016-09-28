@@ -1,10 +1,37 @@
 #include "util/include.h"
 #include "util/cuda_usage.h"
+#include "summary_fn.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
+
+extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust){
+  int n_row = nrows(mat),
+      n_col = ncols(mat),
+      n_clustC = INT(n_clust)[0];
+  thrust::host_vector<int> hmat(INT(mat), INT(mat) + n_row*n_col);
+  summary hsumm(n_row, n_clustC, n_col);
+  hsumm.all(hmat);
+  
+  hsumm.update();
+  
+  SEXP clust_sums = PROTECT(allocVector(INTSXP, n_clustC*n_col));
+  SEXP clust_occ  = PROTECT(allocVector(INTSXP, n_clustC));
+  
+  for(int i=0; i<n_clustC){
+    clust_occ[i] = hsumm.occupancy_count[i];
+    for(int j=0; j<n_col){
+      clust_sums[j*n_clustC + i] = hsumm.clust_sums[j*n_clustC + i];
+    }
+  }
+  SEXP toreturn = PROTECT(allocVector(LISTSXP, 2));
+  SET_VECTOR_ELT(toreturn, 0, clust_occ);
+  SET_VECTOR_ELT(toreturn, 1, clust_sums);
+  UNPROTECT(3);
+  return toreturn;
+}
 
 extern "C" SEXP RgetDeviceCount(){
   int count = 0;
