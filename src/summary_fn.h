@@ -2,7 +2,7 @@
 #define SUMMARY_FN_H
 
 #include "summary.h"
-#include "iterator.h"
+#include "iterator2.h"
 #include "printing.h"
 #include<thrust/tuple.h>
 #include<thrust/iterator/zip_iterator.h>
@@ -59,7 +59,7 @@ void summary::update(thrust::host_vector<int> &key, int verbose=0){
   }
 
   // maps i = {0, 1, 2, ...} to all[perm[i%perm.size()] + i/num_rows * num_rows]
-  trnsByStdCyIter map_obs = getTrnsByStdCyIter(perm, all, num_rows);
+  RSIntIter map_obs = getRSIntIter(perm.begin(), perm.end(), num_rows);
 
   //debug
   if(verbose > 1){
@@ -69,21 +69,24 @@ void summary::update(thrust::host_vector<int> &key, int verbose=0){
   }
   
   // maps i = {0, 1, 2, ...} to key[i%key.size()] + i/key.size() * num_clusters 
-  stridedCycleIter brdcst_key = getStridedCycleIter(key, num_clusters);
+  RSIntIter brdcst_key = getRSIntIter(key.begin(), key.end(), num_clusters);
 
   //debug
   if(verbose > 1){
     std::cout << "reducing by this key:\n";
     thrust::copy(brdcst_key, brdcst_key + num_rows * num_columns, tmp.begin());
     printVec(tmp, num_rows, num_columns);
-    stridedCycleIter pdgnhl_sums = getStridedCycleIter(unique_key, num_clusters);
+    RSIntIter pdgnhl_sums = getRSIntIter(unique_key.begin(), unique_key.end(), num_clusters);
     std::cout << "pidgeonhole results:\n";
     thrust::copy(pdgnhl_sums, pdgnhl_sums + num_clusters * num_columns, tmp.begin());
     printVec(tmp, num_clusters, num_columns);
   }
 
   // maps i = {0, 1, 2, ...} to clust_sums[unique_key[i%unique_key.size()] + i/num_clusters * num_clusters]
-  trnsByStdCyIter scatter_sums = getTrnsByStdCyIter(unique_key, clust_sums, num_clusters);
+  typedef thrust::permutation_iterator<intIter, RSIntIter> trnsByStdCyIter;
+  RSIntIter map0 = getRSIntIter(unique_key.begin(), unique_key.end(), num_clusters);
+  trnsByStdCyIter scatter_sums = permutation_iterator(clust_sums.begin(), map0);
+
   
   // sum rows of all by key and store in appropriate row in clust_sums
   reduce_by_key(brdcst_key, brdcst_key + num_rows*num_columns, map_obs,
