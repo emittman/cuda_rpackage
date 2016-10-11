@@ -1,5 +1,6 @@
 #include "util/include.h"
 #include "util/cuda_usage.h"
+#include "cholesky.h"
 #include "summary_fn.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
@@ -72,4 +73,19 @@ extern "C" SEXP Rmy_reduce(SEXP Rvec){
   REAL(result)[0] = my_reduce(hvec);
   UNPROTECT(1);
   return result;
+}
+
+//wrapper to chol_multiple which does in-place cholesky decomposition on a (flattened) array of matrices
+extern "C" SEXP Rchol_multiple(SEXP all, SEXP arraydim, SEXP n_array){
+  int dim = INTEGER(arraydim)[0];
+  int reps = INTEGER(n_array)[0];
+  double *aptr = REAL(all);
+  thrust::device_vector<double> dvec(aptr, aptr + length(all));
+  chol_multiple(dvec, dim, reps);
+  thrust::host_vector<double> hvec(dvec.begin(), dvec.end());
+  SEXP out = PROTECT(allocVector(REALSXP, length(all)));
+  for(int i=0; i<length(all); ++i)
+    REAL(out)[i] = hvec[i];
+  UNPROTECT(1);
+  return out;
 }

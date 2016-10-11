@@ -50,3 +50,15 @@ Rsummary = function(all, key, num_clusts){
   out[[2]] <- matrix(out[[2]], num_clusts, nrow(all))
   return(out)
 }
+
+#' @title Function \code{Rchol_multiple}
+#' @description cholesky factorize many matrices in parallel
+#' 
+#' @export
+#' @return array of matrices in  with lower cholesky factor in lower triangle
+Rchol_multiple = function(array){
+  d <- dim(array)
+  out <- .Call("Rchol_multiple", as.numeric(array), as.integer(dim[1]), as.integer(dim[3]))
+  dim(out) <- d
+  return(out)
+}
