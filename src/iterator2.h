@@ -1,5 +1,5 @@
-#ifndef ITERATOR_H
-#define ITERATOR_H
+#ifndef ITERATOR2_H
+#define ITERATOR2_H
 
 #include<thrust/tuple.h>
 #include<thrust/iterator/zip_iterator.h>

@@ -34,7 +34,7 @@ struct chol{
 __host__ void chol_multiple(thrust::device_vector<double> &dvec, int dim, int n){
   
   chol f(dim);
-  gRepTimes<double>::iterator mat_first = getGRepTimes(dvec.begin(), dvec.end(), n, dim*dim);
+  typename gRepTimes<double>::iterator mat_first = getGRepTimes(dvec.begin(), dvec.end(), n, dim*dim);
   thrust::for_each(mat_first, mat_first+n, f);
   
 }
