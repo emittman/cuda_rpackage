@@ -15,7 +15,7 @@ struct repEach: public thrust::unary_function<int, int>{
   int incr;
   __host__ __device__ repEach(int len=1, int incr=1): len(len), incr(incr){}
   __host__ __device__ int operator()(int x){
-    return (x/each)*incr; //integer division
+    return (x/len)*incr; //integer division
   }
 };
 
