@@ -9,23 +9,23 @@
 #include<thrust/host_vector.h>
 #include<thrust/device_vector.h>
 
-//Used for generating rep(1:infinity, each=length) * incr
+//Used for generating rep(1:infinity, each=len) * incr
 struct repEach: public thrust::unary_function<int, int>{
-  int length;
+  int len;
   int incr;
-  __host__ __device__ repEach(int length=1, int incr=1): length(length), incr(incr){}
+  __host__ __device__ repEach(int len=1, int incr=1): len(len), incr(incr){}
   __host__ __device__ int operator()(int x){
     return (x/each)*incr; //integer division
   }
 };
 
-//Used for generating rep( (1:length)*incr, times=infinity)
+//Used for generating rep( (1:len)*incr, times=infinity)
 struct repTimes: public thrust::unary_function<int, int>{
-  int length;
+  int len;
   int incr;
-  __host__ __device__ repTimes(int length=1, int incr=1): length(length), incr(incr){}
+  __host__ __device__ repTimes(int len=1, int incr=1): len(len), incr(incr){}
   __host__ __device__ int operator()(int x){
-    return (x%length)*incr;
+    return (x%len)*incr;
   }
 };
 
@@ -43,18 +43,18 @@ countIter getCountIter(){
   return cntIt;
 }
 
-//Gets an iterator for generating rep(1:length, times=infinity)
-repTimesIter getRepTimesIter(int length, int incr, countIter countIt = getCountIter()){
-  // repeat 0, rep, 2*rep, ..., length*rep ad nauseum
-  repTimes f(length, incr);				 
+//Gets an iterator for generating rep(1:len, times=infinity)
+repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter()){
+  // repeat 0, rep, 2*rep, ..., len*rep ad nauseum
+  repTimes f(len, incr);				 
   repTimesIter repIt = thrust::transform_iterator<repTimes, countIter>(countIt, f);
   return repIt;
 }
 
 //Gets an iterator for generating rep(1:infinity, each=each) * incr
-repEachIter getRepEachIter(int length, int incr, countIter countIt = getCountIter()){
-  // repeat each of i*incr, length times, i>=0
-  repEach g(length, incr);
+repEachIter getRepEachIter(int len, int incr, countIter countIt = getCountIter()){
+  // repeat each of i*incr, len times, i>=0
+  repEach g(len, incr);
   repEachIter repIt = thrust::transform_iterator<repEach, countIter>(countIt, g);
   return repIt;
 }
@@ -68,24 +68,24 @@ struct gRepTimes{
 
 //Gets an iterator for generating rep(arb_seq, times=infinity)
 template<typename T>
-typename gRepTimes<T>::iterator getGRepTimesIter(T begin, T end, int length, int incr=1, countIter countIt = getCountIter()){
+typename gRepTimes<T>::iterator getGRepTimesIter(T begin, T end, int len, int incr=1, countIter countIt = getCountIter()){
   // repeats arbitrary vector, possibly strided
-  repTimesIter cyc = getRepTimesIter(length, incr, countIt);
+  repTimesIter cyc = getRepTimesIter(len, incr, countIt);
   typename gRepTimes<T>::iterator gRep = thrust::permutation_iterator<T, repTimesIter>(begin, cyc);
   return gRep;
 }
 
-//For generating rep(arb_seq, each= length)
+//For generating rep(arb_seq, each= len)
 template<typename T>
 struct gRepEach{
   typedef thrust::permutation_iterator<T, repEachIter> iterator;
 };
 
-//Gets an iterator for generating rep(arb_seq, each= length)
+//Gets an iterator for generating rep(arb_seq, each= len)
 template<typename T>
-typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int length, int incr=1, countIter countIt = getCountIter()){
-  // repeats each element along {0, incr, 2*incr, ...} length times
-  repEachIter repeat = getRepEachIter(length, incr, countIt);
+typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr=1, countIter countIt = getCountIter()){
+  // repeats each element along {0, incr, 2*incr, ...} len times
+  repEachIter repeat = getRepEachIter(len, incr, countIt);
   typename gRepEach<T>::iterator gRep = thrust::permutation_iterator<T, repEachIter>(begin, repeat);
   return gRep;
 }
