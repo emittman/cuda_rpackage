@@ -20,6 +20,8 @@ __device__ void cholesky(double *A, int n) {
 }
 
 struct chol{
+  int dim;
+  
   __host__ __device__ chol(int dim): dim(dim){}
   
   __host__ __device__ void operator()(double &first){
