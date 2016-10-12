@@ -85,7 +85,7 @@ void summary::update(thrust::host_vector<int> &key, int verbose=0){
   // maps i = {0, 1, 2, ...} to clust_sums[unique_key[i%unique_key.size()] + i/num_clusters * num_clusters]
   typedef thrust::permutation_iterator<intIter, RSIntIter> trnsByStdCyIter;
   RSIntIter map0 = getRSIntIter(unique_key.begin(), unique_key.end(), num_clusters);
-  trnsByStdCyIter scatter_sums = permutation_iterator(clust_sums.begin(), map0);
+  trnsByStdCyIter scatter_sums = permutation_iterator<intIter, RSIntIter>(clust_sums.begin(), map0);
 
   
   // sum rows of all by key and store in appropriate row in clust_sums
