@@ -3,6 +3,7 @@
 
 #include "iterator2.h"
 #include<thrust/host_vector.h>
+#include<thrust/device_vector.h>
 #include<thrust/sequence.h>
 #include<thrust/tuple.h>
 #include<thrust/iterator/zip_iterator.h>
@@ -34,15 +35,15 @@ public:
   int num_rows;
   int num_clusters;
   int num_columns;
-  thrust::host_vector<int> clust_sums;
-  thrust::host_vector<int> occupancy_count;
-  thrust::host_vector<int> all;
+  thrust::device_vector<int> clust_sums;
+  thrust::device_vector<int> occupancy_count;
+  thrust::device_vector<int> all;
 
  summary(int R, int Cl, int Co): num_rows(R), num_clusters(Cl), num_columns(Co), clust_sums(Cl*Co), occupancy_count(Cl), all(R*Co){
     //initialize with (silly) data
     thrust::sequence(all.begin(), all.end(), 0, 1);
 }
-  void update(thrust::host_vector<int> &key, int verbose);
+  void update(thrust::device_vector<int> &key, int verbose);
 };
 
 #endif

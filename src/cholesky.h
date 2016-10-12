@@ -4,7 +4,7 @@
 #include <thrust/iterator/transform_iterator.h>
 #include "iterator2.h"
 
-__device__ void cholesky(double *A, int n) {
+__host__ __device__ void cholesky(double *A, int n) {
   for (int j = 0; j < n; ++j){
     for (int k = 0; k < j; ++k) {
       double tmp = A[j+k*n];
@@ -19,22 +19,25 @@ __device__ void cholesky(double *A, int n) {
   }
 }
 
-struct chol{
+struct chol : thrust::unary_function<double &, void>{
   int dim;
   
-  __host__ __device__ chol(int dim): dim(dim){}
+  chol(int dim): dim(dim){}
   
   __host__ __device__ void operator()(double &first){
-    double *A = thrust::raw_pointer_cast(& first);
+    double *A = thrust::raw_pointer_cast(&first);
     cholesky(A, dim);
   }
   
 };
 
-__host__ void chol_multiple(thrust::device_vector<double> &dvec, int dim, int n){
+void chol_multiple(thrust::device_vector<double>::iterator &begin, thrust::device_vector<double>::iterator &end,  int dim, int n){
   
   chol f(dim);
-  typename gRepTimes<double>::iterator mat_first = getGRepTimes(dvec.begin(), dvec.end(), n, dim*dim);
+
+  gRepTimes<realIter>::iterator mat_first = getGRepTimesIter(begin, end, n, dim*dim);
+  
   thrust::for_each(mat_first, mat_first+n, f);
+  //check values pointed to by gRepTimes here; it seems no change is happening to dvec
   
 }

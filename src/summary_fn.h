@@ -16,7 +16,7 @@
 #include<thrust/reduce.h>
 
 
-void summary::update(thrust::host_vector<int> &key, int verbose=0){
+void summary::update(thrust::device_vector<int> &key, int verbose=0){
  // check length of cluster index
   if(key.size() != num_rows){
     std::cout << "Key is wrong size" << std::endl;
@@ -24,15 +24,15 @@ void summary::update(thrust::host_vector<int> &key, int verbose=0){
   }
 
   // local allocations
-  thrust::host_vector<int> perm(num_rows); // will store permutation
+  thrust::device_vector<int> perm(num_rows); // will store permutation
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
-  thrust::host_vector<int> unique_key(num_clusters);
+  thrust::device_vector<int> unique_key(num_clusters);
 
   // sort the key, capturing the permutation to do so in perm
   thrust::sort_by_key(key.begin(), key.end(), perm.begin());
 
   // identify occupied clusters
-  thrust::host_vector<int>::iterator last_occ;
+  thrust::device_vector<int>::iterator last_occ;
 
   //get unique values of occupied clusters and capture the location of the last one
   last_occ = thrust::unique_copy(key.begin(), key.end(), unique_key.begin());
@@ -41,7 +41,7 @@ void summary::update(thrust::host_vector<int> &key, int verbose=0){
   unique_key.erase(last_occ, unique_key.end());
 
   //allocation for debug
-  thrust::host_vector<int> tmp(num_rows * num_columns);
+  thrust::device_vector<int> tmp(num_rows * num_columns);
 
   // tabulate the cluster assignments
   thrust::reduce_by_key(key.begin(), key.end(), thrust::constant_iterator<int>(1), thrust::make_discard_iterator(),
@@ -85,7 +85,7 @@ void summary::update(thrust::host_vector<int> &key, int verbose=0){
   // maps i = {0, 1, 2, ...} to clust_sums[unique_key[i%unique_key.size()] + i/num_clusters * num_clusters]
   typedef thrust::permutation_iterator<intIter, RSIntIter> trnsByStdCyIter;
   RSIntIter map0 = getRSIntIter(unique_key.begin(), unique_key.end(), num_clusters);
-  trnsByStdCyIter scatter_sums = permutation_iterator<intIter, RSIntIter>(clust_sums.begin(), map0);
+  trnsByStdCyIter scatter_sums = thrust::permutation_iterator<intIter, RSIntIter>(clust_sums.begin(), map0);
 
   
   // sum rows of all by key and store in appropriate row in clust_sums

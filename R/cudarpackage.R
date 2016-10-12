@@ -58,7 +58,7 @@ Rsummary = function(all, key, num_clusts){
 #' @return array of matrices in  with lower cholesky factor in lower triangle
 Rchol_multiple = function(array){
   d <- dim(array)
-  out <- .Call("Rchol_multiple", as.numeric(array), as.integer(dim[1]), as.integer(dim[3]))
+  out <- .Call("Rchol_multiple", as.numeric(array), as.integer(d[1]), as.integer(d[3]))
   dim(out) <- d
   return(out)
 }
