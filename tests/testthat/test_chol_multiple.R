@@ -28,7 +28,7 @@ compare_chol <- function(sub_array1, sub_array2, dim){
 
 do_compare <- function(spd_array, n){
   chol1 <- Rchol(spd_array)
-  chol2 <- Rchol_multi(spd_array)
+  chol2 <- Rchol_multiple(spd_array)
   result <- sapply(1:n, function(x) compare_chol(chol1[,,x], chol2[,,x]))
   return(result)
 }
