@@ -33,7 +33,7 @@ do_compare <- function(spd_array, n){
   return(result)
 }
 
-testthat("factorization is correct", {
+test_that("factorization is correct", {
   A <- make_spd_array(dim, n)
   bool <- do_compare(A, n)
   expect_equal(all(bool), TRUE)
