@@ -8,6 +8,7 @@
 #include<thrust/iterator/counting_iterator.h>
 #include<thrust/host_vector.h>
 #include<thrust/device_vector.h>
+#include<thrust/device_ptr.h>
 
 //Used for generating rep(1:infinity, each=len) * incr
 struct repEach: public thrust::unary_function<int, int>{
@@ -68,7 +69,7 @@ struct gRepTimes{
 
 //Gets an iterator for generating rep(arb_seq, times=infinity)
 template<typename T>
-typename gRepTimes<T>::iterator getGRepTimesIter(T begin, T end, int len, int incr=1, countIter countIt = getCountIter()){
+typename gRepTimes<T>::iterator getGRepTimesIter(const T &begin, const T &end, int len, int incr=1, countIter countIt = getCountIter()){
   // repeats arbitrary vector, possibly strided
   repTimesIter cyc = getRepTimesIter(len, incr, countIt);
   typename gRepTimes<T>::iterator gRep = thrust::permutation_iterator<T, repTimesIter>(begin, cyc);

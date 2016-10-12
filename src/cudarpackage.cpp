@@ -4,6 +4,7 @@
 #include "summary_fn.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -13,8 +14,8 @@ extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
       n_col = ncols(mat),
       n_clustC = INTEGER(n_clust)[0],
       verboseC = INTEGER(verbose)[0];
-  thrust::host_vector<int> hkey(INTEGER(key), INTEGER(key) + n_row);
-  thrust::host_vector<int> hmat(INTEGER(mat), INTEGER(mat) + n_row*n_col);
+  thrust::device_vector<int> hkey(INTEGER(key), INTEGER(key) + n_row);
+  thrust::device_vector<int> hmat(INTEGER(mat), INTEGER(mat) + n_row*n_col);
   summary hsumm(n_row, n_clustC, n_col);
   thrust::copy(hmat.begin(), hmat.end(), hsumm.all.begin());
   
@@ -81,7 +82,9 @@ extern "C" SEXP Rchol_multiple(SEXP all, SEXP arraydim, SEXP n_array){
   int reps = INTEGER(n_array)[0];
   double *aptr = REAL(all);
   thrust::device_vector<double> dvec(aptr, aptr + length(all));
-  chol_multiple(dvec, dim, reps);
+  realIter begin = dvec.begin();
+  realIter end = dvec.end();
+  chol_multiple(begin, end, dim, reps);
   thrust::host_vector<double> hvec(dvec.begin(), dvec.end());
   SEXP out = PROTECT(allocVector(REALSXP, length(all)));
   for(int i=0; i<length(all); ++i)
