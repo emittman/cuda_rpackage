@@ -62,3 +62,19 @@ Rchol_multiple = function(array){
   dim(out) <- d
   return(out)
 }
+
+#' @title Function \code{Rconstruct_prec}
+#' @description get conditional precision matrix for cluster-specific parameters
+#' 
+#' @export
+#' @return array of matrices
+#' @param xtx (scaled) data precision
+#' @param Mk cluster occupancy
+#' @param lambda prior precision
+#' @param tau error precision
+Rconstruct_prec = function(xtx, Mk, lambda, tau){
+  out <- .Call("Rconstruct_prec", as.numeric(xtx), as.integer(Mk), as.numeric(lambda),
+        as.numeric(tau), as.integer(length(Mk)), as.integer(dim(xtx)[0]))
+  dim(out) <- c(dim(xtx), length(Mk))
+  return(out)
+}

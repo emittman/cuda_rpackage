@@ -2,6 +2,7 @@
 #include "util/cuda_usage.h"
 #include "cholesky.h"
 #include "summary_fn.h"
+#include "construct_prec.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
@@ -91,4 +92,28 @@ extern "C" SEXP Rchol_multiple(SEXP all, SEXP arraydim, SEXP n_array){
     REAL(out)[i] = hvec[i];
   UNPROTECT(1);
   return out;
+}
+
+extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, SEXP V){
+  int dim = INTEGER(V)[0];
+  int num_clusts = INTEGER(K)[0];
+  int total_size = dim * dim * num_clusts;
+  thrust::device_vector<double> prec(total_size);
+  double *xtx_ptr = REAL(xtx);
+  int *Mk_ptr = INTEGER(Mk);
+  double *lam_ptr = REAL(lam);
+  double *tau_ptr = REAL(tau);
+  
+  thrust::device_vector<double> dev_xtx(xtx_ptr, xtx_ptr + dim*dim);
+  thrust::device_vector<int> dev_Mk(Mk_ptr, Mk_ptr + num_clusts);
+  thrust::device_vector<double> dev_lam(lam_ptr, lam_ptr+dim);
+  thrust::device_vector<double> dev_tau(tau_ptr, tau_ptr+num_clusts);
+  construct_prec(prec.begin(), prec.end(), dev_lam.begin(), dev_lam.end(), dev_tau.begin(), dev_tau.end(),
+                 dev_Mk.begin(), dev_Mk.end(), dev_xtx.begin(), dev_xtx.end(), num_clusts, dim);
+  
+  SEXP out_prec = PROTECT(allocVector(REALSXP, length(total_size)));
+  for(int i=0; i<total_size; ++i)
+    REAL(out_prec)[i] = prec[i];
+  UNPROTECT(1);
+  return out_prec;
 }
