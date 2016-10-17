@@ -68,13 +68,13 @@ Rchol_multiple = function(array){
 #' 
 #' @export
 #' @return array of matrices
-#' @param xtx (scaled) data precision
+#' @param xtx (scaled) data dim-by-dim precision matrix
 #' @param Mk cluster occupancy
 #' @param lambda prior precision
 #' @param tau error precision
-Rconstruct_prec = function(xtx, Mk, lambda, tau){
+Rconstruct_prec = function(xtx, Mk, lambda, tau, K, V){
   out <- .Call("Rconstruct_prec", as.numeric(xtx), as.integer(Mk), as.numeric(lambda),
-        as.numeric(tau), as.integer(length(Mk)), as.integer(dim(xtx)[0]))
-  dim(out) <- c(dim(xtx), length(Mk))
+        as.numeric(tau), as.integer(K), as.integer(V))
+  dim(out) <- c(v, v, K)
   return(out)
 }
