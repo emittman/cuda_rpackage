@@ -111,7 +111,7 @@ extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, S
   construct_prec(prec.begin(), prec.end(), dev_lam.begin(), dev_lam.end(), dev_tau.begin(), dev_tau.end(),
                  dev_Mk.begin(), dev_Mk.end(), dev_xtx.begin(), dev_xtx.end(), num_clusts, dim);
   
-  SEXP out_prec = PROTECT(allocVector(REALSXP, length(total_size)));
+  SEXP out_prec = PROTECT(allocVector(REALSXP, total_size));
   for(int i=0; i<total_size; ++i)
     REAL(out_prec)[i] = prec[i];
   UNPROTECT(1);
