@@ -46,7 +46,7 @@ countIter getCountIter(){
 
 //Gets an iterator for generating rep(1:len, times=infinity)
 repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter()){
-  // repeat 0, rep, 2*rep, ..., len*rep ad nauseum
+  // repeat 0, incr, 2*incr, ..., len*incr ad nauseum
   repTimes f(len, incr);				 
   repTimesIter repIt = thrust::transform_iterator<repTimes, countIter>(countIt, f);
   return repIt;
@@ -122,12 +122,65 @@ RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt =
 }
 
 // map from colmajor to rowmajor, i.e. transpose
-struct colmaj_to_rowmaj{
+struct colmaj_to_rowmaj : thrust::unary_function<int,int>{
   int R, C;
   __host__ __device__ colmaj_to_rowmaj(int R, int C): R(R), C(C){}
   __host__ __device__ int operator()(int i){
     return (i%C)*R + i/C;
   }
 };
+
+// definition and getter for transposeIter
+typedef thrust::transform_iterator<colmaj_to_rowmaj, countIter> transposeIter;
+
+transposeIter getTransposeIter(int R, int C, countIter countIt = getCountIter()){
+  colmaj_to_rowmaj f(R, C);
+  transposeIter t = thrust::transform_iterator<colmaj_to_rowmaj, countIter>(countIt, f);
+  return t;
+}
+
+template <typename T>
+struct gTranspose{
+  typedef thrust::permutation_iterator<T, transposeIter> iterator;
+};
+
+template<typename T>
+typename gTranspose<T>::iterator getGTransposeIter(const T &begin, const T &end, int R, int C, countIter countIt = getCountIter()){
+  transposeIter trans = getTransposeIter(R, C, countIt);
+  typename gTranspose<T>::iterator gTrans = thrust::permutation_iterator<T, transposeIter>(begin, trans);
+  return gTrans;
+}
+
+struct diag_elem: thrust::unary_function<int,int>{
+  int dim;
+
+  diag_elem(int dim): dim(dim){}
+  
+  __host__ __device__ int operator()(int i){
+    return (i%dim) * (dim+1) + (i/dim)*dim*dim;
+  }
+};
+
+typedef thrust::transform_iterator<diag_elem, countIter> diagonalIter;
+
+diagonalIter getDiagIter(int dim, countIter countIt = getCountIter()){
+  diag_elem f(dim);
+  diagonalIter d = thrust::transform_iterator<diag_elem, countIter>(countIt, f);
+  return d;
+}
+
+template<typename T>
+struct gDiagonal{
+  typedef thrust::permutation_iterator<T, diagonalIter> iterator;
+};
+
+template<typename T>
+typename gDiagonal<T>::iterator getGDiagIter(T begin, T end, int dim, countIter countIt = getCountIter()){
+  diagonalIter diag = getDiagIter(dim, countIt);
+  typename gDiagonal<T>::iterator gDiag = thrust::permutation_iterator<T, diagonalIter>(begin, diag);
+  return gDiag;
+}
+
+
 
 #endif
