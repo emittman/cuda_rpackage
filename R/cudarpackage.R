@@ -75,6 +75,6 @@ Rchol_multiple = function(array){
 Rconstruct_prec = function(xtx, Mk, lambda, tau, K, V){
   out <- .Call("Rconstruct_prec", as.numeric(xtx), as.integer(Mk), as.numeric(lambda),
         as.numeric(tau), as.integer(K), as.integer(V))
-  dim(out) <- c(v, v, K)
+  dim(out) <- c(V, V, K)
   return(out)
 }

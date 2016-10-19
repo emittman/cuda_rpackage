@@ -151,6 +151,7 @@ typename gTranspose<T>::iterator getGTransposeIter(const T &begin, const T &end,
   return gTrans;
 }
 
+// def and getter for diagonalIter
 struct diag_elem: thrust::unary_function<int,int>{
   int dim;
 
@@ -181,6 +182,45 @@ typename gDiagonal<T>::iterator getGDiagIter(T begin, T end, int dim, countIter 
   return gDiag;
 }
 
+//def and getter for (SelectColumns) SCIntIter
+typedef thrust::tuple<gRepEach<realIter>::iterator, repTimesIter> tup4SCReal;
+typedef thrust::tuple<gRepEach<intIter>::iterator, repTimesIter>  tup4SCInt;
+typedef thrust::zip_iterator<tup4SCReal> zip4SCReal;
+typedef thrust::zip_iterator<tup4SCInt>  zip4SCInt;
+
+//typedef and functor to perform tuple.first(double) + tuple.second(int)
+typedef thrust::tuple<int, int> elt4SCInt;
+
+struct sumZipSCInt : thrust::unary_function<elt4SCInt, int>{
+  int stride;
+  __host__ __device__ sumZipSCInt(int s): stride(s){}
+
+  __host__ __device__ double operator()(elt4SCInt &tup){
+    return thrust::get<0>(tup)*stride + thrust::get<1>(tup);
+  }
+
+};
+
+typedef thrust::transform_iterator<sumZipSCInt, zip4SCInt> SCIntIter;
+
+// Use for functions where only select columns are required
+// "SC" = "select columns"
+SCIntIter getSCIntIter(intIter begin, intIter end, int each, countIter countIt = getCountIter()){
+
+  repTimesIter timesIt = getRepTimesIter(each, 1, countIt);
+
+  gRepEach<intIter>::iterator eachIt = getGRepEachIter(begin, end, each, 1, countIt);
+
+  tup4SCInt tup = thrust::tuple<gRepEach<intIter>::iterator, repTimesIter>(eachIt, timesIt);
+
+  zip4SCInt zip = thrust::zip_iterator<tup4SCInt>(tup);
+
+  sumZipSCInt f(each);
+
+  SCIntIter result = thrust::transform_iterator<sumZipSCInt, zip4SCInt>(zip, f);
+
+  return result;
+}
 
 
 #endif

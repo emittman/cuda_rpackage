@@ -22,7 +22,7 @@ Rprec <- sapply(1:clusts, function(cl){
 dim(Rprec) <- c(dim, dim, clusts)
 
 
-Cprec <- Rconstruct_prec(xtx, Mk, lambda, tau)
+Cprec <- Rconstruct_prec(xtx, Mk, lambda, tau, clusts, dim)
 
 test_that("Correct values",{
   expect_equal(Rprec, Cprec)
