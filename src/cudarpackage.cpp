@@ -128,17 +128,23 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
   CUDA_CALL(cudaMalloc((void **) &devStates, n * sizeof(curandState)));
   
   //temporary memory
-  thrust::device_vector<double> out(n);
   
+  thrust::device_vector<double> out(n);
+ 
   double *aptr = REAL(a);
   double *bptr = REAL(b);
-  double *outptr = thrust::raw_pointer_cast(&(out[0]));
+  thrust::device_vector<double> da(aptr, aptr+n);
+  thrust::device_vector<double> db(bptr, bptr+n);
   
+  double *outptr = thrust::raw_pointer_cast(out.data());
+  double *daptr = thrust::raw_pointer_cast(da.data());
+  double *dbptr = thrust::raw_pointer_cast(db.data())
+    
   //set up RNGs
   setup_kernel<<<n,1>>>(devStates);
   
   //sample from Beta(a, b)
-  //getBeta<<<n,1>>>(devStates, aptr, bptr, outptr);
+  getBeta<<<n,1>>>(devStates, daptr, dbptr, outptr);
   
   //transfer memory
   SEXP Rout = PROTECT(allocVector(REALSXP, n));

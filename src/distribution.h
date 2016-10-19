@@ -53,7 +53,7 @@ __global__ void getBeta(curandState *states, double *a, double *b, double *resul
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
-  result[id] = 0.5;//rbeta(&(states[id]), a[id], b[id]);
+  result[id] = rbeta(&(states[id]), a[id], b[id]);
 }
 
 #endif
