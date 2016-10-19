@@ -3,12 +3,17 @@
 #include "cholesky.h"
 #include "summary_fn.h"
 #include "construct_prec.h"
+#include "distribution.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
+
+#define CUDA_CALL(x) do { if((x) != cudaSuccess) { \
+printf("Error at %s:%d\n",__FILE__,__LINE__);      \           
+return EXIT_FAILURE;}} while(0) 
 
 extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
   int n_row = nrows(mat),
@@ -116,4 +121,37 @@ extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, S
     REAL(out_prec)[i] = prec[i];
   UNPROTECT(1);
   return out_prec;
+}
+
+extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
+  //assumes n is multiple of 32
+  int n = length(a);
+
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, n * sizeof(curandState)));
+  
+  //temporary memory
+  thrust::device_vector<double> out(n);
+  
+  double *aptr = REAL(a);
+  double *bptr = REAL(b);
+  double *outptr = thrust::raw_pointer_cast(out.data());
+  
+  //set up RNGs
+  setup_kernel<<<n/32, 32>>>(devStates);
+  
+  //sample from Beta(a, b)
+  getBeta<<<n/32, 32>>>(devStates, aptr, bptr, outptr);
+  
+  //transfer memory
+  SEXP Rout = PROTECT(allocVector(REALSXP, n));
+  for(int i=0; i<n; ++i)
+    REAL(Rout)[i] = out[i];
+  
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
+  UNPROTECT(1);
+  
+  return Rout;
 }

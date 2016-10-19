@@ -78,3 +78,14 @@ Rconstruct_prec = function(xtx, Mk, lambda, tau, K, V){
   dim(out) <- c(V, V, K)
   return(out)
 }
+
+#' @title Function \code{Rbeta_rng}
+#' @description draw beta random variables using curand device API
+#' @export
+#' @param a shape1 parameter
+#' @param b shape2 parameter
+Rbeta_rng = function(a, b){
+  out <- .Call("Rbeta_rng", as.numeric(a), as.numeric(b))
+  return(data.frame(a=a, b=b, x=out))
+}
+
