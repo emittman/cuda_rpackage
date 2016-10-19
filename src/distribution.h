@@ -5,7 +5,7 @@
 #include "thrust/functional.h"
 #include "util/cuda_usage.h"
 
-__device__ double rgamma(curandState *state, const double a, const double b){
+__device__ double rgamma(curandState *state, double a, double b){
 
   float d = a - 1.0 / 3;
   float Y, U, v;
@@ -30,29 +30,30 @@ __device__ double rgamma(curandState *state, const double a, const double b){
   }
 }
 
-__device__ double rbeta(curandState *state, const double a, const double b){
+__device__ double rbeta(curandState *state,  double a, double b){
   
   double x,y;
-  x = rgamma(state, a, 1);
-  y = rgamma(state, b, 1);
+
+  x = rgamma(state, a, 1.0);
+  y = rgamma(state, b, 1.0);
   
   return x/(x+y);
 }
 
 
-__global__ void setup_kernel(curandState *state) {
+__global__ void setup_kernel(curandState *states) {
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   /* Each thread gets same seed, a different sequence number, no offset */
     
-    curand_init(1234, id, 0, &state[id]);
+    curand_init(1234, id, 0, &states[id]);
 }
 
 __global__ void getBeta(curandState *states, double *a, double *b, double *result){
   
-  int id = blockIdx.x;
+  int id = threadIdx.x + blockIdx.x * blockDim.x;
   
-  result[id] = rbeta(&(states[id]), a[id], b[id]);
+  result[id] = 0.5;//rbeta(&(states[id]), a[id], b[id]);
 }
 
 #endif

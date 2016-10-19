@@ -138,7 +138,7 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
   setup_kernel<<<n,1>>>(devStates);
   
   //sample from Beta(a, b)
-  getBeta<<<n,1>>>(devStates, aptr, bptr, outptr);
+  //getBeta<<<n,1>>>(devStates, aptr, bptr, outptr);
   
   //transfer memory
   SEXP Rout = PROTECT(allocVector(REALSXP, n));
