@@ -6,7 +6,7 @@
 #include "util/cuda_usage.h"
 
 __device__ double rgamma(curandState *state, const double a, const double b){
-{
+
   float d = a - 1.0 / 3;
   float Y, U, v;
   while(true){
