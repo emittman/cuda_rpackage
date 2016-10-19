@@ -11,10 +11,6 @@
 #include <Rinternals.h>
 #include <Rmath.h>
 
-#define CUDA_CALL(x) do { if((x) != cudaSuccess) { \
-printf("Error at %s:%d\n",__FILE__,__LINE__);      \           
-return EXIT_FAILURE;}} while(0) 
-
 extern "C" SEXP summary_stats(SEXP mat, SEXP key, SEXP n_clust, SEXP verbose){
   int n_row = nrows(mat),
       n_col = ncols(mat),

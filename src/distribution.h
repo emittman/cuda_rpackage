@@ -3,11 +3,7 @@
 
 #include "curand_kernel.h"
 #include "thrust/functional.h"
-
-#define CUDA_CALL(x) do { if((x) != cudaSuccess) { \
-printf("Error at %s:%d\n",__FILE__,__LINE__);      \           
-return EXIT_FAILURE;}} while(0) 
-  
+#include "util/cuda_usage.h"
   
   __device__ double rgamma (curandState *state, const double a, const double b){
     /* assume a > 0 */
@@ -47,7 +43,7 @@ __device__ double rbeta(curandState *state, const double a, const double b){
   x = rgamma(state, a, 1);
   y = rgamma(state, b, 1);
   
-  return = x/(x+y);
+  return x/(x+y);
 }
 
 
@@ -59,7 +55,7 @@ __global__ void setup_kernel(curandState *state) {
     curand_init(1234, id, 0, &state[id]);
 }
 
-__global__ getBeta(curandState *states, double *a, double *b, double *result){
+__global__ void getBeta(curandState *states, double *a, double *b, double *result){
   
   int id = threadIdx.x + blockDim.x * blockIdx.x;
   
