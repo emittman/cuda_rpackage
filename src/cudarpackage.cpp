@@ -120,7 +120,7 @@ extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, S
 }
 
 extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
-  //assumes n is multiple of 32
+
   int n = length(a);
 
   //instantiate RNGs
@@ -135,10 +135,10 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
   double *outptr = thrust::raw_pointer_cast(out.data());
   
   //set up RNGs
-  setup_kernel<<<n/32, 32>>>(devStates);
+  setup_kernel<<<n,1>>>(devStates);
   
   //sample from Beta(a, b)
-  getBeta<<<n/32, 32>>>(devStates, aptr, bptr, outptr);
+  getBeta<<<n,1>>>(devStates, aptr, bptr, outptr);
   
   //transfer memory
   SEXP Rout = PROTECT(allocVector(REALSXP, n));

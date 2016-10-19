@@ -4,38 +4,31 @@
 #include "curand_kernel.h"
 #include "thrust/functional.h"
 #include "util/cuda_usage.h"
-  
-  __device__ double rgamma (curandState *state, const double a, const double b){
-    /* assume a > 0 */
-      
-      if (a < 1){
-        double u = curand_uniform_double(state);
-        return rgamma (state, 1.0 + a, b) * pow (u, 1.0 / a);
-      }
+
+__device__ double rgamma(curandState *state, const double a, const double b){
+{
+  float d = a - 1.0 / 3;
+  float Y, U, v;
+  while(true){
+    // Generate a standard normal random variable
+    Y = curand_normal(state);
     
-    {
-      double x, v, u;
-      double d = a - 1.0 / 3.0;
-      double c = (1.0 / 3.0) / sqrt (d);
-      
-      while (1){
-        do{
-          x = curand_normal_double(state);
-          v = 1.0 + c * x;
-        } while (v <= 0);
-        
-        v = v * v * v;
-        u = curand_uniform_double(state);
-        
-        if (u < 1 - 0.0331 * x * x * x * x) 
-          break;
-        
-        if (log (u) < 0.5 * x * x + d * (1 - v + log (v)))
-          break;
-      }
-      return b * d * v;
+    v = pow((1 + Y / sqrt(9 * d)), 3);
+    
+    // Necessary to avoid taking the log of a negative number later
+    if(v <= 0) 
+      continue;
+    
+    // Generate a standard uniform random variable
+    U = curand_uniform(state);
+    
+    // Accept proposed Gamma random variable under following condition,
+    // otherise repeat the loop
+    if(log(U) < 0.5 * pow(Y,2) + d * (1 - v + log(v)) ){
+      return d * v / b;
     }
   }
+}
 
 __device__ double rbeta(curandState *state, const double a, const double b){
   
