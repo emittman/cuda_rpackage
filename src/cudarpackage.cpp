@@ -132,7 +132,7 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
   
   double *aptr = REAL(a);
   double *bptr = REAL(b);
-  double *outptr = thrust::raw_pointer_cast(out.data());
+  double *outptr = thrust::raw_pointer_cast(&(out[0]));
   
   //set up RNGs
   setup_kernel<<<n,1>>>(devStates);

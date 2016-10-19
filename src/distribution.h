@@ -50,7 +50,7 @@ __global__ void setup_kernel(curandState *state) {
 
 __global__ void getBeta(curandState *states, double *a, double *b, double *result){
   
-  int id = threadIdx.x + blockDim.x * blockIdx.x;
+  int id = blockIdx.x;
   
   result[id] = rbeta(&(states[id]), a[id], b[id]);
 }
