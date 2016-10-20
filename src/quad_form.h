@@ -16,7 +16,7 @@ gRepConst getGRepConstIter(realIter begin, int index){
   return iter;
 }
 
-typedef thrust::tuple<realIter, gRepTimes<double>::iterator, gRepConst> qf_tup;
+typedef thrust::tuple<realIter, gRepTimes<realIter>::iterator, gRepConst> qf_tup;
 typedef thrust::tuple<double &, double &, double &> ftrip;
 
 struct quad_form: thrust::unary_function<ftrip, double>{
@@ -31,7 +31,7 @@ struct quad_form: thrust::unary_function<ftrip, double>{
     double *x = thrust::raw_pointer_cast(&(thrust::get<1>(trip)));
     double *A = thrust::raw_pointer_cast(&(thrust::get<2>(trip)));
     double result;
-    cublasDsymv(handle, CUBLAS_FILL_MODE_T, n, &alpha, A, lda, x, incx, &beta, y, incy);
+    cublasDsymv(handle, CUBLAS_FILL_MODE_LOWER, n, &alpha, A, lda, x, incx, &beta, y, incy);
     cublasDdot(handle, n, x, incx, y, incy, &result);
     return result;
   }
@@ -43,10 +43,10 @@ typedef thrust::device_vector<double> fvec;
 void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim){
   if(A.size() != dim*dim) std::cout << "A.size() is not dim*dim!\n";
   if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
-  gRepTimes<double>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
+  gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
   gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
   fvec tmp(x.size());
-  qf_tup my_tuple = thrust::tuple<realIter, gRepTimes<double>::iterator, gRepConst>(tmp.begin(), x_strided, A_repeat);
+  qf_tup my_tuple = thrust::tuple<realIter, gRepTimes<realIter>::iterator, gRepConst>(tmp.begin(), x_strided, A_repeat);
   thrust::zip_iterator<qf_tup> zip_qf = thrust::zip_iterator<qf_tup>(my_tuple);
   quad_form f(dim);
   
