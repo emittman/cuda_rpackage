@@ -33,6 +33,7 @@ struct quad_form: thrust::unary_function<ftrip, double>{
     double result;
     cublasDsymv(handle, CUBLAS_FILL_MODE_LOWER, n, &alpha, A, lda, x, incx, &beta, y, incy);
     cublasDdot(handle, n, x, incx, y, incy, &result);
+    cublasDestroy_v2(handle);
     return result;
   }
 };
