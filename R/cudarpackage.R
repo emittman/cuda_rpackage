@@ -97,6 +97,6 @@ Rbeta_rng = function(a, b){
 #' @param n number of vectors
 #' @param dim dimension of each vector
 Rquad_form_multi = function(A, x, n, d){
-  out <- .Call("quad_form_multi", as.numeric(A), as.numeric(x), as.integer(n), as.integer(d))
+  out <- .Call("Rquad_form_multi", as.numeric(A), as.numeric(x), as.integer(n), as.integer(d))
   return(out)
 }

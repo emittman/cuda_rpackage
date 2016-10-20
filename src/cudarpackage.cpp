@@ -158,7 +158,7 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
   return Rout;
 }
 
-extern "C" SEXP quad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
+extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
   
   double *Aptr = REAL(A), *xptr = REAL(x);
   int N = INTEGER(n)[0], D = INTEGER(n)[0];
