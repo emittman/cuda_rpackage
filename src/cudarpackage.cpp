@@ -4,6 +4,7 @@
 #include "summary_fn.h"
 #include "construct_prec.h"
 #include "distribution.h"
+#include "quad_form.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
