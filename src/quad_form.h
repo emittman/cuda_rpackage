@@ -17,17 +17,17 @@ gRepConst getGRepConstIter(realIter begin, int index){
 }
 
 typedef thrust::tuple<realIter, gRepTimes<double>::iterator, gRepConst> qf_tup;
-typedef thrust::tuple<double &, double &, double &> float3;
+typedef thrust::tuple<double &, double &, double &> ftrip;
 
-struct quad_form: thrust::unary_function<float3, double>{
+struct quad_form: thrust::unary_function<ftrip, double>{
   int dim;
   __host__ __device__ quad_form(int dim): dim(dim){}
-  __host__ __device__ double operator()(float3 &trip){
+  __host__ __device__ double operator()(ftrip &trip){
     cublasHandle_t handle;
     cublasCreate_v2(&handle);
     int incx=1, incy=1, n = dim, lda=dim;
     double alpha=1, beta=0;
-    double *y = thrust::raw_pointer_cast(&(thrust::get<0>(trip)))
+    double *y = thrust::raw_pointer_cast(&(thrust::get<0>(trip)));
     double *x = thrust::raw_pointer_cast(&(thrust::get<1>(trip)));
     double *A = thrust::raw_pointer_cast(&(thrust::get<2>(trip)));
     double result;
