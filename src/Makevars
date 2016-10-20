@@ -15,4 +15,4 @@ all: cudarpackage.so
 cudarpackage.so: ${OBJECTS}
 
 %.o: %.cpp
-	${NVCC} ${NVCC_FLAGS} -I${CUDA_INC} ${PKG_LIBS} $< -c
+	${NVCC} ${NVCC_FLAGS} -I${CUDA_INC} $< -c
