@@ -5,18 +5,19 @@
 #include "thrust/functional.h"
 #include "thrust/transform.h"
 #include "iterator2.h"
+#include "cublas_v2.h"
 
 
 //helper functions to get a constant iterator to a real-valued array
-typedef permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
+typedef thrust::permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
 gRepConst getGRepConstIter(realIter begin, int index){
   thrust::constant_iterator<int> constIter = thrust::make_constant_iterator<int>(index);
   gRepConst iter = thrust::permutation_iterator<realIter, thrust::constant_iterator<int> >(begin, constIter);
   return iter;
 }
 
-typedef tuple<realIter, gRepTimes<double>::iterator, gRepConst> qf_tup;
-typedef tuple<double &, double &, double &> float3;
+typedef thrust::tuple<realIter, gRepTimes<double>::iterator, gRepConst> qf_tup;
+typedef thrust::tuple<double &, double &, double &> float3;
 
 struct quad_form: thrust::unary_function<float3, double>{
   int dim;
@@ -41,7 +42,7 @@ typedef thrust::device_vector<double> fvec;
 //Compute t(x_i) %*% A %*% x_i where i=0, ..., n-1
 void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim){
   if(A.size() != dim*dim) std::cout << "A.size() is not dim*dim!\n";
-  if(y.size() != n) std::cout << "y.size() doesn't match inputs!"
+  if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
   gRepTimes<double>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
   gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
   fvec tmp(x.size());
