@@ -1,12 +1,12 @@
-CUDA_HOME = /usr/local/cuda
+CUDA_HOME = /usr/local/cuda-7.5
 
 ################################################
 
 R_INC = ${R_HOME}/include
 NVCC = ${CUDA_HOME}/bin/nvcc
 CUDA_INC = ${CUDA_HOME}/include
-PKG_LIBS = -L${CUDA_HOME}/lib64 -Wl,-rpath,${CUDA_HOME}/lib64 -lcuda -lcudart -lcublas -lcurand -lcublas_device
-NVCC_FLAGS = -x cu -I${R_INC} -Xcompiler "-fPIC" -gencode arch=compute_35,code=sm_35 -dlink -rdc=true
+PKG_LIBS = -L${CUDA_HOME}/lib64 -Wl,-rpath,${CUDA_HOME}/lib64 -lcublas -lcurand -lcublas_device -rdc=true
+NVCC_FLAGS = -x cu -I${R_INC} -Xcompiler -fPIC -gencode arch=compute_35,code=sm_35
 
 OBJECTS= cudarpackage.o
 
