@@ -46,8 +46,8 @@ void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim){
   gRepTimes<double>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
   gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
   fvec tmp(x.size());
-  qf_tup my_tuple = tuple<realIter, gRepTimes<double>::iterator, gRepConst>(tmp.begin(), x_strided, A_repeat);
-  zip_iterator<qf_tup> zip_qf = zip_iterator<qf_tup>(my_tuple);
+  qf_tup my_tuple = thrust::tuple<realIter, gRepTimes<double>::iterator, gRepConst>(tmp.begin(), x_strided, A_repeat);
+  thrust::zip_iterator<qf_tup> zip_qf = thrust::zip_iterator<qf_tup>(my_tuple);
   quad_form f(dim);
   
   thrust::transform(zip_qf, zip_qf + n, y.begin(), f);
