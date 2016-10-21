@@ -1,0 +1,1 @@
+void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim)
