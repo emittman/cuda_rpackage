@@ -10,6 +10,8 @@
 #include<thrust/device_vector.h>
 #include<thrust/device_ptr.h>
 
+typedef thrust::device_vector<double> fvec;
+
 //Used for generating rep(1:infinity, each=len) * incr
 struct repEach: public thrust::unary_function<int, int>{
   int len;

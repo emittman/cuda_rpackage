@@ -1,4 +1,5 @@
 #include <thrust/device_vector.h>
+#include "iterator2.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
