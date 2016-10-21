@@ -14,5 +14,5 @@ all: cudarpackage.so
 
 cudarpackage.so: ${OBJECTS}
 
-%.o: %.cpp
+%.o: %.cu
 	${NVCC} ${NVCC_FLAGS} -I${CUDA_INC} $< -c
