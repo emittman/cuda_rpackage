@@ -89,13 +89,13 @@ Rbeta_rng = function(a, b){
   return(data.frame(a=a, b=b, x=out))
 }
 
-#'  @title Function \code{Rquad_form_multi}
+#' @title Function \code{Rquad_form_multi}
 #' @description compute t(x_i)A(x_i) for i=1,...,n
-#' @export'
-#'  @param A d by dim matrix
-#'  @param x d*n matrix
-#'  @param n number of vectors
-#'  @param dim dimension of each vector
+#' @export
+#' @param A d by dim matrix
+#' @param x d*n matrix
+#' @param n number of vectors
+#' @param dim dimension of each vector
 Rquad_form_multi = function(A, x, n, d){
   out <- .Call("Rquad_form_multi", as.numeric(A), as.numeric(x), as.integer(n), as.integer(d))
   return(out)
