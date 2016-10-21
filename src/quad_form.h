@@ -16,7 +16,7 @@ gRepConst getGRepConstIter(realIter begin, int index){
   return iter;
 }
 
-typedef thrust::tuple<realIter, gRepTimes<realIter>::iterator, gRepConst> qf_tup;
+typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst> qf_tup;
 typedef thrust::tuple<double &, double &, double &> ftrip;
 
 struct quad_form: thrust::unary_function<ftrip, double>{
@@ -46,11 +46,11 @@ void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim){
   if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
   gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
   gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
-  fvec tmp(x.size());
-  qf_tup my_tuple = thrust::tuple<realIter, gRepTimes<realIter>::iterator, gRepConst>(tmp.begin(), x_strided, A_repeat);
+  fvec tmp(n*dim, 0.0);
+  gRepTimes<realIter>::iterator tmp_strided = getGRepTimesIter(tmp.begin(), tmp.end(), n, dim);
+  qf_tup my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst>(tmp_strided, x_strided, A_repeat);
   thrust::zip_iterator<qf_tup> zip_qf = thrust::zip_iterator<qf_tup>(my_tuple);
   quad_form f(dim);
-  
   thrust::transform(zip_qf, zip_qf + n, y.begin(), f);
 }
 
