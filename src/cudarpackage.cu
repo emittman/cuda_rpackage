@@ -162,7 +162,7 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
 extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
 
   double *Aptr = REAL(A), *xptr = REAL(x);
-  int N = INTEGER(n)[0], D = INTEGER(n)[0];
+  int N = INTEGER(n)[0], D = INTEGER(dim)[0];
 
   thrust::device_vector<double> dA(Aptr, Aptr+D*D);
   thrust::device_vector<double> dx(xptr, xptr+N*D);
