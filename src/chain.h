@@ -67,7 +67,7 @@ struct chain_t{
   fvec_d means;
   fvec_d meansquares;
   
-  chain_t(int* _C, int _G, int _V, int _N, int _P): G(_G), V(_V), K(_K), P(_P), beta(_K*_V), pi(_K),tau2(_K),
+  chain_t(int* _C, int _G, int _V, int _K, int _P): G(_G), V(_V), K(_K), P(_P), beta(_K*_V), pi(_K),tau2(_K),
                                                   zeta(_K), C(_C, _C + _P*_V), probs(_G*_P), means(_G), meansquares(_G){}
   
 };
