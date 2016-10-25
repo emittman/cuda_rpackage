@@ -35,15 +35,15 @@ public:
   int num_rows;
   int num_clusters;
   int num_columns;
-  thrust::device_vector<int> clust_sums;
-  thrust::device_vector<int> occupancy_count;
-  thrust::device_vector<int> all;
+  ivec_d clust_sums;
+  ivec_d occupancy_count;
+  ivec_d all;
 
  summary(int R, int Cl, int Co): num_rows(R), num_clusters(Cl), num_columns(Co), clust_sums(Cl*Co), occupancy_count(Cl), all(R*Co){
     //initialize with (silly) data
     thrust::sequence(all.begin(), all.end(), 0, 1);
 }
-  void update(thrust::device_vector<int> &key, int verbose);
+  void update(ivec_d &key, int verbose);
 };
 
 #endif

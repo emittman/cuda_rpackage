@@ -31,7 +31,7 @@ struct chol : thrust::unary_function<double &, void>{
   
 };
 
-void chol_multiple(thrust::device_vector<double>::iterator &begin, thrust::device_vector<double>::iterator &end,  int dim, int n){
+void chol_multiple(fvec_d::iterator &begin, fvec_d::iterator &end,  int dim, int n){
   
   chol f(dim);
 

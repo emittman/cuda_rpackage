@@ -16,7 +16,7 @@
 #include<thrust/reduce.h>
 
 
-void summary::update(thrust::device_vector<int> &key, int verbose=0){
+void summary::update(ivec_d &key, int verbose=0){
  // check length of cluster index
   if(key.size() != num_rows){
     std::cout << "Key is wrong size" << std::endl;
@@ -24,15 +24,15 @@ void summary::update(thrust::device_vector<int> &key, int verbose=0){
   }
 
   // local allocations
-  thrust::device_vector<int> perm(num_rows); // will store permutation
+  ivec_d perm(num_rows); // will store permutation
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
-  thrust::device_vector<int> unique_key(num_clusters);
+  ivec_d unique_key(num_clusters);
 
   // sort the key, capturing the permutation to do so in perm
   thrust::sort_by_key(key.begin(), key.end(), perm.begin());
 
   // identify occupied clusters
-  thrust::device_vector<int>::iterator last_occ;
+  ivec_d::iterator last_occ;
 
   //get unique values of occupied clusters and capture the location of the last one
   last_occ = thrust::unique_copy(key.begin(), key.end(), unique_key.begin());
@@ -41,7 +41,7 @@ void summary::update(thrust::device_vector<int> &key, int verbose=0){
   unique_key.erase(last_occ, unique_key.end());
 
   //allocation for debug
-  thrust::device_vector<int> tmp(num_rows * num_columns);
+  ivec_d tmp(num_rows * num_columns);
 
   // tabulate the cluster assignments
   thrust::reduce_by_key(key.begin(), key.end(), thrust::constant_iterator<int>(1), thrust::make_discard_iterator(),

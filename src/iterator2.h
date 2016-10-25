@@ -10,6 +10,20 @@
 #include<thrust/device_vector.h>
 #include<thrust/device_ptr.h>
 
+//general purpose typedefs
+typedef thrust::device_vector<int> ivec_d;
+typedef thrust::device_vector<double> fvec_d;
+typedef thrust::device_vector<int>::iterator intIter;
+typedef thrust::device_vector<double>::iterator realIter;
+typedef thrust::host_vector<int> ivec_h;
+typedef thrust::host_vector<double> fvec_h;
+
+
+/****************************************
+* Iterators for repeating consecutive indices simliar to rep(1:N) in R
+* repEach and repTimes
+*/
+
 //Used for generating rep(1:infinity, each=len) * incr
 struct repEach: public thrust::unary_function<int, int>{
   int len;
@@ -30,9 +44,7 @@ struct repTimes: public thrust::unary_function<int, int>{
   }
 };
 
-//typedefs for custom fancy iterators (I)
-typedef thrust::device_vector<double>::iterator realIter;
-typedef thrust::device_vector<int>::iterator intIter;
+//typedefs
 typedef thrust::counting_iterator<int> countIter;
 typedef thrust::transform_iterator<repTimes, countIter> repTimesIter;
 typedef thrust::transform_iterator<repEach, countIter> repEachIter;
@@ -60,6 +72,10 @@ repEachIter getRepEachIter(int len, int incr, countIter countIt = getCountIter()
   return repIt;
 }
 
+
+/*************
+* Generalize repEach/repTimes; similar to rep(X) in R
+*/
 
 //For generating rep(arb_seq, times=infinity)
 template<typename T>
@@ -91,6 +107,12 @@ typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr
   return gRep;
 }
 
+
+/*************************
+ * The main function is getRSIntIter which is equivalent to
+ * rep(X, times) + rep(1:cols, each=colsize) * colsize
+ * 
+ */
 // Belongs in a separate file
 /*probably a better way to scope these defn's*/
 typedef thrust::tuple<gRepTimes<realIter>::iterator, repEachIter> tup4RSReal;
@@ -120,6 +142,12 @@ RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt =
   RSIntIter result = thrust::transform_iterator<sumZipRSInt, zip4RSInt>(zip, f);
   return result;
 }
+
+/**********************************
+ * This function gives an iterator to the transpose of
+ * a flattened matrix stored on column-major format
+ * 
+ */
 
 // map from colmajor to rowmajor, i.e. transpose
 struct colmaj_to_rowmaj : thrust::unary_function<int,int>{
@@ -151,6 +179,13 @@ typename gTranspose<T>::iterator getGTransposeIter(const T &begin, const T &end,
   return gTrans;
 }
 
+/**********************************************************8
+ * Get an iterator to the diagonal elements of a matrix stored
+ * in col-major format
+ * 
+ */
+
+
 // def and getter for diagonalIter
 struct diag_elem: thrust::unary_function<int,int>{
   int dim;
@@ -181,6 +216,12 @@ typename gDiagonal<T>::iterator getGDiagIter(T begin, T end, int dim, countIter 
   typename gDiagonal<T>::iterator gDiag = thrust::permutation_iterator<T, diagonalIter>(begin, diag);
   return gDiag;
 }
+
+/*********************************************
+ * An iterator for accessing elements of a matrix
+ * given a vector of column indices
+ * 
+ */
 
 //def and getter for (SelectColumns) SCIntIter
 typedef thrust::tuple<gRepEach<realIter>::iterator, repTimesIter> tup4SCReal;
