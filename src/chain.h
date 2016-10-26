@@ -14,21 +14,8 @@ struct data_t{
   int V;
   int N;
   
-  data_t(double* _y, double* _x, int _G, int _V, int _N): yty(_G), xty(_G*_V), ytx(_G*_V), xtx(_V*_V), G(_G), V(_V), N(_N) {
-
-    //temporaries for initial calculations
-    fvec_h yty_h(G);
-    fvec_h xty_h(G*V);
-    fvec_h ytx_h(G*V);
-    fvec_h xtx_h(V*V);
-    //multiply a bunch of matrices
-    
-    //copy to device
-    thrust::copy(yty_h.begin(), yty_h.end(), yty.begin());
-    thrust::copy(xty_h.begin(), xty_h.end(), xty.begin());
-    thrust::copy(ytx_h.begin(), ytx_h.end(), ytx.begin());
-    thrust::copy(xtx_h.begin(), xtx_h.end(), xtx.begin());
-  }
+  data_t(double* _yty, double* _xty, double* _ytx, double* _xtx, int _G, int _V, int _N): 
+    yty(_yty, _yty + _G), xty(_xty, _xty + _G*_V), ytx(_ytx, _ytx+_G*_V), xtx(_xtx, _xtx + _V*_V), G(_G), V(_V), N(_N) {}
   
 };
 

@@ -21,6 +21,8 @@ int main(){
   std::cout << "I made a prior!\n mu0:\n";
   printVec(prior.mu0, V, 1);
   
+  
+  
 
   return 0;
 }
