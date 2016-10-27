@@ -7,7 +7,7 @@
 countIter getCountIter();
 
 //Gets an iterator for generating rep(1:len, times=infinity)
-repTimesIter getRepTimesIter(int len, int incr, countIter countIt);
+repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter());
 //Gets an iterator for generating rep(arb_seq, times=infinity)
 template<typename T>
 typename gRepTimes<T>::iterator getGRepTimesIter(const T &begin, const T &end, int len, int incr=1, countIter countIt = getCountIter()){
@@ -19,7 +19,7 @@ typename gRepTimes<T>::iterator getGRepTimesIter(const T &begin, const T &end, i
 
 
 //Gets an iterator for generating rep(1:infinity, each=each) * incr
-repEachIter getRepEachIter(int len, int incr, countIter countIt);
+repEachIter getRepEachIter(int len, int incr, countIter countIt = getCountIter());
 //Gets an iterator for generating rep(arb_seq, each= len)
 template<typename T>
 typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr=1, countIter countIt = getCountIter()){
@@ -34,14 +34,14 @@ typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr
 // Use for creating key in reduce by key where what is needed are "row sums"
 //Call function when you want to iterate over a key adding a constant increment each iteration
 // "RS" = "repeated shifted"
-RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt);
+RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt = getCountIter());
 
 /**********************************
  * This function gives an iterator to the transpose of
  * a flattened matrix stored on column-major format
  * 
  */
-transposeIter getTransposeIter(int R, int C, countIter countIt);
+transposeIter getTransposeIter(int R, int C, countIter countIt = getCountIter());
 
 template<typename T>
 typename gTranspose<T>::iterator getGTransposeIter(const T &begin, const T &end, int R, int C, countIter countIt = getCountIter()){
@@ -55,7 +55,7 @@ typename gTranspose<T>::iterator getGTransposeIter(const T &begin, const T &end,
  * in col-major format
  * 
  */
-diagonalIter getDiagIter(int dim, countIter countIt);
+diagonalIter getDiagIter(int dim, countIter countIt = getCountIter());
 template<typename T>
 typename gDiagonal<T>::iterator getGDiagIter(T begin, T end, int dim, countIter countIt = getCountIter()){
   diagonalIter diag = getDiagIter(dim, countIt);
@@ -65,6 +65,6 @@ typename gDiagonal<T>::iterator getGDiagIter(T begin, T end, int dim, countIter 
 
 // Use for functions where only select columns are required
 // "SC" = "select columns"
-SCIntIter getSCIntIter(intIter begin, intIter end, int each, countIter countIt);
+SCIntIter getSCIntIter(intIter begin, intIter end, int each, countIter countIt = getCountIter());
 
 #endif
