@@ -1,14 +1,16 @@
 NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
 R_INC = /home/emittman/src/R-3.3.1/builddir/include
 LIBS = -lcublas_device -lcublas -lcurand
-DL_LIBS = -lquadform
+DL_LIBS = dev_link/libquadform.a
+DL_FLAGS = -lquadform
 TARGET = cudarpackage.so
 HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o
+DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 WRP_OBJS = cudarpackage.o
 
 #final SHLIB
-$(TARGET): $(WRP_OBJS) $(HST_OBJS)
-	nvcc -shared $(NVCC_FLAGS) $^ -I$(R_INC) -I. $(LIBS) $(DL_LIBS) -o cudarpackage.so
+$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(DL_LIBS)
+	nvcc -shared $(NVCC_FLAGS) $^ -I$(R_INC) -I. $(LIBS) $(DL_FLAGS) -o cudarpackage.so
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
@@ -31,4 +33,4 @@ dev_link/quad_form.o: dev_link/quad_form.cu
 #make clean
 .PHONY: clean
 clean:
-	rm -f cudarpackage.so $(WRP_OBJS) $(HST_OBJS)
+	rm -f cudarpackage.so $(WRP_OBJS) $(HST_OBJS) $(DEV_OBJS)
