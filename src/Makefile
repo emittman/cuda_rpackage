@@ -25,7 +25,7 @@ host_fns/iter_getter.o: host_fns/iter_getter.cu
 dev_link/libquadform.a: dev_link/quad_form.o
 	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
-dev_link/quad_form.o
+dev_link/quad_form.o: dev_link/quad_form.cu
 	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
 #make clean
