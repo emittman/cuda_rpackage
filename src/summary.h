@@ -1,7 +1,7 @@
 #ifndef SUMMARY_H
 #define SUMMARY_H
 
-#include "header/iterator.h"
+#include "header/iter_getter.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <thrust/sequence.h>

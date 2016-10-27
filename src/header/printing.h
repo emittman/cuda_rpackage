@@ -1,3 +1,6 @@
+#ifndef PRINT_H
+#define PRINT_H
+
 #include<thrust/host_vector.h>
 #include<thrust/device_vector.h>
 #include<iostream>
@@ -13,3 +16,5 @@ void printVec(const Vector& v, int d1, int d2)
     std::cout << std::endl;
   }
 }
+
+#endif
