@@ -1,15 +1,13 @@
-#ifndef QUAD_FORM_H
-#define QUAD_FORM_H
-
 #include "thrust/device_vector.h"
 #include "thrust/functional.h"
 #include "thrust/transform.h"
-#include "header/iter_getter.h"
+#include "../header/iter_getter.h"
 #include "cublas_v2.h"
 
 
 //helper functions to get a constant iterator to a real-valued array
 typedef thrust::permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
+
 gRepConst getGRepConstIter(realIter begin, int index){
   thrust::constant_iterator<int> constIter = thrust::make_constant_iterator<int>(index);
   gRepConst iter = thrust::permutation_iterator<realIter, thrust::constant_iterator<int> >(begin, constIter);
@@ -55,4 +53,3 @@ void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim){
 }
 
 
-#endif
