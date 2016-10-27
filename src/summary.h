@@ -1,15 +1,15 @@
 #ifndef SUMMARY_H
 #define SUMMARY_H
 
-#include "iterator2.h"
-#include<thrust/host_vector.h>
-#include<thrust/device_vector.h>
-#include<thrust/sequence.h>
-#include<thrust/tuple.h>
-#include<thrust/iterator/zip_iterator.h>
-#include<thrust/iterator/permutation_iterator.h>
-#include<thrust/iterator/transform_iterator.h>
-#include<thrust/iterator/counting_iterator.h>
+#include "header/iterator.h"
+#include <thrust/host_vector.h>
+#include <thrust/device_vector.h>
+#include <thrust/sequence.h>
+#include <thrust/tuple.h>
+#include <thrust/iterator/zip_iterator.h>
+#include <thrust/iterator/permutation_iterator.h>
+#include <thrust/iterator/transform_iterator.h>
+#include <thrust/iterator/counting_iterator.h>
 
 /*
 typedef thrust::permutation_iterator<intIter, cycleIter> permuteRowsIter;

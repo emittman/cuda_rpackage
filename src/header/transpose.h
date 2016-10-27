@@ -1,7 +1,7 @@
 #ifndef TRANSPOSE_H
 #define TRANSPOSE_H
 
-#include "iterator2.h"
+#include "iterator.h"
 
 template<typename T>
 void transpose(T in_begin, T in_end, int R, int C, T out_begin){

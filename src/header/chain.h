@@ -1,7 +1,7 @@
 #ifndef CHAIN_H
 #define CHAIN_H
 
-#include "iterator2.h"
+#include "iterator.h"
 
 struct data_t{
   

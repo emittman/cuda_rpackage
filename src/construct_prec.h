@@ -1,7 +1,7 @@
 #ifndef CONSTRUCT_PREC_H
 #define CONSTRUCT_PREC_H
 
-#include "iterator2.h"
+#include "header/iterator.h"
 
 typedef thrust::tuple<gDiagonal<realIter>::iterator,gRepTimes<realIter>::iterator,gRepEach<realIter>::iterator> diag_tup;
 typedef thrust::zip_iterator<diag_tup> diag_zip;

@@ -4,7 +4,7 @@
 #include "thrust/device_vector.h"
 #include "thrust/functional.h"
 #include "thrust/transform.h"
-#include "iterator2.h"
+#include "header/iterator.h"
 #include "cublas_v2.h"
 
 

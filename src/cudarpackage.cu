@@ -1,6 +1,6 @@
 #include "util/include.h"
 #include "util/cuda_usage.h"
-#include "cholesky.h"
+#include "header/cholesky.h"
 #include "summary_fn.h"
 #include "construct_prec.h"
 #include "distribution.h"
