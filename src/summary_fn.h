@@ -2,8 +2,8 @@
 #define SUMMARY_FN_H
 
 #include "summary.h"
-#include "iterator2.h"
-#include "printing.h"
+#include "header/iterator.h"
+#include "header/printing.h"
 #include<thrust/tuple.h>
 #include<thrust/iterator/zip_iterator.h>
 #include<thrust/iterator/permutation_iterator.h>
