@@ -7,7 +7,7 @@ countIter getCountIter(){
 }
 
 //Gets an iterator for generating rep(1:len, times=infinity)
-repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter()){
+repTimesIter getRepTimesIter(int len, int incr, countIter countIt){
   // repeat 0, incr, 2*incr, ..., len*incr ad nauseum
   repTimes f(len, incr);				 
   repTimesIter repIt = thrust::transform_iterator<repTimes, countIter>(countIt, f);
@@ -15,7 +15,7 @@ repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter
 }
 
 //Gets an iterator for generating rep(1:infinity, each=each) * incr
-repEachIter getRepEachIter(int len, int incr, countIter countIt = getCountIter()){
+repEachIter getRepEachIter(int len, int incr, countIter countIt){
   // repeat each of i*incr, len times, i>=0
   repEach g(len, incr);
   repEachIter repIt = thrust::transform_iterator<repEach, countIter>(countIt, g);
@@ -28,7 +28,7 @@ repEachIter getRepEachIter(int len, int incr, countIter countIt = getCountIter()
  * Call function when you want to iterate over a key adding a constant increment each iteration
  * "RS" = "repeated shifted"
  */
-RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt = getCountIter()){
+RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt){
   repEachIter eachIt = getRepEachIter(thrust::distance(begin, end), incr, countIt);
   gRepTimes<intIter>::iterator repIt = getGRepTimesIter(begin, end, thrust::distance(begin, end), 1, countIt);
   tup4RSInt tup = thrust::tuple<gRepTimes<intIter>::iterator, repEachIter>(repIt, eachIt);
@@ -43,7 +43,7 @@ RSIntIter getRSIntIter(intIter begin, intIter end, int incr, countIter countIt =
  * a flattened matrix stored on column-major format
  * 
  */
-transposeIter getTransposeIter(int R, int C, countIter countIt = getCountIter()){
+transposeIter getTransposeIter(int R, int C, countIter countIt){
   colmaj_to_rowmaj f(R, C);
   transposeIter t = thrust::transform_iterator<colmaj_to_rowmaj, countIter>(countIt, f);
   return t;
@@ -55,7 +55,7 @@ transposeIter getTransposeIter(int R, int C, countIter countIt = getCountIter())
  * in col-major format
  * 
  */
-diagonalIter getDiagIter(int dim, countIter countIt = getCountIter()){
+diagonalIter getDiagIter(int dim, countIter countIt){
   diag_elem f(dim);
   diagonalIter d = thrust::transform_iterator<diag_elem, countIter>(countIt, f);
   return d;
@@ -64,7 +64,7 @@ diagonalIter getDiagIter(int dim, countIter countIt = getCountIter()){
 
 // Use for functions where only select columns are required
 // "SC" = "select columns"
-SCIntIter getSCIntIter(intIter begin, intIter end, int each, countIter countIt = getCountIter()){
+SCIntIter getSCIntIter(intIter begin, intIter end, int each, countIter countIt){
 
   repTimesIter timesIt = getRepTimesIter(each, 1, countIt);
   gRepEach<intIter>::iterator eachIt = getGRepEachIter(begin, end, each, 1, countIt);
