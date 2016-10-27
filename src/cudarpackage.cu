@@ -1,10 +1,10 @@
 #include "util/include.h"
 #include "util/cuda_usage.h"
 #include "header/cholesky.h"
+#include "header/quad_form.h"
 #include "summary_fn.h"
 #include "construct_prec.h"
 #include "distribution.h"
-#include "quad_form.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
