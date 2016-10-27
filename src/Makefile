@@ -2,6 +2,7 @@ NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
 R_INC = /home/emittman/src/R-3.3.1/builddir/include
 LIBS = -lcublas_device -lcublas -lcurand
 DL_LIBS = dev_link/libquadform.a
+DL_PATH = /home/emittman/cuda_rpackage/src/dev_link
 DL_FLAGS = -lquadform
 TARGET = cudarpackage.so
 HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o
@@ -10,11 +11,11 @@ WRP_OBJS = cudarpackage.o
 
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(DL_LIBS)
-	nvcc -shared $(NVCC_FLAGS) $^ -I$(R_INC) -I. $(LIBS) $(DL_FLAGS) -o cudarpackage.so
+	nvcc -shared $(NVCC_FLAGS) $^ -I$(R_INC) -I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS) -o $(TARGET)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
-	nvcc -dc $(NVCC_FLAGS) $< -I$(R_INC) -o $@ $(LIBS)
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 #host functions
 host_fns/cholesky.o: host_fns/cholesky.cu
