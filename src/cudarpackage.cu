@@ -2,6 +2,9 @@
 #include "util/cuda_usage.h"
 #include "header/cholesky.h"
 #include "header/quad_form.h"
+#include "header/summary2.h"
+#include "header/chain.h"
+#include "header/iterator.h"
 #include "summary_fn.h"
 #include "construct_prec.h"
 #include "distribution.h"
@@ -178,3 +181,29 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
   return y;
 }
 
+extern"C" SEXP Rtest_summary2(SEXP zeta, SEXP G, SEXP V, SEXP K){
+  int g = INTEGER(G)[0], v = INTEGER(V)[0], int k = INTEGER(K)[0];
+  int *zp = INTEGER(zeta);
+  fvec_h yty(g, 1.0);
+  fvec_h ytx(g*v, 1.0);
+  fvec_h xty(g*v, 1.0);
+  fvec_h xtx(v*v, 1.0);
+  double *ytyp = &(yty[0]);
+  double *ytxp = &(ytx[0]);
+  double *xtyp = &(xty[0]);
+  double *xtxp = &(xtx[0]);
+  data_t data(ytyp, xtyp, ytxp, xtxp, g, v, n);
+  
+  ivec_d ZETA(zp, zp+g);
+  summary2 smry(k, v, ZETA, data);
+  
+  smry.print_Mk();
+  smry.print_yty();
+  smry.print_xty();
+  
+  SEXP out = PROTECT(allocVector(INTSXP, 1));
+  INTEGER(out)[0] = smry.num_occupied;
+  
+  UNPROTECT(1);
+  return out;
+}
