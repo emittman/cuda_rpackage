@@ -195,7 +195,7 @@ extern"C" SEXP Rtest_summary2(SEXP zeta, SEXP G, SEXP V, SEXP K){
   data_t data(ytyp, xtyp, ytxp, xtxp, g, v, 1);
   
   ivec_d ZETA(zp, zp+g);
-  summary2 smry(k, v, ZETA, data);
+  summary2 smry(g, k, v, ZETA, data);
   
   smry.print_Mk();
   smry.print_yty();
