@@ -11,7 +11,7 @@ WRP_OBJS = cudarpackage.o
 
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(DL_LIBS)
-	nvcc -shared $(NVCC_FLAGS) $^ -I$(R_INC) -I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS) -o $(TARGET)
+	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) -I$(R_INC) -I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS) -o $(TARGET)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
