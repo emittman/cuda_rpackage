@@ -4,6 +4,9 @@
 #include "../header/transpose.h"
 #include <thrust/copy.h>
 #include <thrust/reduce.h>
+#include <thrust/unique.h>
+#include <thrust/sort.h>
+#include <thrust/sequence.h>
 
 struct is_zero{
   __host__ __device__ bool operator()(int i){
@@ -12,7 +15,7 @@ struct is_zero{
 }
 
 // zeta passed by value, data passed by reference
-summary2::summary2(int _K, int_V, ivec_d zeta, const data_t &data): G(_G), K(_K), V(_V), occupied(_K){
+summary2::summary2(int _K, int _V, ivec_d zeta, const data_t &data): G(_G), K(_K), V(_V), occupied(_K){
   
   // local allocations
   ivec_d perm(G); // will store permutation
