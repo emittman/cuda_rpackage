@@ -43,7 +43,7 @@ void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim){
   if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
   gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
   gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
-  fvec tmp(n*dim, 0.0);
+  fvec_d tmp(n*dim, 0.0);
   gRepTimes<realIter>::iterator tmp_strided = getGRepTimesIter(tmp.begin(), tmp.end(), n, dim);
   qf_tup my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst>(tmp_strided, x_strided, A_repeat);
   thrust::zip_iterator<qf_tup> zip_qf = thrust::zip_iterator<qf_tup>(my_tuple);
