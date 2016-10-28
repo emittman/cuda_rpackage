@@ -15,7 +15,7 @@ $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(DL_LIBS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
-	nvcc -dc $(NVCC_FLAGS) $< -I$(R_INC) -o $@
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 #host functions
 host_fns/cholesky.o: host_fns/cholesky.cu
