@@ -36,10 +36,9 @@ struct quad_form: thrust::unary_function<ftrip, double>{
   }
 };
 
-typedef thrust::device_vector<double> fvec;
 
 //Compute t(x_i) %*% A %*% x_i where i=0, ..., n-1
-void quad_form_multi(fvec &A, fvec &x, fvec &y, int n, int dim){
+void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim){
   if(A.size() != dim*dim) std::cout << "A.size() is not dim*dim!\n";
   if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
   gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
