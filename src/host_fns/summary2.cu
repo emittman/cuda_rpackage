@@ -8,14 +8,14 @@
 #include <thrust/sort.h>
 #include <thrust/sequence.h>
 
-struct is_zero{
+struct is_zero: thrust::unary_function<int, bool>{
   __host__ __device__ bool operator()(int i){
     return i==0 ? 1 : 0;
   }
-}
+};
 
 // zeta passed by value, data passed by reference
-summary2::summary2(int _K, int _V, ivec_d zeta, const data_t &data): G(_G), K(_K), V(_V), occupied(_K){
+summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_G), K(_K), V(_V), occupied(_K){
   
   // local allocations
   ivec_d perm(G); // will store permutation
@@ -58,11 +58,11 @@ summary2::summary2(int _K, int _V, ivec_d zeta, const data_t &data): G(_G), K(_K
   RSIntIter in_index = getRSIntIter(perm.begin(),perm.end(), G);
   permutation_iterator<realIter, intIter> sort_ytx = permutation_iterator<realIter, intIter>(data.ytx.begin(), in_index);
   // reduce
-  reduce_by_key(zeta_rep, zeta_rep + G*V, sort_ytx, hrust::make_discard_iterator(), ytx_sums.begin());
+  thrust::reduce_by_key(zeta_rep, zeta_rep + G*V, sort_ytx, thrust::make_discard_iterator(), ytx_sums.begin());
   
   /* xty_sums
   * 
     */
-    transpose(ytx_sums.begin(), ytx_sums.end(), xty_sums.begin(), num_occupied, V);
+    transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), xty_sums.begin(), num_occupied, V);
   
 }
