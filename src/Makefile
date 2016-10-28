@@ -1,6 +1,6 @@
 NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
 R_INC = /home/emittman/src/R-3.3.1/builddir/include
-LIBS = -lcublas_device -lcublas -lcurand
+LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 DL_LIBS = dev_link/libquadform.a
 DL_PATH = /home/emittman/cuda_rpackage/src/dev_link
 DL_FLAGS = -lquadform
@@ -11,7 +11,7 @@ WRP_OBJS = cudarpackage.o
 
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(DL_LIBS)
-	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) -I$(R_INC) -I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS) -o $(TARGET)
+	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) -o $(TARGET) -I$(R_INC) -I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
