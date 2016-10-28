@@ -29,14 +29,14 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_
   num_occupied = occupied.size();
   
   // calculate Mk
-  Mk(K, 0); //call constructor
-  thrust::permutation_iterator<intIter, intIter> mapMk = thrust::permutation_iterator<intIter,intIter>(M_k.begin(), occupied.begin());
+  Mk(K); //call constructor
+  thrust::permutation_iterator<intIter, intIter> mapMk = thrust::permutation_iterator<intIter,intIter>(Mk.begin(), occupied.begin());
   thrust::reduce_by_key(zeta.begin(), zeta.end(), thrust::make_constant_iterator<int>(1), thrust::make_discard_iterator(), mapMk);
   
   // unoccupied
   unoccupied.reserve(K - num_occupied);
   endptr = thrust::copy_if(thrust::make_counting_iterator<int>(0),
-                           thrust::make_counting_iterator<int>(K), Mk.begin(), unoccupied.begin(), is_zero())
+                           thrust::make_counting_iterator<int>(K), Mk.begin(), unoccupied.begin(), is_zero());
   unoccupied.erase(endptr, unoccupied.end());
   
   //size vectors
@@ -47,7 +47,7 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_
   /*yty_sums
    *
    */
-  thrust::reduce_by_key(zeta.begin(), zeta.end(), data.yty.begin(), thrust::make_discard_iterator(), yty.sums.begin());
+  thrust::reduce_by_key(zeta.begin(), zeta.end(), data.yty.begin(), thrust::make_discard_iterator(), data.yty.sums.begin());
   
   /* ytx_sums
    * 
@@ -56,7 +56,7 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_
   RSIntIter zeta_rep = getRSIntIter(zeta.begin(), zeta.end(), K);
   // "arrange" data
   RSIntIter in_index = getRSIntIter(perm.begin(),perm.end(), G);
-  permutation_iterator<realIter, intIter> sort_ytx = permutation_iterator<realIter, intIter>(data.ytx.begin(), in_index);
+  thrust::permutation_iterator<realIter, intIter> sort_ytx = permutation_iterator<realIter, intIter>(data.ytx.begin(), in_index);
   // reduce
   thrust::reduce_by_key(zeta_rep, zeta_rep + G*V, sort_ytx, thrust::make_discard_iterator(), ytx_sums.begin());
   
