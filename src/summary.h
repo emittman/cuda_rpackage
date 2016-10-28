@@ -11,25 +11,6 @@
 #include <thrust/iterator/transform_iterator.h>
 #include <thrust/iterator/counting_iterator.h>
 
-/*
-typedef thrust::permutation_iterator<intIter, cycleIter> permuteRowsIter;
-typedef thrust::tuple<columnIter, permuteRowsIter> iterTuple;
-typedef thrust::zip_iterator<iterTuple> zipIter;
-
-// functor for .update()
-struct sumZip: public thrust::unary_function<iterTuple, int>
-{
-  template<typename Tuple>
-  __host__ __device__
-  int operator()(const Tuple& tup){
-    return (thrust::get<0>(tup) + thrust::get<1>(tup));
-  }
-};
-
-typedef thrust::transform_iterator<sumZip, zipIter> outIter;
-typedef thrust::permutation_iterator<intIter, outIter> alignMatrixIter;
-*/
-
 class summary{
 public:
   int num_rows;
@@ -47,3 +28,48 @@ public:
 };
 
 #endif
+
+// class summary{
+// public:
+//   int G;
+//   int K;
+//   int V;
+//   ivec_d occupied;
+//   int num_occupied;
+//   ivec_d Mk;
+//   fvec_d yty_sums;
+//   fvec_d xty_sums;
+//   fvec_d ytx_sums;
+//   
+//   summary(int _K, int _V, ivec_d zeta, data* dat);
+//   void complete();
+//   
+// };
+// 
+// summary::summary(int _K, int_V, ivec_d zeta, const data_t &dat): G(_G), K(_K), V(_V), occupied(_K){
+//   
+//   // local allocations
+//   ivec_d perm(G); // will store permutation
+//   thrust::sequence(perm.begin(), perm.end(), 0, 1);
+// 
+//   // sort the key, capturing the permutation to do so in perm
+//   thrust::sort_by_key(zeta.begin(), zeta.end(), perm.begin());
+//   
+//   // identify occupied clusters
+//   ivec_d::iterator last_occ;
+//   
+//   //get unique values of occupied clusters and capture the location of the last one
+//   last_occ = thrust::unique_copy(zeta.begin(), zeta.end(), occupied.begin());
+//   
+//   // resize to ensure that unique_key.size() = number of occupied clusters
+//   occupied.erase(last_occ, occupied.end());
+//   num_occupied = occupied.size();
+//   
+//   //size vectors
+//   Mk.reserve(num_occupied);
+//   yty_sums.reserve(num_occupied);
+//   xty_sums.reserve(num_occupied*V);
+//   ytx_sums.reserve(num_occupied*V);
+//   
+//   // ...
+// }
