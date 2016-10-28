@@ -182,7 +182,7 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
 }
 
 extern"C" SEXP Rtest_summary2(SEXP zeta, SEXP G, SEXP V, SEXP K){
-  int g = INTEGER(G)[0], v = INTEGER(V)[0], int k = INTEGER(K)[0];
+  int g = INTEGER(G)[0], v = INTEGER(V)[0], k = INTEGER(K)[0];
   int *zp = INTEGER(zeta);
   fvec_h yty(g, 1.0);
   fvec_h ytx(g*v, 1.0);
@@ -192,7 +192,7 @@ extern"C" SEXP Rtest_summary2(SEXP zeta, SEXP G, SEXP V, SEXP K){
   double *ytxp = &(ytx[0]);
   double *xtyp = &(xty[0]);
   double *xtxp = &(xtx[0]);
-  data_t data(ytyp, xtyp, ytxp, xtxp, g, v, n);
+  data_t data(ytyp, xtyp, ytxp, xtxp, g, v, 1);
   
   ivec_d ZETA(zp, zp+g);
   summary2 smry(k, v, ZETA, data);
