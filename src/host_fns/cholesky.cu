@@ -2,7 +2,6 @@
 #include <thrust/transform.h>
 #include <thrust/iterator/permutation_iterator.h>
 #include <thrust/iterator/transform_iterator.h>
-#include "../header/iterator.h"
 #include "../header/iter_getter.h"
 
 __host__ __device__ void cholesky(double *A, int n) {
