@@ -15,7 +15,7 @@ struct is_zero: thrust::unary_function<int, bool>{
 };
 
 // zeta passed by value, data passed by reference
-summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_G), K(_K), V(_V), occupied(_K){
+summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_G), K(_K), V(_V), occupied(_K), Mk(_K, 0){
   
   // local allocations
   ivec_d perm(G); // will store permutation
@@ -29,7 +29,6 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_
   num_occupied = occupied.size();
   
   // calculate Mk
-  Mk(K); //call constructor
   thrust::permutation_iterator<intIter, intIter> mapMk = thrust::permutation_iterator<intIter,intIter>(Mk.begin(), occupied.begin());
   thrust::reduce_by_key(zeta.begin(), zeta.end(), thrust::make_constant_iterator<int>(1), thrust::make_discard_iterator(), mapMk);
   
@@ -47,7 +46,7 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_
   /*yty_sums
    *
    */
-  thrust::reduce_by_key(zeta.begin(), zeta.end(), data.yty.begin(), thrust::make_discard_iterator(), data.yty.sums.begin());
+  thrust::reduce_by_key(zeta.begin(), zeta.end(), data.yty.begin(), thrust::make_discard_iterator(), data.yty_sums.begin());
   
   /* ytx_sums
    * 
@@ -56,13 +55,13 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, const data_t &data): G(_
   RSIntIter zeta_rep = getRSIntIter(zeta.begin(), zeta.end(), K);
   // "arrange" data
   RSIntIter in_index = getRSIntIter(perm.begin(),perm.end(), G);
-  thrust::permutation_iterator<realIter, intIter> sort_ytx = permutation_iterator<realIter, intIter>(data.ytx.begin(), in_index);
+  thrust::permutation_iterator<realIter, intIter> sort_ytx = thrust::permutation_iterator<realIter, intIter>(data.ytx.begin(), in_index);
   // reduce
   thrust::reduce_by_key(zeta_rep, zeta_rep + G*V, sort_ytx, thrust::make_discard_iterator(), ytx_sums.begin());
   
   /* xty_sums
   * 
     */
-    transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), xty_sums.begin(), num_occupied, V);
+    transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), num_occupied, V, xty_sums.begin());
   
 }
