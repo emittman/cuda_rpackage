@@ -1,9 +1,4 @@
-#ifndef DISTR_H
-#define DISTR_H
-
-#include "curand_kernel.h"
-#include "thrust/functional.h"
-#include "util/cuda_usage.h"
+#include "../header/distribution.h"
 
 __device__ double rgamma(curandState *state, double a, double b){
 
@@ -40,7 +35,6 @@ __device__ double rbeta(curandState *state,  double a, double b){
   return x/(x+y);
 }
 
-
 __global__ void setup_kernel(curandState *states) {
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
@@ -55,5 +49,3 @@ __global__ void getBeta(curandState *states, double *a, double *b, double *resul
   
   result[id] = rbeta(&(states[id]), a[id], b[id]);
 }
-
-#endif
