@@ -1,5 +1,4 @@
-#include "util/include.h"
-#include "util/cuda_usage.h"
+#include "header/cuda_usage.h"
 #include "header/cholesky.h"
 #include "header/quad_form.h"
 #include "header/summary2.h"

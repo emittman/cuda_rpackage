@@ -12,6 +12,8 @@ DL_FLAGS = -lquadform
 
 TARGET = cudarpackage.so
 
+UTIL_OBJS = util/cuda_usage.o
+
 HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o host_fns/summary2.o host_fns/chain.o\
 host_fns/construct_prec.o host_fns/distribution.o
 
@@ -20,8 +22,9 @@ DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 WRP_OBJS = cudarpackage.o
 
 #final SHLIB
-$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(DL_LIBS)
-	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) -o $(TARGET) -I$(R_INC) -I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS)
+$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS)
+	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) -o $(TARGET) -I$(R_INC)\
+	-I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
@@ -45,6 +48,10 @@ host_fns/construct_prec.o: host_fns/construct_prec.cu
 
 host_fns/distribution.o: host_fns/distribution.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) -lcurand
+
+#util functions
+util/cuda_usage.o: util/cuda_usage.cu
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) -lcudart
 
 #device-linked functions
 dev_link/libquadform.a: dev_link/quad_form.o
