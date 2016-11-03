@@ -44,7 +44,7 @@ host_fns/construct_prec.o: host_fns/construct_prec.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
 
 host_fns/distribution.o: host_fns/distribution.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC)
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) -lcurand
 
 #device-linked functions
 dev_link/libquadform.a: dev_link/quad_form.o

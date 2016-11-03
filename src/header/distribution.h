@@ -2,7 +2,6 @@
 #define DISTR_H
 
 #include "curand_kernel.h"
-#include "thrust/functional.h"
 #include "../util/cuda_usage.h"
 
 __device__ double rgamma(curandState *state, double a, double b);
