@@ -1,20 +1,12 @@
-#ifndef CONSTRUCT_PREC_H
-#define CONSTRUCT_PREC_H
+#include "../header/construct_prec.h"
 
-#include "header/iterator.h"
-#include "header/iter_getter.h"
-
-typedef thrust::tuple<gDiagonal<realIter>::iterator,gRepTimes<realIter>::iterator,gRepEach<realIter>::iterator> diag_tup;
-typedef thrust::zip_iterator<diag_tup> diag_zip;
-typedef thrust::tuple<double &, double &, double &> diag_tup_el;
-
-struct diagAdd{
-  __host__ __device__ void operator()(diag_tup_el Tup){
+__host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup)/thrust::get<2>(Tup);
   }
-};  
 
-void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, realIter lam_end, realIter tau_begin, realIter tau_end, intIter Mk_begin, intIter Mk_end, realIter xtx_begin, realIter xtx_end, int K, int V){
+void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, realIter lam_end,
+                    realIter tau_begin, realIter tau_end, intIter Mk_begin, intIter Mk_end,
+                    realIter xtx_begin, realIter xtx_end, int K, int V){
 
   if(thrust::distance(prec_begin, prec_end) < K*V*V) std::cout <<"DIMENSION MISMATCH!\n";
 
@@ -38,5 +30,3 @@ void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, 
   */
 
 }
-
-#endif

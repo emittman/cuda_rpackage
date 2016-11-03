@@ -1,11 +1,11 @@
 NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
-R_INC = /home/emittman/src/R-3.3.1/builddir/include
+R_INC = ${R_HOME}/include
 LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 DL_LIBS = dev_link/libquadform.a
 DL_PATH = /home/emittman/cuda_rpackage/src/dev_link
 DL_FLAGS = -lquadform
 TARGET = cudarpackage.so
-HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o host_fns/summary2.o host_fns/chain.o
+HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o host_fns/summary2.o host_fns/chain.o host_fns/construct_prec.o
 DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 WRP_OBJS = cudarpackage.o
 
@@ -28,6 +28,9 @@ host_fns/summary2.o: host_fns/summary2.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
 	
 host_fns/chain.o: host_fns/chain.cu
+	nvcc -c $(NVCC_FLAGS) $< -o $@
+
+host_fns/construct_prec.o: host_fns/construct_prec.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
 
 #device-linked functions

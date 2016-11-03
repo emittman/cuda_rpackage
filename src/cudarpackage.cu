@@ -5,8 +5,8 @@
 #include "header/summary2.h"
 #include "header/chain.h"
 #include "header/iterator.h"
+#include "header/construct_prec.h"
 #include "summary_fn.h"
-#include "construct_prec.h"
 #include "distribution.h"
 #include "thrust.h"
 #include <thrust/host_vector.h>
