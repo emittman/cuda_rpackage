@@ -1,6 +1,9 @@
 #ifndef UTIL_CUDA_USAGE_H
 #define UTIL_CUDA_USAGE_H
 
+#include "include.h"
+
+
 #define CUDA_CALL(x) {if((x) != cudaSuccess){ \
   REprintf("CUDA error at %s:%d\n",__FILE__,__LINE__); \
   REprintf("  %s\n", cudaGetErrorString(cudaGetLastError()));}}
