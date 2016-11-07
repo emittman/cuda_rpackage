@@ -6,7 +6,7 @@ LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 
 DL_LIBS = dev_link/libquadform.a
 
-DL_PATH = /home/emittman/cuda_rpackage/src/dev_link
+DL_PATH = ./dev_link
 
 DL_FLAGS = -lquadform
 
