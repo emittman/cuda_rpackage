@@ -2,6 +2,8 @@ NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
 
 R_INC = ${R_HOME}/include
 
+CUDA_PATH = /usr/local/cuda-7.5/lib64
+
 LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 
 DL_LIBS = dev_link/libquadform.a
@@ -24,7 +26,7 @@ WRP_OBJS = cudarpackage.o
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS)
 	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) -o $(TARGET) -I$(R_INC)\
-	-I. -L$(DL_PATH) $(LIBS) $(DL_FLAGS)
+	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
