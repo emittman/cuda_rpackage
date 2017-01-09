@@ -2,7 +2,7 @@ NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
 
 R_INC = ${R_HOME}/include
 
-CUDA_PATH = /usr/local/cuda-7.5/lib64
+CUDA_PATH = /usr/local/cuda-8.0/lib64
 
 LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 
