@@ -159,9 +159,9 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   
   SEXP out = PROTECT(allocVector(VECSXP, 4));
   SEXP OCCo = PROTECT(allocVector(INTSXP, 1));
-  SEXP ytyo = PROTECT(allocVector(REALSXP, smry.num_occupied))
-  SEXP ytxo = PROTECT(allocVector(REALSXP, smry.num_occupied*v))
-  SEXP xtyo = PROTECT(allocVector(REALSXP, smry.num_occupied*v))
+  SEXP ytyo = PROTECT(allocVector(REALSXP, smry.num_occupied));
+  SEXP ytxo = PROTECT(allocVector(REALSXP, smry.num_occupied*v));
+  SEXP xtyo = PROTECT(allocVector(REALSXP, smry.num_occupied*v));
   INTEGER(OCCo)[0] = smry.num_occupied;
   
   for(int i=0; i<num_occupied; ++i){
