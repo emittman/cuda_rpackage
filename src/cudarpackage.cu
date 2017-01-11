@@ -143,10 +143,13 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
 extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEXP V, SEXP K){
   int g = INTEGER(G)[0], v = INTEGER(V)[0], k = INTEGER(K)[0];
   int *zp = INTEGER(zeta);
+  fvec_h yty(REAL(ytyR), REAL(ytyR) + g);
+  fvec_h ytx(REAL(ytxR), REAL(ytxR) + g*v);
+  fvec_h xty(REAL(xtyR), REAL(xtyR) + g*v);
   fvec_h xtx(v*v, 1.0);
-  double *ytyp = REAL(ytyR);
-  double *ytxp = REAL(ytxR);
-  double *xtyp = REAL(xtyR);
+  double *ytyp = &(yty[0]);
+  double *ytxp = &(ytx[0]);
+  double *xtyp = &(xty[0]);
   double *xtxp = &(xtx[0]);
   data_t data(ytyp, xtyp, ytxp, xtxp, g, v, 1);
   
