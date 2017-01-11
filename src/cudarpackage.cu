@@ -153,9 +153,9 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   ivec_d ZETA(zp, zp+g);
   summary2 smry(g, k, v, ZETA, data);
   
-  smry.print_Mk();
+  /*smry.print_Mk();
   smry.print_yty();
-  smry.print_xty();
+  smry.print_xty();*/
   
   SEXP out = PROTECT(allocVector(VECSXP, 4));
   SEXP OCCo = PROTECT(allocVector(INTSXP, 1));

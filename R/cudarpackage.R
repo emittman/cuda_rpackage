@@ -42,12 +42,17 @@ Rmy_reduce = function(vec){
 #' 
 #' @export
 #' @return List a matrix with sums of rows by cluster, table of occupancy counts
-#' @param all matrix of ints (data)
-#' @param key vector of ints
-#' @param num_clusts integer
-Rsummary = function(all, key, num_clusts){
-  out <-.Call("summary_stats", t(all), as.integer(key), as.integer(num_clusts))
-  out[[2]] <- matrix(out[[2]], num_clusts, nrow(all))
+#' @param zeta cluster ids (0, ..., K)
+#' @param yty numeric length G
+#' @param ytx matrix V * G
+#' @param K integer
+#' extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEXP V, SEXP K){
+
+Rsummary = function(zeta, yty, xty, K){
+  if(length(zeta) != length(yty) | length(zeta) != ncol(xty)) stop("input dimensions don't match ")
+  out <-.Call("Rsummary2", as.integer(zeta), as.numeric(yty), as.numeric(t(xty)), as.numeric(xty),
+              as.integer(length(zeta)), as.integer(nrow(xty)), as.integer(K))
+  names(out) <- c("num_occ","yty_sum","ytx_sum","xty_sum")
   return(out)
 }
 
