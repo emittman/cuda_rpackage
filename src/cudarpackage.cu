@@ -143,13 +143,10 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
 extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEXP V, SEXP K){
   int g = INTEGER(G)[0], v = INTEGER(V)[0], k = INTEGER(K)[0];
   int *zp = INTEGER(zeta);
-  fvec_h yty(REAL(ytyR), REAL(ytyR) + g);
-  fvec_h ytx(REAL(ytxR), REAL(ytxR) + g*v);
-  fvec_h xty(REAL(xtyR), REAL(xtyR) + g*v);
   fvec_h xtx(v*v, 1.0);
-  double *ytyp = &(yty[0]);
-  double *ytxp = &(ytx[0]);
-  double *xtyp = &(xty[0]);
+  double *ytyp = REAL(ytyR),;
+  double *ytxp = REAL(ytxR);
+  double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
   data_t data(ytyp, xtyp, ytxp, xtxp, g, v, 1);
   
@@ -160,9 +157,25 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   smry.print_yty();
   smry.print_xty();
   
-  SEXP out = PROTECT(allocVector(INTSXP, 1));
-  INTEGER(out)[0] = smry.num_occupied;
+  SEXP out = PROTECT(allocVector(VECSXP, 4));
+  SEXP OCCo = PROTECT(allocVector(INTSXP, 1));
+  SEXP ytyo = PROTECT(allocVector(REALSXP, smry.num_occupied))
+  SEXP ytxo = PROTECT(allocVector(REALSXP, smry.num_occupied*v))
+  SEXP xtyo = PROTECT(allocVector(REALSXP, smry.num_occupied*v))
+  INTEGER(OCCo)[0] = smry.num_occupied;
   
-  UNPROTECT(1);
+  for(int i=0; i<num_occupied; ++i){
+    REAL(ytyo)[i] = smry.yty_sums[i];
+  }
+  
+  for(int j=0; i<smry.num_occupied*v; ++i){
+    REAL(ytxo)[i] = smry.ytx_sums[i];
+    REAL(xtyo)[i] = smry.xty_sums[i];
+  }
+  SET_VECTOR_ELT(out, 0, OCCo);
+  SET_VECTOR_ELT(out, 1, ytyo);
+  SET_VECTOR_ELT(out, 2, ytxo);
+  SET_VECTOR_ELT(out, 3, xtyo);
+  UNPROTECT(5);
   return out;
 }
