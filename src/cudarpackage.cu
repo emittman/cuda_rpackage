@@ -144,7 +144,7 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   int g = INTEGER(G)[0], v = INTEGER(V)[0], k = INTEGER(K)[0];
   int *zp = INTEGER(zeta);
   fvec_h xtx(v*v, 1.0);
-  double *ytyp = REAL(ytyR),;
+  double *ytyp = REAL(ytyR);
   double *ytxp = REAL(ytxR);
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
