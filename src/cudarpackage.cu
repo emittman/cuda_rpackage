@@ -164,11 +164,11 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   SEXP xtyo = PROTECT(allocVector(REALSXP, smry.num_occupied*v));
   INTEGER(OCCo)[0] = smry.num_occupied;
   
-  for(int i=0; i<num_occupied; ++i){
+  for(int i=0; i<smry.num_occupied; ++i){
     REAL(ytyo)[i] = smry.yty_sums[i];
   }
   
-  for(int j=0; i<smry.num_occupied*v; ++i){
+  for(int i=0; i<smry.num_occupied*v; ++i){
     REAL(ytxo)[i] = smry.ytx_sums[i];
     REAL(xtyo)[i] = smry.xty_sums[i];
   }
