@@ -20,14 +20,12 @@ sums_df <- data.frame(zeta=zeta, yty = yty, t(xty)) %>%
         sum = sum(value)) %>%
   tidyr::spread(key = v, value = sum)
 #Mk <- as.integer(table(zeta))
-names(out) <- c("num_occ","yty_sum","ytx_sum","xty_sum")
 
 outputR <- list(num_occ = length(unique(zeta)), yty_sum = sums_df$yty, ytx_sum = as.matrix(sums_df[,sapply(1:V, function(v) paste(c("X",v), collapse=""))]))
 outputR$xty_sum <- t(outputR$ytx_sum)
 
 outputC <- Rsummary(zeta, yty, xty, K)
   
-
+all(sapply(1:4, function(i) all.equal(outputR[[i]], outputC[[i]])))
   
-(output)
 #first elt should be "[1, 2, 1, 0]"
