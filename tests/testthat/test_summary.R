@@ -28,7 +28,7 @@ outputC <- Rsummary(zeta, yty, xty, K)
   
 test_that("Results are equal", {
   expect_true(all(unlist(sapply(1:4, function(i) sum(abs(outputR[[i]] - outputC[[i]]))<1e-6))
-)
+))
 })
 
   
