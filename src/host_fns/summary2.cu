@@ -46,7 +46,9 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, data_t &data): G(_G), K(
   /*yty_sums
    *
    */
-  thrust::reduce_by_key(zeta.begin(), zeta.end(), data.yty.begin(), thrust::make_discard_iterator(), yty_sums.begin());
+  // "arrange" data
+  thrust::permutation_iterator<realIter, intIter> sort_yty = thrust::permutation_iterator<realIter, intIter>(data.yty.begin(), perm.begin());
+  thrust::reduce_by_key(zeta.begin(), zeta.end(), sort_yty, thrust::make_discard_iterator(), yty_sums.begin());
   
   /* ytx_sums
    * 
