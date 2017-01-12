@@ -42,7 +42,7 @@ Rmy_reduce = function(vec){
 #' 
 #' @export
 #' @return List a matrix with sums of rows by cluster, table of occupancy counts
-#' @param zeta cluster ids (0, ..., K)
+#' @param zeta cluster ids 0,...,K
 #' @param yty numeric length G
 #' @param ytx matrix V * G
 #' @param K integer
