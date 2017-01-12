@@ -1,4 +1,4 @@
-#This should get replaced by a testthat function
+context("Testing cluster summaries")
 
 G <- 100
 N <- 6
@@ -26,6 +26,10 @@ outputR$xty_sum <- t(outputR$ytx_sum)
 
 outputC <- Rsummary(zeta, yty, xty, K)
   
-all(sapply(1:4, function(i) all.equal(outputR[[i]], outputC[[i]])))
+test_that("Results are equal", {
+  expect_true(all(unlist(sapply(1:4, function(i) sum(abs(outputR[[i]] - outputC[[i]]))<1e-6))
+)
+})
+
   
 #first elt should be "[1, 2, 1, 0]"
