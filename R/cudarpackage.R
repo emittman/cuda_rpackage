@@ -46,7 +46,6 @@ Rmy_reduce = function(vec){
 #' @param yty numeric length G
 #' @param ytx matrix V * G
 #' @param K integer
-#' extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEXP V, SEXP K){
 
 Rsummary = function(zeta, yty, xty, K){
   if(length(zeta) != length(yty) | length(zeta) != ncol(xty)) stop("input dimensions don't match ")
