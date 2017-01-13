@@ -1,9 +1,9 @@
 context("Device matrix multiply")
 
 a1 <- 5
-a2 <- 100
+a2 <- 1000
 b1 <- 5
-b2 <- 1000
+b2 <- 10000
 
 A <- matrix(rnorm(a1*a2), a1, a2)
 B <- matrix(rnorm(b1*b2), b1, b2)
