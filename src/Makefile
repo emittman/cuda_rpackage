@@ -24,12 +24,16 @@ DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 WRP_OBJS = cudarpackage.o
 
 #final SHLIB
-$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS)
-	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) -o $(TARGET) -I$(R_INC)\
+$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
+	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) tests.o -o $(TARGET) -I$(R_INC)\
 	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
+
+#tests
+tests.o: tests.cu
 	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 #host functions
