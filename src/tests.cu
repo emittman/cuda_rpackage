@@ -13,8 +13,8 @@ extern "C" void Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
   data_t data(ytyp, xtyp, xtxp, g, v, n);
-  printVec(data.xtx, v, v);
-  printVec(data.xty, v, g);
-  printVec(data.ytx, g, v);
+  //printVec(data.xtx, v, v);
+  //printVec(data.xty, v, g);
+  //printVec(data.ytx, g, v);
 }
 
