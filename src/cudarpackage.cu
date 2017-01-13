@@ -6,6 +6,7 @@
 #include "header/iterator.h"
 #include "header/construct_prec.h"
 #include "header/distribution.h"
+#include "header/cluster_probability.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <R.h>
@@ -177,5 +178,17 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   SET_VECTOR_ELT(out, 2, ytxo);
   SET_VECTOR_ELT(out, 3, xtyo);
   UNPROTECT(5);
+  return out;
+}
+
+extern"C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R, SEXP b2R){
+  int a1 = INTEGER(a1R)[0], a2 = INTEGER(a2R)[0], b1 = INTEGER(b1R)[0], b2 = INTEGER(b2R)[0];
+  fvec_d A(REAL(AR), REAL(AR) + a1*a2), B(REAL(BR), REAL(BR) + b1*b2);
+  fvec_d big_grid(a2*b2);
+  big_matrix_multiply(A, B, big_grid, a1, a2, b1, b2);
+  fvec_h big_grid_h(a2*b2);
+  thrust::copy(big_grid.begin(), big_grid.end(), big_grid_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, a2*b2));
+  for(int i=0; i<a2*b2; ++i) REAL(out)[i] = big_grid_h[i];
   return out;
 }
