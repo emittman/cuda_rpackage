@@ -1,7 +1,7 @@
 #include "header/chain.h"
 #include "header/iterator.h"
 #include "header/printing.h"
-#include "cluster_probability.h"
+#include "header/cluster_probability.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
