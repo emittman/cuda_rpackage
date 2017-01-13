@@ -16,13 +16,10 @@ bxty <- rnorm(G*K)
 
 bxxb <- rnorm(K)
 
-Rout <- unlist(sapply(1:(G*K), function(i){
-  idk <- (i %% K)+1
-  idg <- (floor(i / G))+1
-  sprintf("%d, %d\n", idk, idg)
-  out <- log(pi[idk]) + 0.5 * V*N * log(tau2[idk]) + .05 * tau2[idk] * (yty[idg] - 2*bxty[i] + bxxb[idk])
-  return(out)
-}))
+idk <- rep(1:K, times=G)
+idg <- rep(1:G, each=K)
+Rout <- pi[idk] + tau2[idk] + tau2[idk] * (yty[idg] - 2*bxty[1:(G*K)] + bxxb[idk])
+
 
 Cout <- .Call("Rcluster_weights", bxty, pi, tau2, yty, bxxb, G, V, N, K)
 
