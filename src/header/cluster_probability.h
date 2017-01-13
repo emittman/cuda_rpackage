@@ -8,4 +8,4 @@ void big_matrix_multiply(fvec_d &A, fvec_d &B, fvec_d &big_grid, int a1, int a2,
 
 
 
-#endif CLUST_PROB
+#endif
