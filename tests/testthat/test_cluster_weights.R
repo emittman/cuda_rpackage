@@ -1,9 +1,9 @@
 context("Calculating cluster weights")
 
-G <- 1000
-K <- 1000
-V <- 2
-N <- 3
+G <- as.integer(1000)
+K <- as.integer(1000)
+V <- as.integer(2)
+N <- as.integer(3)
 
 pi <- runif(K)
 pi <- pi/sum(pi)
