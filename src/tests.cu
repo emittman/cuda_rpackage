@@ -13,9 +13,9 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
   double *ytyp = REAL(ytyR);
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
-  data_t data(ytyp, xtyp, ytxp, xtxp, g, v, 1);
+  data_t data(ytyp, xtyp, xtxp, g, v, 1);
   printVec(data.xtx, V, V);
-  printVec(data.xty, V, K);
-  printVec(data.ytx, K, V);
+  printVec(data.xty, V, G);
+  printVec(data.ytx, G, V);
 }
 
