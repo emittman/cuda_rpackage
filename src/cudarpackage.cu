@@ -149,7 +149,7 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   double *ytxp = REAL(ytxR);
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
-  data_t data(ytyp, xtyp, ytxp, xtxp, g, v, 1);
+  data_t data(ytyp, xtyp, xtxp, g, v, 1);
   
   ivec_d ZETA(zp, zp+g);
   summary2 smry(g, k, v, ZETA, data);
