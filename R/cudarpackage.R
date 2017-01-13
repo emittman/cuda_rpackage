@@ -104,3 +104,16 @@ Rquad_form_multi = function(A, x, n, d){
   out <- .Call("Rquad_form_multi", as.numeric(A), as.numeric(x), as.integer(n), as.integer(d))
   return(out)
 }
+
+#' @title Function \code{Rdevice_mmultiply}
+#' @description compute C = t(A) %*% B
+#' @export
+#' @param A k*m
+#' @param B k*n
+Rdevice_mmultiply = function(A, B){
+  m <- as.integer(dim(A)[2])
+  n <- as.integer(dim(B)[2])
+  k <- as.integer(dim(A)[1])
+  out <- .Call("Rdevice_mmultiply", as.numeric(A), as.numeric(B), k, m, k, n)
+}
+  

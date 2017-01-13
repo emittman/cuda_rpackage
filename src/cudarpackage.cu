@@ -190,5 +190,6 @@ extern"C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R,
   thrust::copy(big_grid.begin(), big_grid.end(), big_grid_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, a2*b2));
   for(int i=0; i<a2*b2; ++i) REAL(out)[i] = big_grid_h[i];
+  UNPROTECT(1);
   return out;
 }
