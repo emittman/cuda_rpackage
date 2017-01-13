@@ -5,20 +5,20 @@ K <- as.integer(5)
 V <- as.integer(2)
 N <- as.integer(3)
 
-pi <- runif(K)
-pi <- pi/sum(pi)
+pi <- rep(exp(-.5), K)
+# pi <- pi/sum(pi)
 
-tau2 <- 1/rexp(K)
+tau2 <- rep(1, K)#/rexp(K)
 
-yty <- rnorm(G)
+yty <- rep(1, G)
 
-bxty <- rnorm(G*K)
+bxty <- rep(11, G*K)#rnorm(G*K)
 
-bxxb <- rnorm(K)
+bxxb <- rep(1.1, K) #rnorm(K)
 
 idk <- rep(1:K, times=G)
 idg <- rep(1:G, each=K)
-Rout <- log(pi[idk]) + V*N* tau2[idk] + - 0.5 * tau2[idk] * (yty[idg] - 2*bxty[1:(G*K)] + bxxb[idk])
+Rout <- log(pi[idk]) + V*N* tau2[idk] + tau2[idk] * (yty[idg] - 2*bxty[1:(G*K)] + bxxb[idk])
 
 
 Cout <- .Call("Rcluster_weights", bxty, pi, tau2, yty, bxxb, G, V, N, K)
