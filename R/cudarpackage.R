@@ -115,5 +115,6 @@ Rdevice_mmultiply = function(A, B){
   n <- as.integer(dim(B)[2])
   k <- as.integer(dim(A)[1])
   out <- .Call("Rdevice_mmultiply", as.numeric(A), as.numeric(B), k, m, k, n)
+  dim(out) <- c(m,n)
 }
   

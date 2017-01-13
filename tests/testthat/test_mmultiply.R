@@ -1,7 +1,7 @@
 context("Device matrix multiply")
 
-a1 <- 100
-a2 <- 5
+a1 <- 5
+a2 <- 100
 b1 <- 5
 b2 <- 1000
 
