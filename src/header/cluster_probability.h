@@ -3,7 +3,9 @@
 
 #include "iter_getter.h"
 
-typedef thrust::tuple<fvec_d::iterator,gRepTimes<realIter>::iterator,gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, gRepEach<realIter>::iterator> weight_tup;
+typedef thrust::tuple<fvec_d::iterator,gRepTimes<realIter>::iterator,
+                      gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator,
+                      gRepTimes<realIter>::iterator> weight_tup;
 typedef thrust::zip_iterator<weight_tup> weight_zip;
 typedef thrust::tuple<double &, double &, double &, double&, double&> weight_tup_el;
 
