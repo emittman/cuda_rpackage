@@ -1,7 +1,8 @@
 #ifndef CHAIN_H
 #define CHAIN_H
 
-#include "iterator.h"
+#include "iter_getter.h"
+#include "transpose.h"
 
 struct data_t{
   
@@ -14,8 +15,13 @@ struct data_t{
   int V;
   int N;
   
-  data_t(double* _yty, double* _xty, double* _ytx, double* _xtx, int _G, int _V, int _N);
-
+  data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N): G(_G), V(_V), N(_N){
+    yty = fvec_d(_yty, _yty + G);
+    xty = fvec_d(_xty, _xty + G*V);
+    xtx = fvec_d(_xtx, _xtx + V*V);
+    ytx = fvec_d(G*V);
+    transpose(xty.begin(), xty.end(), V, G, ytx.begin());
+  };
 };
 
 struct priors_t{
