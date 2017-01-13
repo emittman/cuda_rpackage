@@ -52,7 +52,7 @@ host_fns/distribution.o: host_fns/distribution.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) -lcurand
 
 host_fns/big_matrix_multiply.o: host_fns/big_matrix_multiply.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) -lcublas
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 	
 #util functions
 util/cuda_usage.o: util/cuda_usage.cu
