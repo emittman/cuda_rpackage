@@ -11,8 +11,8 @@ yt <- matrix(rnorm(V*N*G), G, N*V)
 yty <- apply(yt, 1, function(g) crossprod(g))
 xty <- sapply(1:nrow(yt), function(r) yt[r,] %*% X)
 
-require(plyr)
-require(dplyr)
+suppressMessages(require(plyr))
+suppressMessages(require(dplyr))
 sums_df <- data.frame(zeta=zeta, yty = yty, t(xty)) %>%
   arrange(zeta) %>%
   tidyr::gather(key = v, value = value, -1) %>%
