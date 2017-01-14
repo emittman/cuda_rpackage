@@ -32,6 +32,10 @@ extern "C" SEXP Rcluster_weights(SEXP A, SEXP B, SEXP C, SEXP D, SEXP E, SEXP G,
   fvec_d c(REAL(C), REAL(C) + k);
   fvec_d d(REAL(D), REAL(D) + g);
   fvec_d e(REAL(E), REAL(E) + k);
+  std::cout << "pi:\n";
+  printVec(b, K, 1);
+  std::cout << "tau2:\n";
+  printVec(c, K, 1);
   cluster_weights(a, b, c, d, e, g, v, n, k);
   thrust::copy(a.begin(), a.end(), a_h.begin());
   SEXP OUT = PROTECT(allocVector(REALSXP, g*k));
