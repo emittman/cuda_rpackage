@@ -50,7 +50,7 @@ extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
   thrust::copy(grd_d.begin(), grd_d.end(), grd_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, g*k));
   for(int i=0; i<k*g; ++i) REAL(out)[i] = grd_h[i];
-  UNPROTECT(out);
+  UNPROTECT(1);
   return out;
 }
 
