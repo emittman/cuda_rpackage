@@ -55,3 +55,31 @@ extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
 }
 
 
+extern "C" SEXP RgetUniform(SEXP upper){
+
+  int n = length(upper);
+
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, n * sizeof(curandState)));
+  
+  //temporary memory
+  fvec_h upper(REAL(upper), REAL(upper) + n);
+  fvec_d upper_d(upper.begin(), upper.end());
+  
+  double *upper_d_ptr = thrust::raw_pointer_cast(upper_d.data());
+    
+  //set up RNGs
+  setup_kernel<<<n,1>>>(devStates);
+  
+  //sample from U(0, upper)
+  getUniform<<<n,1>>>(devStates, upper_d_ptr);
+ 
+  thrust::copy(upper_d.begin(), upper_d.end(), upper.begin());
+  
+  SEXP out = PROTECT(allocVector(REALSXP, n));
+  for(int i = 0; i < n; ++i) REAL(out)[i] = upper_d[i];
+  
+  UNPROTECT(1);
+  return out;
+}

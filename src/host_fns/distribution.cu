@@ -49,3 +49,11 @@ __global__ void getBeta(curandState *states, double *a, double *b, double *resul
   
   result[id] = rbeta(&(states[id]), a[id], b[id]);
 }
+
+__global__ void getUniform(curandState *states, double *upper_result){
+
+  int id = threadIDx.x + blockIdx.x * blockDim.x;
+  
+  upper_result[id] = curand_uniform(&(states[id])) * upper_result[id];
+}
+
