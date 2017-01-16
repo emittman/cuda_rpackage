@@ -4,6 +4,7 @@
 #include "header/printing.h"
 #include "header/cluster_probability.h"
 #include "header/multinomial.h"
+#include "header/distribution.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -56,7 +57,7 @@ extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
 }
 
 
-extern "C" SEXP RgetUniform(SEXP upper){
+extern "C" SEXP RgetUniform(SEXP upperR){
 
   int n = length(upper);
 
@@ -65,7 +66,7 @@ extern "C" SEXP RgetUniform(SEXP upper){
   CUDA_CALL(cudaMalloc((void **) &devStates, n * sizeof(curandState)));
   
   //temporary memory
-  fvec_h upper(REAL(upper), REAL(upper) + n);
+  fvec_h upper(REAL(upperR), REAL(upperR) + n);
   fvec_d upper_d(upper.begin(), upper.end());
   
   double *upper_d_ptr = thrust::raw_pointer_cast(upper_d.data());
