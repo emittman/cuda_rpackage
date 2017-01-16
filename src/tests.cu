@@ -1,3 +1,4 @@
+#include "header/cuda_usage.h"
 #include "header/chain.h"
 #include "header/iterator.h"
 #include "header/printing.h"
