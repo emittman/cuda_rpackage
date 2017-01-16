@@ -59,7 +59,7 @@ extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
 
 extern "C" SEXP RgetUniform(SEXP upperR){
 
-  int n = length(upper);
+  int n = length(upperR);
 
   //instantiate RNGs
   curandState *devStates;

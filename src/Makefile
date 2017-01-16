@@ -24,9 +24,11 @@ DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 
 WRP_OBJS = cudarpackage.o
 
+TEST_OBJS = test.o
+
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
-	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) tests.o -o $(TARGET) -I$(R_INC)\
+	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(TEST_OBJS) -o $(TARGET) -I$(R_INC)\
 	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS)
 
 #wrappers
@@ -79,4 +81,4 @@ dev_link/quad_form.o: dev_link/quad_form.cu
 #make clean
 .PHONY: clean
 clean:
-	rm -f cudarpackage.so $(WRP_OBJS) $(HST_OBJS) $(DEV_OBJS)
+	rm -f cudarpackage.so $(WRP_OBJS) $(HST_OBJS) $(DEV_OBJS) $(TEST_OBJS)
