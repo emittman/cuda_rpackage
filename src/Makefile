@@ -18,7 +18,7 @@ UTIL_OBJS = util/cuda_usage.o
 
 HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o host_fns/summary2.o host_fns/chain.o\
 host_fns/construct_prec.o host_fns/distribution.o host_fns/big_matrix_multiply.o\
-host_fns/cluster_weights.o
+host_fns/cluster_weights.o host_fns/multinomial.o
 
 DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 
@@ -60,6 +60,9 @@ host_fns/big_matrix_multiply.o: host_fns/big_matrix_multiply.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
 	
 host_fns/cluster_weights.o: host_fns/cluster_weights.cu
+	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
+	
+host_fns/multinomial.o: host_fns/multinomial.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
 	
 #util functions
