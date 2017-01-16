@@ -2,6 +2,7 @@
 #include "header/iterator.h"
 #include "header/printing.h"
 #include "header/cluster_probability.h"
+#include "header/multinomial.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -38,6 +39,19 @@ extern "C" SEXP Rcluster_weights(SEXP A, SEXP B, SEXP C, SEXP D, SEXP E, SEXP G,
   for(int i=0; i<g*k; ++i) REAL(OUT)[i] = a_h[i];
   UNPROTECT(1);
   return OUT;
+}
+
+extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
+  int k=INTEGER(dim1)[0], g = INTEGER(dim2)[0];
+  fvec_h grd_h(REAL(grid), REAL(grid) + k*g);
+  fvec_d grd_d(k*g);
+  thrust::copy(grd_h.begin(), grd_h.end(), grd_d.begin());
+  normalize_wts(grd_d, k, g);
+  thrust::copy(grd_d.begin(), grd_d.end(), grd_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, g*k));
+  for(int i=0; i<k*g; ++i) REAL(out)[i] = grd_h[i];
+  UNPROTECT(out);
+  return out;
 }
 
 
