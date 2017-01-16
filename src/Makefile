@@ -24,7 +24,7 @@ DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a
 
 WRP_OBJS = cudarpackage.o
 
-TEST_OBJS = test.o
+TEST_OBJS = tests.o
 
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
