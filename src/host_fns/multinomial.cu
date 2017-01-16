@@ -1,4 +1,4 @@
-#include "header/multinomial.h"
+#include "../header/multinomial.h"
 #include <thrust/scan.h>
 #include <thrust/functional.h>
 
