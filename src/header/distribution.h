@@ -12,6 +12,6 @@ __global__ void setup_kernel(curandState *states);
 
 __global__ void getBeta(curandState *states, double *a, double *b, double *result);
 
-__global__ void getUniform(curandState *states, double *upperbound, double *result);
+__global__ void getUniform(curandState *states, double *upper_result);
                           
 #endif
