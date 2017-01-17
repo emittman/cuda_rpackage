@@ -29,7 +29,7 @@ struct exponential{
     return exp(x);
   }
 
-}
+};
 
 typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
 
