@@ -65,7 +65,7 @@ host_fns/cluster_weights.o: host_fns/cluster_weights.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
 	
 host_fns/multinomial.o: host_fns/multinomial.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 	
 #util functions
 util/cuda_usage.o: util/cuda_usage.cu
