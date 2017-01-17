@@ -85,3 +85,46 @@ extern "C" SEXP RgetUniform(SEXP upperR){
   UNPROTECT(1);
   return out;
 }
+
+extern "C" SEXP Rgnl_multinomial(SEXP probs, SEXP K, SEXP G){
+(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G);
+  int k = INTEGER(K)[0], g = INTEGER(G)[0];
+
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, g * sizeof(curandState)));
+  
+  //temporary memory
+  fvec_h probs_h(REAL(probs), REAL(probs) + g*k);
+  fvec_d probs_d(probs_h.begin(), probs_h.end());
+  ivec_h zeta_h(g);
+  ivec_d zeta_d(g);
+  
+  double *probs_d_ptr = thrust::raw_pointer_cast(probs_d.data());
+  
+  //set up RNGs
+  setup_kernel<<<g,1>>>(devStates);
+  
+  //get multinomial draws
+  gnl_multinomial(zeta_d, probs_d, devStates, k, g);
+ 
+  thrust::copy(probs_d.begin(), probs_d.end(), probs_h.begin());
+  thrust::copy(zeta_d.begin(), zeta_d.end(), zeta_h.begin());
+  
+  SEXP out = PROTECT(allocVector(VECSXP, 2));
+  SEXP out_z = PROTECT(allocVector(INTSXP, g));
+  SEXP out_p = PROTECT(allocVector(REALSXP, k*g));
+  
+  for(int i = 0; i < g; ++i){
+    INTEGER(out_z)[i] = zeta_h[i];
+    for(int j=0; j < k; ++j){
+      REAL(out_p)[i*g + k] = prob_h[i*g + k];
+    }
+  }
+  
+  SET_VECTOR_ELT(out, 0, out_z);
+  SET_VECTOR_ELT(out, 1, out_z);
+  
+  UNPROTECT(3);
+  return out;
+}
