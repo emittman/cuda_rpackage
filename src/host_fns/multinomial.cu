@@ -16,7 +16,11 @@ void normalize_wts(fvec_d &big_grid, int K, int G){
 }
 
 __host__ __device__ void is_greater::operator()(compare_tup_el Tup){
-  thrust::get<2>(Tup) = log(thrust::get<0>(Tup)) > thrust::get<1> ? 1 : 0;
+  if(log(thrust::get<0>(Tup)) > thrust::get<1>){
+    thrust::get<2>(Tup) = 1;
+  } else {
+    thrust::get<2>(Tup) = 0;
+  }
 }
 
 typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
