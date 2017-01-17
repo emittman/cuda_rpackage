@@ -33,6 +33,7 @@ struct exponential{
 
 typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
 
+
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
   normalize_wts(probs, K, G);
   fvec_d u(G);
@@ -40,7 +41,7 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
 
   thrust::copy(strided_iter, strided_iter + G, u.begin());
-  thrust::transform(u.begin(), u.end(), exponential());
+  thrust::transform(u.begin(), u.end(), u.begin(), exponential());
                
   double *u_ptr = thrust::raw_pointer_cast(u.data());
   getUniform<<<G, 1>>>(states, u_ptr);
@@ -51,5 +52,5 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   thrust::for_each(zipped, zipped + K*G, f);
   
   repEachIter colI = getRepEachIter(K, 1);
-  thrust::reduce_by_key(colI, colI + K*G, dummies.begin(), zeta.begin());
+  thrust::reduce_by_key(colI, colI + K*G, dummies.begin(), thrust::make_discard_iterator(), zeta.begin());
 }
