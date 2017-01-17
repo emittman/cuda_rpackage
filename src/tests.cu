@@ -87,7 +87,6 @@ extern "C" SEXP RgetUniform(SEXP upperR){
 }
 
 extern "C" SEXP Rgnl_multinomial(SEXP probs, SEXP K, SEXP G){
-(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G);
   int k = INTEGER(K)[0], g = INTEGER(G)[0];
 
   //instantiate RNGs
@@ -118,7 +117,7 @@ extern "C" SEXP Rgnl_multinomial(SEXP probs, SEXP K, SEXP G){
   for(int i = 0; i < g; ++i){
     INTEGER(out_z)[i] = zeta_h[i];
     for(int j=0; j < k; ++j){
-      REAL(out_p)[i*g + k] = prob_h[i*g + k];
+      REAL(out_p)[i*g + k] = probs_h[i*g + k];
     }
   }
   
