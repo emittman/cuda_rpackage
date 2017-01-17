@@ -1,7 +1,9 @@
 #ifndef MULTINOM
 #define MULTINOM
 
+#include "curand_kernel.h"
 #include "iter_getter.h"
+
 
 struct log_sum_exp{
   __host__ __device__ double operator()(double &x, double &y);
