@@ -25,13 +25,14 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   normalize_wts(probs, K, G);
   fvec_d u(G);
   repTimesIter last_row_iter = getRepTimesIter(G, K);
-  strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), las_row_iter);
+  strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
+  thrust::copy(strided_iter, strided_iter + G, u.begin());
   thrust::copy(thrust::make_transform_iterator(strided_iter, exp<double>()),
                thrust::make_transform_iterator(strided_iter, exp<double>()) + G,
                u.begin());
                
   double *u_ptr = thrust::raw_pointer_cast(u.data());
-  getUniform<<<n, 1>>>(states, u_ptr);
+  getUniform<<<G, 1>>>(states, u_ptr);
   ivec_d dummies(K*G);
   gRepEach<realIter>::iterator u_rep = getGRepEachIter(u.begin(), u.end(), K);
   compare_zip zipped = thrust::zip_iterator<compare_tup>(thrust::make_tuple(u_rep, probs.begin(), dummies.begin()));
