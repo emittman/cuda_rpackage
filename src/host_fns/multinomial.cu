@@ -15,8 +15,6 @@ void normalize_wts(fvec_d &big_grid, int K, int G){
   thrust::inclusive_scan_by_key(key, key + K*G, big_grid.begin(), big_grid.begin(), thrust::equal_to<int>(), f);
 }
 
-__host__ __device__ double expon::operator()(double x)
-
 __host__ __device__ void is_greater::operator()(compare_tup_el Tup){
   if(log(thrust::get<0>(Tup)) > thrust::get<1>(Tup)){
     thrust::get<2>(Tup) = 1;
