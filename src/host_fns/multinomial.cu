@@ -15,6 +15,8 @@ void normalize_wts(fvec_d &big_grid, int K, int G){
   thrust::inclusive_scan_by_key(key, key + K*G, big_grid.begin(), big_grid.begin(), thrust::equal_to<int>(), f);
 }
 
+__host__ __device__ double expon::operator()(double x)
+
 __host__ __device__ void is_greater::operator()(compare_tup_el Tup){
   if(log(thrust::get<0>(Tup)) > thrust::get<1>(Tup)){
     thrust::get<2>(Tup) = 1;
@@ -31,8 +33,8 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   repTimesIter last_row_iter = getRepTimesIter(G, K);
   strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
   thrust::copy(strided_iter, strided_iter + G, u.begin());
-  thrust::copy(thrust::make_transform_iterator(strided_iter, thrust::exp<double>()),
-               thrust::make_transform_iterator(strided_iter, thrust::exp<double>()) + G,
+  thrust::copy(thrust::make_transform_iterator(strided_iter, exp<double>()),
+               thrust::make_transform_iterator(strided_iter, exp<double>()) + G,
                u.begin());
                
   double *u_ptr = thrust::raw_pointer_cast(u.data());
