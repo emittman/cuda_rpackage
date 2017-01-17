@@ -25,11 +25,12 @@ __host__ __device__ void is_greater::operator()(compare_tup_el Tup){
 
 struct exponential{
 
-  __host__ __device double operator()(const double &x){
+  __host__ __device__ double operator()(const double &x){
     return exp(x);
   }
 
 }
+
 typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
 
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
