@@ -13,7 +13,7 @@ void normalize_wts(fvec_d &big_grid, int K, int G);
 
 struct row_index{
   int R, r;
-  row_index(int _R, int _r): R(_R), r(_r){}
+  __host__ __device__ row_index(int _R, int _r): R(_R), r(_r){}
   __host__ __device__ int operator()(int &x){
     return R*x + r;
   }
