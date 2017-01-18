@@ -1,5 +1,6 @@
 #include "../header/multinomial.h"
 #include "../header/distribution.h"
+#include "../header/printing.h"
 #include <thrust/scan.h>
 #include <thrust/reduce.h>
 #include <thrust/functional.h>
