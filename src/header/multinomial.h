@@ -23,7 +23,7 @@ typedef thrust::transform_iterator<row_index, countIter> rowIter;
 
 rowIter getRowIter(int Rows, int row);
 
-typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
+typedef thrust::permutation_iterator<fvec_d::iterator, rowIter> strideIter;
 
 typedef thrust::tuple<gRepEach<realIter>::iterator,
                       fvec_d::iterator,
