@@ -11,7 +11,7 @@ struct log_sum_exp{
 
 void normalize_wts(fvec_d &big_grid, int K, int G);
 
-struct row_index{
+struct row_index: public thrust::unary_function<int, int>{
   int R, r;
   __host__ __device__ row_index(int _R, int _r): R(_R), r(_r){}
   __host__ __device__ int operator()(int &x){
