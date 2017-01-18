@@ -61,9 +61,11 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   getUniform<<<G, 1>>>(states, u_ptr);
   ivec_d dummies(K*G);
   gRepEach<realIter>::iterator u_rep = getGRepEachIter(u.begin(), u.end(), K);
-  compare_zip zipped = thrust::zip_iterator<compare_tup>(thrust::make_tuple(u_rep, probs.begin(), dummies.begin()));
-  thrust::for_each(zipped, zipped + K*G, thrust::greater<double>());
-  
+  /*compare_zip zipped = thrust::zip_iterator<compare_tup>(thrust::make_tuple(u_rep, probs.begin(), dummies.begin()));
+  is_greater f;
+  thrust::for_each(zipped, zipped + K*G, f);
+  */
+  thrust::transform(u_rep, u_rep + K*G, probs.begin(), dummies.begin(), thrust::greater<double>());
   repEachIter colI = getRepEachIter(K, 1);
   thrust::reduce_by_key(colI, colI + K*G, dummies.begin(), thrust::make_discard_iterator(), zeta.begin());
 }
