@@ -35,12 +35,12 @@ __device__ double rbeta(curandState *state,  double a, double b){
   return x/(x+y);
 }
 
-__global__ void setup_kernel(curandState *states) {
+__global__ void setup_kernel(int seed, curandState *states) {
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   /* Each thread gets same seed, a different sequence number, no offset */
     
-    curand_init(1234, id, 0, &states[id]);
+    curand_init(seed, id, 0, &states[id]);
 }
 
 __global__ void getBeta(curandState *states, double *a, double *b, double *result){

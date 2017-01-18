@@ -57,9 +57,9 @@ extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
 }
 
 
-extern "C" SEXP RgetUniform(SEXP upperR){
+extern "C" SEXP RgetUniform(SEXP Rseed, SEXP upperR){
 
-  int n = length(upperR);
+  int n = length(upperR), seed = INTEGER(Rseed)[0];
 
   //instantiate RNGs
   curandState *devStates;
@@ -72,7 +72,7 @@ extern "C" SEXP RgetUniform(SEXP upperR){
   double *upper_d_ptr = thrust::raw_pointer_cast(upper_d.data());
     
   //set up RNGs
-  setup_kernel<<<n,1>>>(devStates);
+  setup_kernel<<<n,1>>>(seed, devStates);
   
   //sample from U(0, upper)
   getUniform<<<n,1>>>(devStates, upper_d_ptr);
@@ -86,8 +86,8 @@ extern "C" SEXP RgetUniform(SEXP upperR){
   return out;
 }
 
-extern "C" SEXP Rgnl_multinomial(SEXP probs, SEXP K, SEXP G){
-  int k = INTEGER(K)[0], g = INTEGER(G)[0];
+extern "C" SEXP Rgnl_multinomial(SEXP Rseed, SEXP probs, SEXP K, SEXP G){
+  int k = INTEGER(K)[0], g = INTEGER(G)[0], seed = INTEGER(Rseed)[0];
 
   //instantiate RNGs
   curandState *devStates;
@@ -102,7 +102,7 @@ extern "C" SEXP Rgnl_multinomial(SEXP probs, SEXP K, SEXP G){
   double *probs_d_ptr = thrust::raw_pointer_cast(probs_d.data());
   
   //set up RNGs
-  setup_kernel<<<g,1>>>(devStates);
+  setup_kernel<<<g,1>>>(seed, devStates);
   
   //get multinomial draws
   gnl_multinomial(zeta_d, probs_d, devStates, k, g);

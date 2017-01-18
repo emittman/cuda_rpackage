@@ -83,9 +83,9 @@ extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, S
   return out_prec;
 }
 
-extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
+extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
 
-  int n = length(a);
+  int n = length(a), seed = INTEGER(Rseed)[0];
 
   //instantiate RNGs
   curandState *devStates;
@@ -105,7 +105,7 @@ extern "C" SEXP Rbeta_rng(SEXP a, SEXP b){
   double *dbptr = thrust::raw_pointer_cast(db.data());
     
   //set up RNGs
-  setup_kernel<<<n,1>>>(devStates);
+  setup_kernel<<<n,1>>>(seed, devStates);
   
   //sample from Beta(a, b)
   getBeta<<<n,1>>>(devStates, daptr, dbptr, outptr);
