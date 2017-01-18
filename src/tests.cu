@@ -117,7 +117,7 @@ extern "C" SEXP Rgnl_multinomial(SEXP probs, SEXP K, SEXP G){
   for(int i = 0; i < g; ++i){
     INTEGER(out_z)[i] = zeta_h[i];
     for(int j=0; j < k; ++j){
-      REAL(out_p)[i*g + k] = probs_h[i*g + k];
+      REAL(out_p)[i*g + j] = probs_h[i*g + j];
     }
   }
   
