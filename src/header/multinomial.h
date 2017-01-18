@@ -11,10 +11,24 @@ struct log_sum_exp{
 
 void normalize_wts(fvec_d &big_grid, int K, int G);
 
+struct row_index{
+  int R, r;
+  row_index(int _R, int _r): R(_R), r(_r){}
+  __host__ __device__ int operator()(int &x){
+    return R*x + r;
+  }
+};
+
+typedef thrust::transform_iterator<row_index, countIter> rowIter;
+
+typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
+
 typedef thrust::tuple<gRepEach<realIter>::iterator,
                       fvec_d::iterator,
                       ivec_d::iterator> compare_tup;
+
 typedef thrust::zip_iterator<compare_tup> compare_zip;
+
 typedef thrust::tuple<double &, double &, int &> compare_tup_el;
 
 struct is_greater{

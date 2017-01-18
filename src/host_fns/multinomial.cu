@@ -32,13 +32,19 @@ struct exponential{
 
 };
 
-typedef thrust::permutation_iterator<fvec_d::iterator, repTimesIter> strideIter;
-
+//Gets an iterator for generating rep(1:len, times=infinity)
+rowIter getRowIter(int Rows, int row){
+  // Row accessor, obj[iter + 1:C] returns obj[row, 1:C]
+  countIter countIt = getCountIter();
+  row_index f(Rows, row);	
+  rowIter rowIt = thrust::transform_iterator<row_index, countIter>(countIt, f);
+  return rowIt;
+}
 
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
   normalize_wts(probs, K, G);
   fvec_d u(G);
-  repTimesIter last_row_iter = getRepTimesIter(G*K, K, thrust::make_counting_iterator(K-1));
+  rowIter last_row_iter = getRowIter(K, K-1);
   thrust::copy(last_row_iter, last_row_iter + G, std::ostream_iterator<int>(std::cout, " "));
   strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
 
