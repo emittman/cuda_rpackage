@@ -43,7 +43,7 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
 
   thrust::copy(strided_iter, strided_iter + G, u.begin());
-  std::cout << "this is colSums:\n"
+  std::cout << "this is colSums:\n";
   printVec(u, G, 1);
   
   thrust::transform(u.begin(), u.end(), u.begin(), exponential());
