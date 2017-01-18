@@ -42,7 +42,10 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
 
   thrust::copy(strided_iter, strided_iter + G, u.begin());
   thrust::transform(u.begin(), u.end(), u.begin(), exponential());
-               
+  
+  std::cout << "this is colSums (?):\n";
+  printVec(u, G, 1);
+  
   double *u_ptr = thrust::raw_pointer_cast(u.data());
   getUniform<<<G, 1>>>(states, u_ptr);
   ivec_d dummies(K*G);
