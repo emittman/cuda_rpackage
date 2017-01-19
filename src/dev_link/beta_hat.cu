@@ -1,5 +1,5 @@
 #include "thrust/device_vector.h"
-#include "thrust/foreach.h""
+#include "thrust/for_each.h""
 #include "../header/beta_hat.h"
 #include "cublas_v2.h"
 
