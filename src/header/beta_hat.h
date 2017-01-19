@@ -4,6 +4,6 @@
 #include "iter_getter.h"
 
 
-void beta_hat(fvec_d &chol_prec, fvec_d &xty, int K_occ, int V);
+void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K_occ, int V);
 
 #endif
