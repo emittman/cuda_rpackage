@@ -15,16 +15,17 @@ struct solve_normal_eq{
     int n=dim, lda=dim, incx=1;
     double *L = thrust::raw_pointer_cast(&(thrust::get<0>(Tup)));
     double *x = thrust::raw_pointer_cast(&(thrust::get<1>(Tup)));
-    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, n, L, x, incx);
-    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, x, incx);
+    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, n, L, lda, x, incx);
+    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, lda, x, incx);
   }
 };
+
 
 void beta_hat(fvec_d &chol_prec, &beta_hat, int K_occ, int V){
   rowIter L_first = getRowIter(V*V, 0);
   rowIter xty_first = getRowIter(V, 0);
-  strideIter L = thrust::permutation_iterator(chol_prec.begin(), L_first);
-  strideIter x = thrust::permutation_iterator(beta_hat.begin(), xty_first);
+  strideIter L = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), L_first);
+  strideIter x = thrust::permutation_iterator<realIter, rowIter>(beta_hat.begin(), xty_first);
   nrml_tuple my_tuple = thrust::make_tuple(L, x);
   thrust::zip_iterator<nrml_tuple> zipped = thrust::zip_iterator<nrml_tuple>(my_tuple);
   solve_normal_eq f(V);
