@@ -1,5 +1,5 @@
 #include "thrust/device_vector.h"
-#include "thrust/for_each.h""
+#include "thrust/for_each.h"
 #include "../header/beta_hat.h"
 #include "cublas_v2.h"
 
@@ -13,10 +13,10 @@ struct solve_normal_eq{
     cublasHandle_t handle;
     cublasCreate_v2(&handle);
     int n=dim, lda=dim, incx=1;
-    double *L = thrust::raw_pointer_cast(&(get<0>(tup)));
-    double *x = thrust::raw_pointer_cast(&(get<1>(tup)));
-    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, n, L, bhat, incx);
-    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, bhat, incx);
+    double *L = thrust::raw_pointer_cast(&(thrust::get<0>(Tup)));
+    double *x = thrust::raw_pointer_cast(&(thrust::get<1>(Tup)));
+    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, n, L, x, incx);
+    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, x, incx);
   }
 };
 
