@@ -5,6 +5,7 @@
 #include "header/cluster_probability.h"
 #include "header/multinomial.h"
 #include "header/distribution.h"
+#include "header/beta_hat.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
