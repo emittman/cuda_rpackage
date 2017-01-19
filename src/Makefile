@@ -6,7 +6,7 @@ CUDA_PATH = /usr/local/cuda-8.0/lib64
 
 LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 
-DL_LIBS = dev_link/libquadform.a
+DL_LIBS = dev_link/libquadform.a dev_link/libbetahat.a
 
 DL_PATH = ./dev_link
 
