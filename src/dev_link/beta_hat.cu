@@ -20,8 +20,7 @@ struct solve_normal_eq{
   }
 };
 
-void beta_hat(fvec_d &chol_prec, fvec_d &xty, fvec &beta_hat, int K_occ, int V){
-  thrust::copy(xty.begin(), xty.end(), beta_hat.begin());
+void beta_hat(fvec_d &chol_prec, &beta_hat, int K_occ, int V){
   rowIter L_first = getRowIter(V*V, 0);
   rowIter xty_first = getRowIter(V, 0);
   strideIter L = thrust::permutation_iterator(chol_prec.begin(), L_first);

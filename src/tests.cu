@@ -127,3 +127,18 @@ extern "C" SEXP Rgnl_multinomial(SEXP Rseed, SEXP probs, SEXP K, SEXP G){
   UNPROTECT(3);
   return out;
 }
+
+extern "C" SEXP Rbeta_hat(SEXP R_Lvec, SEXP R_xty, SEXP K, SEXP V){
+  int k=INTEGER(K)[0], v=INTEGER(V)[0];
+  fvec_h L_h(REAL(R_Lvec), REAL(R_Lvec)+k*v*v), b_h(REAL(R_xty), REAL(R_xty)+k*v);
+  fvec_d L_d(k*v*v);
+  fvec_d b_d(k*v);
+  thrust::copy(L_h.begin(), L_h.end(), L_d.begin());
+  thrust::copy(b_h.begin(), b_h.end(), b_d.begin());
+  beta_hat(L_d, b_d, k, v);
+  thrust::copy(b_d.begin(), b_d.end(), b_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, k*v));
+  for(int i=0; i<k*v; ++i) REAL(out)[i] = b_h[i];
+  UNPROTECT(1);
+  return out;
+}
