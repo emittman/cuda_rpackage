@@ -6,7 +6,7 @@
 typedef thrust::tuple<strideIter, strideIter> nrml_tuple;
 typedef thrust::tuple<double &, double &> nrml_eltup;
 
-struct solve_normal_eq{
+struct solve_normal_eq: public thrust::unary_function<nrml_eltup, void> {
   int dim;
   __host__ __device__ solve_normal_eq(int _dim): dim(_dim){}
   __host__ __device__ void operator()(nrml_eltup &Tup){

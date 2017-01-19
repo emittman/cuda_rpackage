@@ -81,7 +81,7 @@ struct row_index: public thrust::unary_function<int, int>{
 };
 
 typedef thrust::transform_iterator<row_index, countIter> rowIter;
-typedef thrust::permutation_iterator<fvec_d::iterator, rowIter> strideIter;
+typedef thrust::permutation_iterator<realIter, rowIter> strideIter;
 
 
 
