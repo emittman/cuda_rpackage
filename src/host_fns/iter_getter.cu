@@ -22,6 +22,13 @@ repEachIter getRepEachIter(int len, int incr, countIter countIt){
   return repIt;
 }
 
+rowIter getRowIter(int Rows, int row){
+  // Row accessor, obj[iter + 1:C] returns obj[row, 1:C]
+  countIter countIt = getCountIter();
+  row_index f(Rows, row);	
+  rowIter rowIt = thrust::transform_iterator<row_index, countIter>(countIt, f);
+  return rowIt;
+}
 
 /* *******************
 /* Use for creating key in reduce by key where what is needed are "row sums"

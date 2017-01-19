@@ -29,6 +29,8 @@ typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr
   return gRep;
 }
 
+//Gets an iterator for accessing rows of a matrix
+rowIter getRowIter(int Rows, int row);
 
 
 // Use for creating key in reduce by key where what is needed are "row sums"

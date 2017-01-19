@@ -66,6 +66,25 @@ struct gRepEach{
   typedef thrust::permutation_iterator<T, repEachIter> iterator;
 };
 
+
+/************
+ *  Row indices and row accessor (for colmajor matrix)
+ *  R = number of rows
+ *  r = given row
+ */
+struct row_index: public thrust::unary_function<int, int>{
+  int R, r;
+  __host__ __device__ row_index(int _R, int _r): R(_R), r(_r){}
+  __host__ __device__ int operator()(int &x){
+    return R*x + r;
+  }
+};
+
+typedef thrust::transform_iterator<row_index, countIter> rowIter;
+typedef thrust::permutation_iterator<fvec_d::iterator, rowIter> strideIter;
+
+
+
 /*************************
  * The main function is getRSIntIter which is equivalent to
  * rep(X, times) + rep(1:cols, each=colsize) * colsize
