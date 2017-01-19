@@ -17,9 +17,9 @@ struct solve_normal_eq: thrust::unary_function<nrml_eltup, void>{
     double *x = thrust::raw_pointer_cast(&(thrust::get<1>(Tup)));
     cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_N, CUBLAS_DIAG_NON_UNIT, n, L, lda, x, incx);
     cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, lda, x, incx);
+    cublasDestroy_v2(handle);
   }
 };
-
 
 void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K_occ, int V){
   rowIter L_first = getRowIter(V*V, 0);
