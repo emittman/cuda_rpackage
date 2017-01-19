@@ -3,7 +3,7 @@
 #include "../header/beta_hat.h"
 #include "cublas_v2.h"
 
-typedef thrust::tuple<rowIter, rowIter> nrml_tuple;
+typedef thrust::tuple<strideIter, strideIter> nrml_tuple;
 typedef thrust::tuple<double &, double &> nrml_eltup;
 
 struct solve_normal_eq{
