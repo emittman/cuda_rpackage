@@ -6,7 +6,7 @@ int main(){
 
   using namespace thrust::placeholders;
 
-  int rows = 6, cols = 10
+  int rows = 6, cols = 10;
   
   fvec_h mat_h(rows*cols);
   thrust::sequence(mat_h.begin(), mat_h.end());
