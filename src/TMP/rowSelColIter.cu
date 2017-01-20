@@ -32,7 +32,10 @@ int main(){
   std::cout << "Matrix:\n";
   printVec(mat_h, rows, cols);
   
-  std::cout << "\nUsing explicit:\n";
+  std::cout << "\nUsing explicit iterator types:\n";
+  
+  std::cout << "\n to capture first element in columns:\n";
+  printVec(sel_cols, 3, 1);
   
   gSFRIter<realIter>::iterator firstElem = getGSFRIter(mat_d.begin(), mat_d.end(), selCols, rows);
   
