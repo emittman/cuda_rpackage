@@ -1,7 +1,7 @@
-#include "../header/iter_getter.h"
 #include <thrust/sequence.h>
 #include <thrust/functional.h>
 #include "../header/printing.h"
+#include "../header/iter_getter.h"
 #include <thrust/random/linear_congruential_engine.h>
 #include <thrust/random/uniform_real_distribution.h>
 
@@ -13,9 +13,9 @@ struct skip{
     }
 };
 
-typename thrust::transform_iterator<skip, intIter> skipIter;
+typename thrust::transform_iterator<skip, ivec_h::iterator> skipIter;
   
-typename thrust::permutation_iterator<realIter, skipIter> firstIter;
+typename thrust::permutation_iterator<fvec_h::iterator, skipIter> firstIter;
 
 int main(){
 
@@ -50,8 +50,8 @@ int main(){
   std::cout << "\nUsing explicit:\n";
   
   skip f(rows);
-  skipIter firstIndex = thrust::transform_iterator<skip, intIter>(sel_cols.begin(), f);
-  firstIter firstElem = thrust::permutation_iterator<realIter, skipIter>(mat_h.begin(), firstIndex);
+  skipIter firstIndex = thrust::transform_iterator<skip, ivec_h::iterator>(sel_cols.begin(), f);
+  firstIter firstElem = thrust::permutation_iterator<fvec_h::iterator, skipIter>(mat_h.begin(), firstIndex);
 
   thrust::copy(firstElem, firstElem + sel_cols.length(), std::ostream_iterator<double>(std::cout, " "));
 
