@@ -38,7 +38,7 @@ template<typename T>
 typename gSFRIter<T>::iterator getGSFRIter(const T &first, const T &last, ivec_d &selCols, int rows, int row=0){
   row_index f(rows, row);
   SFRIter Index = thrust::transform_iterator<row_index, ivec_d::iterator>(selCols.begin(), f);
-  typename gSFRIter<T>::iterator Elem = thrust::permutation_iterator<T, SFRiter>(first, Index);
+  typename gSFRIter<T>::iterator Elem = thrust::permutation_iterator<T, SFRIter>(first, Index);
   return Elem;
 }
 
