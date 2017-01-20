@@ -87,7 +87,7 @@ typedef thrust::permutation_iterator<realIter, rowIter> strideIter;
 
 // Access a subset of elements from a given row
 
-typedef thrust::transform_iterator<row_index, ivec_h::iterator> SFRIter;
+typedef thrust::transform_iterator<row_index, ivec_d::iterator> SFRIter;
 
 template<typename T>
 struct gSFRIter{

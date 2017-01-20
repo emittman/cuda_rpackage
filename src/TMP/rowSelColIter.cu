@@ -29,9 +29,12 @@ int main(){
   ivec_d selCols(sel_cols);
   fvec_d mat_d(mat_h);
   
+  std::cout << "Matrix:\n";
+  printVec(mat_h, rows, cols);
+  
   std::cout << "\nUsing explicit:\n";
   
-  gSFRIter<fvec_h::iterator>::iterator firstElem = getGSFRIter(mat_d.begin(), mat_d.end(), selCols, rows);
+  gSFRIter<realIter>::iterator firstElem = getGSFRIter(mat_d.begin(), mat_d.end(), selCols, rows);
   
   thrust::copy(firstElem, firstElem + selCols.size(), std::ostream_iterator<double>(std::cout, " "));
 
