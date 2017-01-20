@@ -5,7 +5,7 @@
 #include <thrust/random/linear_congruential_engine.h>
 #include <thrust/random/uniform_real_distribution.h>
 
-struct skip{
+struct skip:  public thrust::unary_function<int, int>{
     int s;
     __host__ __device__ skip(int s): s(s){}
     __host__ __device__ int operator()(int i){
