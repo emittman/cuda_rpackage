@@ -32,7 +32,16 @@ int main(){
 
   printVec(mat_h, rows, cols);
     
+  std::cout << "\nUsing auto:\n";
   thrust::copy(iter, iter + 3, std::ostream_iterator<double>(std::cout, " "));
+
+  std::cout << "\nUsing gRepTimesIter:\n";
+
+  typename thrust::permutation_iterator<realIter, gRepTimes<double>::iterator> type2;
+  gRepTimes<double>::iterator grtiter = getGRepTimesIter(sel_cols.begin(), sel_cols.end(), 3, rows);
+  
+  type2 alt_iter = make_permutation_iterator(mat_h.begin(), grtiter);
+  thrust::copy(alt_iter, alt_iter + 3, std::ostream_iterator<double>(std::cout, " "));
 
   return 0;
 }
