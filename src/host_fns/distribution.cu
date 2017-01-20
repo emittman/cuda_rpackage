@@ -57,3 +57,9 @@ __global__ void getUniform(curandState *states, double *upper_result){
   upper_result[id] = curand_uniform(&(states[id])) * upper_result[id];
 }
 
+__global__ void getNormal( curandState *states, double *result)
+{
+  int id = threadIdx.x + blockIdx.x * blockDim.x;
+  
+  result[id] = curand_normal(&(states[id]))
+}

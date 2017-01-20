@@ -14,4 +14,7 @@ __global__ void getBeta(curandState *states, double *a, double *b, double *resul
 
 __global__ void getUniform(curandState *states, double *upper_result);
                           
+__global__ void getNormal(curandState *states, double *result);
+
+
 #endif
