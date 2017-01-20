@@ -41,7 +41,7 @@ int main(){
     int s;
     __host__ __device__ skip(int s): s(s){}
     __host__ __device__ int operator()(int i){
-      return i*s
+      return i*s;
     }
   };
   
