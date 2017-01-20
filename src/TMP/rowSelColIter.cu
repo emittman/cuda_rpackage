@@ -43,7 +43,8 @@ int main(){
     __host__ __device__ int operator()(int i){
       return i*s
     }
-  }
+  };
+  
   typename thrust::transform_iterator<skip, intIter> skipIter;
   typename thrust::permutation_iterator<realIter, skipIter> firstIter;
   
