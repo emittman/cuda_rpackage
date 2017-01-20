@@ -37,7 +37,7 @@ int main(){
   sel_cols[0] = 0;
   sel_cols[1] = 3;
   sel_cols[2] = 9;
-  
+  /*
   auto iter = thrust::make_permutation_iterator(mat_h.begin(),
     thrust::make_permutation_iterator(thrust::make_counting_iterator(0),
       thrust::make_transform_iterator(sel_cols.begin(), _1 * rows)));
@@ -46,7 +46,7 @@ int main(){
     
   std::cout << "\nUsing auto:\n";
   thrust::copy(iter, iter + 3, std::ostream_iterator<double>(std::cout, " "));
-
+*/
   std::cout << "\nUsing explicit:\n";
   
   skip f(rows);
