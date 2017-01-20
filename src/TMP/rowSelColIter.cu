@@ -53,7 +53,7 @@ int main(){
   skipIter firstIndex = thrust::transform_iterator<skip, ivec_h::iterator>(sel_cols.begin(), f);
   firstIter firstElem = thrust::permutation_iterator<fvec_h::iterator, skipIter>(mat_h.begin(), firstIndex);
 
-  thrust::copy(firstElem, firstElem + sel_cols.length(), std::ostream_iterator<double>(std::cout, " "));
+  thrust::copy(firstElem, firstElem + sel_cols.size(), std::ostream_iterator<double>(std::cout, " "));
 
   return 0;
 }
