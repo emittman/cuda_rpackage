@@ -15,14 +15,19 @@ struct skip:  public thrust::unary_function<int, int>{
 
 typedef thrust::transform_iterator<skip, ivec_h::iterator> skipIter;
   
-typedef thrust::permutation_iterator<fvec_h::iterator, skipIter> firstIterD;
+template<typename T>
+struct gFirstIter{
+  typedef thrust::permutation_iterator<T, skipIter> iterator;
+};
 
-firstIterD getFirstIterD(fvec_h &mat, ivec_h &selCols, int rows){
+template<typename T>
+typename gFirstIter<T>::iterator getGFirstIter(const T &first, const T &last, ivec_h &selCols, int rows, countIter countIt = getCountIter()){
   skip f(rows);
   skipIter firstIndex = thrust::transform_iterator<skip, ivec_h::iterator>(selCols.begin(), f);
-  firstIterD firstElem = thrust::permutation_iterator<fvec_h::iterator, skipIter>(mat.begin(), firstIndex);
+  typename gFirstIter<T>::iterator firstElem = thrust::permutation_iterator<T, skipIter>(mat.begin(), firstIndex);
   return firstElem;
 }
+
 
 int main(){
 
@@ -56,7 +61,7 @@ int main(){
 */
   std::cout << "\nUsing explicit:\n";
   
-  firstIterD firstElem = getFirstIterD(mat_h, sel_cols, rows);
+  gFirstIter<fvec_h::iterator>::iterator firstElem = getGFirstIter(mat_h.begin(), mat_h.end(), sel_cols, rows);
   
   thrust::copy(firstElem, firstElem + sel_cols.size(), std::ostream_iterator<double>(std::cout, " "));
 
