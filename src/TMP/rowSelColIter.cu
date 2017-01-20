@@ -5,6 +5,13 @@
 #include <thrust/random/linear_congruential_engine.h>
 #include <thrust/random/uniform_real_distribution.h>
 
+struct skip{
+    int s;
+    __host__ __device__ skip(int s): s(s){}
+    __host__ __device__ int operator()(int i){
+      return i*s;
+    }
+};
 
 typename thrust::transform_iterator<skip, intIter> skipIter;
   
@@ -41,16 +48,6 @@ int main(){
   thrust::copy(iter, iter + 3, std::ostream_iterator<double>(std::cout, " "));
 
   std::cout << "\nUsing explicit:\n";
-  
-  struct skip{
-    int s;
-    __host__ __device__ skip(int s): s(s){}
-    __host__ __device__ int operator()(int i){
-      return i*s;
-    }
-  };
-  
-
   
   skip f(rows);
   skipIter firstIndex = thrust::transform_iterator<skip, intIter>(sel_cols.begin(), f);
