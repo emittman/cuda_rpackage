@@ -24,7 +24,7 @@ template<typename T>
 typename gFirstIter<T>::iterator getGFirstIter(const T &first, const T &last, ivec_h &selCols, int rows, countIter countIt = getCountIter()){
   skip f(rows);
   skipIter firstIndex = thrust::transform_iterator<skip, ivec_h::iterator>(selCols.begin(), f);
-  typename gFirstIter<T>::iterator firstElem = thrust::permutation_iterator<T, skipIter>(mat.begin(), firstIndex);
+  typename gFirstIter<T>::iterator firstElem = thrust::permutation_iterator<T, skipIter>(first, firstIndex);
   return firstElem;
 }
 
