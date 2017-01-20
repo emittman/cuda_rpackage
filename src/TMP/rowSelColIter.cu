@@ -35,12 +35,23 @@ int main(){
   std::cout << "\nUsing auto:\n";
   thrust::copy(iter, iter + 3, std::ostream_iterator<double>(std::cout, " "));
 
-  std::cout << "\nUsing gRepTimesIter:\n";
-
-  gRepTimes<int>::iterator grtiter = getGRepTimesIter(sel_cols.begin(), sel_cols.end(), 3, rows);
+  std::cout << "\nUsing explicit:\n";
   
-  thrust::permutation_iterator<realIter, gRepTimes<int>::iterator> alt_iter = thrust::permutation_iterator<realIter, gRepTimes<int>::iterator>(mat_h.begin(), grtiter);
-  thrust::copy(alt_iter, alt_iter + 3, std::ostream_iterator<double>(std::cout, " "));
+  struct skip{
+    int s;
+    __host__ __device__ skip(int s): s(s){}
+    __host__ __device__ int operator()(int i){
+      return i*s
+    }
+  }
+  typename thrust::transform_iterator<skip, intIter> skipIter;
+  typename thrust::permutation_iterator<realIter, skipIter> firstIter;
+  
+  skip f(rows);
+  skipIter firstIndex = thrust::transform_iterator<skip, intIter>(sel_cols.begin(), f);
+  firstIter firstElem = thrust::permutation_iterator<realIter, skipIter>(mat_h.begin(), firstIndex);
+
+  thrust::copy(firstElem, firstElem + sel_cols.length(), std::ostream_iterator<double>(std::cout, " "));
 
   return 0;
 }

@@ -10,7 +10,7 @@ countIter getCountIter();
 repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter());
 //Gets an iterator for generating rep(arb_seq, times=infinity)
 template<typename T>
-typename gRepTimes<T>::iterator getGRepTimesIter(const T begin, const T end, int len, int incr=1, countIter countIt = getCountIter()){
+typename gRepTimes<T>::iterator getGRepTimesIter(const T &begin, const T &end, int len, int incr=1, countIter countIt = getCountIter()){
   // repeats arbitrary vector, possibly strided
   repTimesIter cyc = getRepTimesIter(len, incr, countIt);
   typename gRepTimes<T>::iterator gRep = thrust::permutation_iterator<T, repTimesIter>(begin, cyc);
