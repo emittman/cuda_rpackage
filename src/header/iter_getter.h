@@ -33,6 +33,15 @@ typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr
 rowIter getRowIter(int Rows, int row);
 
 
+//Gets an iterator for select elements of a given row of a matrix
+template<typename T>
+typename gSFRIter<T>::iterator getGSFRIter(const T &first, const T &last, ivec_d &selCols, int rows, int row=0){
+  row_index f(rows, row);
+  SFRIter Index = thrust::transform_iterator<row_index, ivec_d::iterator>(selCols.begin(), f);
+  typename gSFRowIter<T>::iterator Elem = thrust::permutation_iterator<T, rowIter>(first, Index);
+  return Elem;
+}
+
 // Use for creating key in reduce by key where what is needed are "row sums"
 //Call function when you want to iterate over a key adding a constant increment each iteration
 // "RS" = "repeated shifted"

@@ -80,10 +80,19 @@ struct row_index: public thrust::unary_function<int, int>{
   }
 };
 
+// Access a given row
+
 typedef thrust::transform_iterator<row_index, countIter> rowIter;
 typedef thrust::permutation_iterator<realIter, rowIter> strideIter;
 
+// Access a subset of elements from a given row
 
+typedef thrust::transform_iterator<row_index, ivec_h::iterator> SFRIter;
+
+template<typename T>
+struct gSFRIter{
+  typedef thrust::permutation_iterator<T, rowIter> iterator;
+};
 
 /*************************
  * The main function is getRSIntIter which is equivalent to
