@@ -13,9 +13,9 @@ struct skip:  public thrust::unary_function<int, int>{
     }
 };
 
-typename thrust::transform_iterator<skip, ivec_h::iterator> skipIter;
+typedef thrust::transform_iterator<skip, ivec_h::iterator> skipIter;
   
-typename thrust::permutation_iterator<fvec_h::iterator, skipIter> firstIter;
+typedef thrust::permutation_iterator<fvec_h::iterator, skipIter> firstIter;
 
 int main(){
 
