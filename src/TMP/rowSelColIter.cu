@@ -5,6 +5,11 @@
 #include <thrust/random/linear_congruential_engine.h>
 #include <thrust/random/uniform_real_distribution.h>
 
+
+typename thrust::transform_iterator<skip, intIter> skipIter;
+  
+typename thrust::permutation_iterator<realIter, skipIter> firstIter;
+
 int main(){
 
   using namespace thrust::placeholders;
@@ -45,8 +50,7 @@ int main(){
     }
   };
   
-  typename thrust::transform_iterator<skip, intIter> skipIter;
-  typename thrust::permutation_iterator<realIter, skipIter> firstIter;
+
   
   skip f(rows);
   skipIter firstIndex = thrust::transform_iterator<skip, intIter>(sel_cols.begin(), f);
