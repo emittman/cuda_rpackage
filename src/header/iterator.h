@@ -91,7 +91,7 @@ typedef thrust::transform_iterator<row_index, ivec_d::iterator> SFRIter;
 
 template<typename T>
 struct gSFRIter{
-  typedef thrust::permutation_iterator<T, rowIter> iterator;
+  typedef thrust::permutation_iterator<T, SFRIter> iterator;
 };
 
 /*************************
