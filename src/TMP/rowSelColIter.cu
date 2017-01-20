@@ -1,8 +1,9 @@
 #include "../header/iter_getter.h"
 #include <thrust/sequence.h>
 #include <thrust/functional.h>
-#include "../header/distribution.h"
 #include "../header/printing.h"
+#include <thrust/random/linear_congruential_engine.h>
+#include <thrust/random/uniform_real_distribution.h>
 
 int main(){
 
@@ -10,16 +11,15 @@ int main(){
 
   int rows = 6, cols = 10;
   
-  fvec_d mat_d(rows*cols);
+  // create a minstd_rand object to act as our source of randomness
+  thrust::minstd_rand rng;
+  // create a uniform_real_distribution to produce floats from [-7,13)
+  thrust::uniform_real_distribution<float> dist(-3,3);
+  // write a random number from the range [-7,13) to standard output
   
-  //instantiate RNGs
-  curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, rows*cols * sizeof(curandState)));
   
-  getNormal<<<rows,cols>>>(devStates, thrust::raw_pointer_cast(mat_d.data()));
-
   fvec_h mat_h(rows*cols);
-  thrust::copy(mat_d.begin(), mat_d.end(), mat_h.begin());
+  for(int i=0; i<rows*cols; ++i) mat_h[i] = dist(rng);
   
   ivec_h sel_cols(3);
   sel_cols[0] = 0;
