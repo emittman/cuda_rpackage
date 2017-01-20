@@ -39,8 +39,8 @@ int main(){
 
   gRepTimes<int>::iterator grtiter = getGRepTimesIter(sel_cols.begin(), sel_cols.end(), 3, rows);
   
-  thrust::permutation_iterator<realIter, gRepTimes<int>::iterator> alt_iter = make_permutation_iterator(mat_h.begin(), grtiter);
-  thrust::copy(aiter, alt_iter + 3, std::ostream_iterator<double>(std::cout, " "));
+  thrust::permutation_iterator<realIter, gRepTimes<int>::iterator> alt_iter = thrust::permutation_iterator<realIter, gRepTimes<int>::iterator>(mat_h.begin(), grtiter);
+  thrust::copy(alt_ter, alt_iter + 3, std::ostream_iterator<double>(std::cout, " "));
 
   return 0;
 }
