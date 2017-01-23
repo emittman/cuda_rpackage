@@ -6,6 +6,7 @@
 #include "header/multinomial.h"
 #include "header/distribution.h"
 #include "header/beta_hat.h"
+#include "header/wrap_R.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -140,6 +141,16 @@ extern "C" SEXP Rbeta_hat(SEXP R_Lvec, SEXP R_xty, SEXP K, SEXP V){
   thrust::copy(b_d.begin(), b_d.end(), b_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, k*v));
   for(int i=0; i<k*v; ++i) REAL(out)[i] = b_h[i];
+  UNPROTECT(1);
+  return out;
+}
+
+
+extern "C" SEXP Rtest_data_wrap(SEXP Rdata){
+  data_t data = Rdata_wrap(Rdata);
+  printVec(data.ytx, G, V);
+  SEXP out = PROTECT(allocVector(INTSXP, 1));
+  INTEGER(out)[0] = 0;
   UNPROTECT(1);
   return out;
 }
