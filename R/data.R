@@ -49,5 +49,5 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
   if(alpha<=0) stop("alpha must be positive!")
   if(a<=0) stop("a must be postive!")
   if(b<=0) stop("b must be postive!")
-  list(K, prior_mean, 1/prior_sd^2, alpha, a, b)
+  list(K, V = as.integer(length(prior_mean)), prior_mean, 1/prior_sd^2, alpha, a, b)
 }
