@@ -204,4 +204,9 @@ extern "C" SEXP Rdata_wrap(SEXP Rdata){
       N = INTEGER(VECTOR_ELT(Rdata, 5))[0];
   data_t data(yty, xty, xtx, G, V, N);
   printVec(data.ytx, G, V);
+  
+  SEXP out = PROTECT(allocVector(INTSXP, 1));
+  out[0] = 0;
+  UNPROTECT(1);
+  return out;
 }
