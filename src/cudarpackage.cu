@@ -7,6 +7,7 @@
 #include "header/construct_prec.h"
 #include "header/distribution.h"
 #include "header/cluster_probability.h"
+#include "header/printing.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <R.h>
@@ -181,7 +182,7 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   return out;
 }
 
-extern"C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R, SEXP b2R){
+extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R, SEXP b2R){
   int a1 = INTEGER(a1R)[0], a2 = INTEGER(a2R)[0], b1 = INTEGER(b1R)[0], b2 = INTEGER(b2R)[0];
   fvec_d A(REAL(AR), REAL(AR) + a1*a2), B(REAL(BR), REAL(BR) + b1*b2);
   fvec_d big_grid(a2*b2);
@@ -192,4 +193,15 @@ extern"C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R,
   for(int i=0; i<a2*b2; ++i) REAL(out)[i] = big_grid_h[i];
   UNPROTECT(1);
   return out;
+}
+
+extern "C" SEXP Rdata_wrap(SEXP Rdata){
+  double *yty = REAL(VECTOR_ELT(Rdata, 0)),
+         *xty = REAL(VECTOR_ELT(Rdata, 1)),
+         *xtx = REAL(VECTOR_ELT(Rdata, 2));
+  int G = INTEGER(VECTOR_ELT(Rdata, 3)),
+      V = INTEGER(VECTOR_ELT(Rdata, 4)),
+      N = INTEGER(VECTOR_ELT(Rdata, 5));
+  data_t data(yty, xty, xtx, G, V, N);
+  printVec(data.ytx, G, V);
 }
