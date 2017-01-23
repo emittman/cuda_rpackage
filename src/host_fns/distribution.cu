@@ -61,5 +61,5 @@ __global__ void getNormal( curandState *states, double *result)
 {
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
-  result[id] = curand_normal(&(states[id]))
+  result[id] = curand_normal(&(states[id]));
 }
