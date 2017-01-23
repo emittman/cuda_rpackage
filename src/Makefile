@@ -36,7 +36,7 @@ cudarpackage.o: cudarpackage.cu
 	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 host_fns/wrap_R.o: host_fns/wrap_R.cu
-	nvcc -c $(NVCC_FLAGS) $< I$(R_INC) -o $@
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 #tests
 tests.o: tests.cu
