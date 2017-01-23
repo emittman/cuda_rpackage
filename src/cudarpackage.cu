@@ -206,7 +206,7 @@ extern "C" SEXP Rdata_wrap(SEXP Rdata){
   printVec(data.ytx, G, V);
   
   SEXP out = PROTECT(allocVector(INTSXP, 1));
-  out[0] = 0;
+  INTEGER(out)[0] = 0;
   UNPROTECT(1);
   return out;
 }
