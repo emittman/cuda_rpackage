@@ -148,7 +148,7 @@ extern "C" SEXP Rbeta_hat(SEXP R_Lvec, SEXP R_xty, SEXP K, SEXP V){
 
 extern "C" SEXP Rtest_data_wrap(SEXP Rdata){
   data_t data = Rdata_wrap(Rdata);
-  printVec(data.ytx, G, V);
+  printVec(data.ytx, data.G, data.V);
   SEXP out = PROTECT(allocVector(INTSXP, 1));
   INTEGER(out)[0] = 0;
   UNPROTECT(1);
