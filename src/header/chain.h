@@ -20,6 +20,7 @@ struct data_t{
 
 struct priors_t{
   
+  int K;
   int V;
   fvec_d mu0;
   fvec_d lambda2;
@@ -27,7 +28,7 @@ struct priors_t{
   double a;
   double b;
   
-  priors_t(int _V, double* _mu0, double* _lambda2, double _alpha, double _a, double _b) : V(_V), alpha(_alpha), a(_a), b(_b){
+  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _alpha, double _a, double _b) : K(_K), V(_V), alpha(_alpha), a(_a), b(_b){
     mu0 = fvec_d(_mu0, _mu0 + V);
     lambda2 = fvec_d(_lambda2, _lambda2 + V);
   }

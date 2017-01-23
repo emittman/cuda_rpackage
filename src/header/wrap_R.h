@@ -5,5 +5,6 @@
 #include <Rinternals.h>
 
 data_t Rdata_wrap(SEXP Rdata);
+prior_t Rpriors_wrap(SEXP Rpriors);
 
 #endif

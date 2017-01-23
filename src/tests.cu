@@ -146,9 +146,13 @@ extern "C" SEXP Rbeta_hat(SEXP R_Lvec, SEXP R_xty, SEXP K, SEXP V){
 }
 
 
-extern "C" SEXP Rtest_data_wrap(SEXP Rdata){
+extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
   data_t data = Rdata_wrap(Rdata);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  std::cout << "y transpose x\n";
   printVec(data.ytx, data.G, data.V);
+  std::cout << "prior location\n";
+  printVec(priors.mu0, priors.V);
   SEXP out = PROTECT(allocVector(INTSXP, 1));
   INTEGER(out)[0] = 0;
   UNPROTECT(1);
