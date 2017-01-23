@@ -152,7 +152,7 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
   std::cout << "y transpose x\n";
   printVec(data.ytx, data.G, data.V);
   std::cout << "prior location\n";
-  printVec(priors.mu0, priors.V);
+  printVec(priors.mu0, priors.V, 1);
   SEXP out = PROTECT(allocVector(INTSXP, 1));
   INTEGER(out)[0] = 0;
   UNPROTECT(1);
