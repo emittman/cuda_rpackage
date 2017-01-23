@@ -29,3 +29,25 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
   data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G), V = as.integer(V), N = as.integer(N))
   return(data)
 }
+
+#' @title Function \code{formatPriors}
+#' @description format priors
+#' @export
+#' @param K number stick-breaking components
+#' @param prior_mean
+#' @param prior_sd
+#' @param alpha mass parameter
+#' @param a prior shape for error precision
+#' @param b prior scale for error precision
+
+formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
+  K <- as.integer(K)
+  if(K < 1) stop("K must be postive!")
+  if(length(prior_mean) != length(prior_sd)){
+    stop("Check dimensions of prior!")
+  }
+  if(alpha<=0) stop("alpha must be positive!")
+  if(a<=0) stop("a must be postive!")
+  if(b<=0) stop("b must be postive!")
+  list(K, prior_mean, 1/prior_sd^2, alpha, a, b)
+}
