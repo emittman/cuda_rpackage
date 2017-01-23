@@ -34,8 +34,8 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @description format priors
 #' @export
 #' @param K number stick-breaking components
-#' @param prior_mean
-#' @param prior_sd
+#' @param prior_mean numeric
+#' @param prior_sd numeric matching dimension of prior_mean
 #' @param alpha mass parameter
 #' @param a prior shape for error precision
 #' @param b prior scale for error precision
