@@ -6,23 +6,15 @@
 #include "printing.h"
 #include "distribution.h"
 #include "curand_kernel.h"
-
-
-struct scale_vec{
-  int dim;
-  __host__ __device__ scale_vec(int _dim): dim(_dim) {}
-  
-  template <typename T>
-  __host__ __device__ void operator()(T tup){
-    cublasHandle_t handle;
-    cublasCreate_v2(&handle);
-    int n=dim, lda=dim, incx=1;
-    double *z = thrust::raw_pointer_cast(&(get<0>(tup)));
-    double *L = thrust::raw_pointer_cast(&(get<1>(tup)));
-    cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, z, incx); // t(L)^{-1} %*% t(t(L)^{-1}) = (L%*%t(L))^{-1}
-    cublasDestroy(handle);
-  }
-};
+#include "transpose.h"
+#include "beta_hat.h"
+#include <thrust/copy.h>
+#include <thrust/reduce.h>
+#include <thrust/unique.h>
+#include <thrust/sort.h>
+#include <thrust/sequence.h>
+#include <thrust/transform.h>
+#include <thrust/for_each.h>
 
 struct mult_scalar_by_sqrt{
   template <typename T>

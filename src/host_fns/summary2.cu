@@ -1,12 +1,5 @@
-#include "../header/iter_getter.h"
 #include "../header/summary2.h"
-#include "../header/chain.h"
-#include "../header/transpose.h"
-#include <thrust/copy.h>
-#include <thrust/reduce.h>
-#include <thrust/unique.h>
-#include <thrust/sort.h>
-#include <thrust/sequence.h>
+
 
 struct is_zero: thrust::unary_function<int, bool>{
   __host__ __device__ bool operator()(int i){
@@ -69,29 +62,21 @@ summary2::summary2(int _G, int _K, int _V, ivec_d zeta, data_t &data): G(_G), K(
 }
 
 void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){
-  typedef thrust::tuple<gSFRIter<realIter>::iterator, strideIter> scaleSomeBeta_tup;
-  typedef thrust::zip_iterator<scaleSomeBeta_tup> scaleSomeBeta_zip;
+  
   //replace current beta with standard normal draws
   getNormal<<<K, 1>>>(states, thrust::raw_pointer_cast(beta.data()));
   
-  //need access to first elems of chols and occ. betas
-  gSFRIter<realIter>::iterator betaOcc_first = getGSFRIter(beta.begin(), beta.end(), occupied, V);
-  rowIter strides_idx = getRowIter(V*V, 0);
-  strideIter L_first = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), strides_idx);
-  scaleSomeBeta_tup scale_tup = thrust::make_tuple(betaOcc_first, L_first);
-  scaleSomeBeta_zip scale_zip = thrust::zip_iterator<scaleSomeBeta_tup>(scale_tup);
-  scale_vec f(V);
+  //scale occupied betas by t(chol_prec)^-1
+  scale_chol_inv(chol_prec, beta, occupied, num_occupied, V);
+
+  //typedef: iterate along select columns of matrix of doubles
+  typedef thrust::permutation_iterator<realIter, SCIntIter> gSCIter;
   
-  //scale standard normals (occupied)
-  thrust::for_each(scale_zip, scale_zip + num_occupied, f);
-  
-  /*typedef thrust::permutation_iterator<realIter, SCIntIter> gSCIter;
-  
-  //need access to all of occ. betas
+  //need access to occupied betas
   SCIntIter occ_idx = getSCIntIter(occupied.begin(), occupied.end(), V);
   gSCIter betaOcc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), occ_idx);
   
-  //shift scaled normals (occupied)
+  //shift occupied betas by beta_hat
   thrust::transform(beta_hat.begin(), beta_hat.end(), betaOcc, betaOcc, thrust::plus<double>());
   
   //now, access to unoccupied betas
@@ -114,5 +99,5 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
   
   //shift by prior mean
-  thrust::transform(prior_mean, prior_mean + num_unoccupied*V, thrust::plus<double>());*/
+  thrust::transform(prior_mean, prior_mean + num_unoccupied*V, thrust::plus<double>());
 }
