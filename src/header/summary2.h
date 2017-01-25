@@ -49,9 +49,6 @@ struct summary2{
   void print_xty(){ printVec(xty_sums, V, num_occupied);}
   void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors);
   
-  void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors);
-  
-  
 };
 
 #endif
