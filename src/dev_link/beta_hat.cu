@@ -49,14 +49,14 @@ void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K_occ, int V){
 
 void scale_chol_inv(fvec_d &chol_prec, fvec_d &x, ivec_d &idx, int len_idx, int dim){
   typedef thrust::tuple<gSFRIter<realIter>::iterator, strideIter> scl_sel_x_tup;
-  typedef thrust::zip_iterator<scaleSomeBeta_tup> scl_sel_x_zip;
+  typedef thrust::zip_iterator<scl_sel_x_tup> scl_sel_x_zip;
   //need access to first elems of chols and occ. betas
   gSFRIter<realIter>::iterator sel_x_first = getGSFRIter(x.begin(), x.end(), idx, dim);
   rowIter strides_idx = getRowIter(dim*dim, 0);
   strideIter L_first = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), strides_idx);
   scl_sel_x_tup scale_tup = thrust::make_tuple(sel_x_first, L_first);
   scl_sel_x_zip scale_zip = thrust::zip_iterator<scl_sel_x_tup>(scale_tup);
-  left_mult_chol_inv f(V);
+  left_mult_chol_inv f(dim);
   
   //scale x[idx]
   thrust::for_each(scale_zip, scale_zip + len_idx, f);
