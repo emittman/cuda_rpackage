@@ -1,7 +1,7 @@
 #include "../header/draw_MVNormal.h"
 
 void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){
-  typedef thrust::tuple<gSRFIter<realIter>::iterator, strideIter> scaleSomeBeta_tup;
+  typedef thrust::tuple<gSFRIter<realIter>::iterator, strideIter> scaleSomeBeta_tup;
   typedef thrust::zip_iterator<scaleSomeBeta_tup> scaleSomeBeta_zip;
   //replace current beta with standard normal draws
   getNormal<<<K, 1>>>(states, thrust::raw_pointer_cast(beta.data()));
