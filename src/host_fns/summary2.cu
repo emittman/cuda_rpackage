@@ -99,5 +99,5 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
   
   //shift by prior mean
-  thrust::transform(prior_mean, prior_mean + num_unoccupied*V, thrust::plus<double>());
+  thrust::transform(prior_mean, prior_mean + num_unoccupied*V, betaUnocc, betaUnocc, thrust::plus<double>());
 }
