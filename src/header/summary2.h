@@ -5,6 +5,7 @@
 #include "chain.h"
 #include "printing.h"
 #include "distribution.h"
+#include "curand_kernel.h"
 
 
 struct scale_vec{
