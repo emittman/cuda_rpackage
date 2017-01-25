@@ -96,7 +96,7 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   
   //now, access to unoccupied betas
   SCIntIter unocc_idx = getSCIntIter(unoccupied.begin(), unoccupied.end(), V);
-  gSCIter betaUnocc = thrust::permutation_iterator<realIter SCIntIter>(beta.begin(), unocc_idx);
+  gSCIter betaUnocc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), unocc_idx);
   
   //repeat prior var. and mean
   gRepTimes<realIter>::iterator prior_vars = getGRepTimesIter(priors.lambda2.begin(), priors.lambda2.end(), V);
