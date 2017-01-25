@@ -50,7 +50,7 @@ host_fns/iter_getter.o: host_fns/iter_getter.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
 
 host_fns/summary2.o: host_fns/summary2.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS) -lcurand
 
 host_fns/chain.o: host_fns/chain.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
