@@ -10,8 +10,8 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   gSFRIter<realIter>::iterator betaOcc_first = getGSFRIter(beta.begin(), beta.end(), occupied, V);
   rowIter strides_idx = getRowIter(V*V, 0);
   strideIter L_first = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), strides_idx);
-  transSel_tup scale_tup = thrust::make_tuple(betaOcc_first, L_first);
-  zipSel scale_zip = thrust::zip_iterator<transSel_tup>(scale_tup);
+  scaleSomeBeta_tup scale_tup = thrust::make_tuple(betaOcc_first, L_first);
+  scaleSomeBeta_zip scale_zip = thrust::zip_iterator<transSel_tup>(scale_tup);
   scale_vec f(V);
   
   //scale standard normals (occupied)
