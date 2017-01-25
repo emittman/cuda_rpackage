@@ -3,6 +3,7 @@
 
 #include "distribution.h"
 #include "iter_getter.h"
+#include "iterator.h"
 #include "summary2.h"
 
 struct scale_vec{
