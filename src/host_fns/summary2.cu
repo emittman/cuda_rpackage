@@ -89,7 +89,7 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   
   //need access to all of occ. betas
   SCIntIter occ_idx = getSCIntIter(occupied.begin(), occupied.end(), V);
-  gSCIter betaOcc = thrust::permutation_iterator<realIter SCIntIter>(beta.begin(), occ_idx);
+  gSCIter betaOcc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), occ_idx);
   
   //shift scaled normals (occupied)
   thrust::transform(beta_hat.begin(), beta_hat.end(), betaOcc, betaOcc, thrust::plus<double>());
