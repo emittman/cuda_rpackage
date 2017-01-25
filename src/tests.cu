@@ -158,8 +158,53 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
   UNPROTECT(1);
   return out;
 }
-/*
-extern "C" SEXP Rtest_MVNormal(SEXP data, SEXP zeta, SEXP priors, SEXP SEXP mu, SEXP chol_prec)
 
-void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){
-*/
+
+extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors, SEXP K){
+  int k = INTEGER(K)[0];
+  data_t data = Rdata_wrap(Rdata);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
+  ivec_d zeta_d(zeta_h.begin(),zeta_h.end());  
+  
+  summary2 smry(k, zeta_d, data);
+  
+  smry.print_Mk();
+  smry.print_yty();
+  smry.print_xty();
+  
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, data.V*k * sizeof(curandState)));
+  
+  //make precision matrices
+  fvec_d prec(smry.num_occupied * smry.V * smry.V, 0.0);
+  fvec_d tau2(k, 1.0);
+  construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), tau2.begin(), tau2.end(),
+                 smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), k, data.V);
+  
+  //cholesky decomposition  
+  chol_multiple(prec.begin(), prec.end(),  data.V, smry.num_occupied);
+  
+  //conditional means
+  fvec_d bhat(smry.xty_sums.begin(), smry.xty_sums.end());
+  beta_hat(prec, bhat, smry.num_occupied, data.V);
+  
+  //draw beta
+  fvec_d beta(data.V*k, 0.0);
+  smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
+  
+  fvec_h beta_h(beta.begin(), beta.end());
+  
+  //print value
+  printVec(beta_h, data.V, k);
+  
+  SEXP out = PROTECT(allocVector(REALSXP, k * data.V));
+  
+  for(int i=0; i<smry.K*data.V; ++i){
+    REAL(out)[i] = beta_h[i];
+  }
+  
+  UNPROTECT(1);
+  return out;
+}

@@ -8,10 +8,10 @@ struct is_zero: thrust::unary_function<int, bool>{
 };
 
 // zeta passed by value, data passed by reference
-summary2::summary2(int _G, int _K, int _V, ivec_d zeta, data_t &data): G(_G), K(_K), V(_V), occupied(_K), Mk(_K, 0){
+summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.V), occupied(_K), Mk(_K, 0){
   
   // local allocations
-  ivec_d perm(G); // will store permutation
+  ivec_d perm(data.G); // will store permutation
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
   
   // sort, identify occupied

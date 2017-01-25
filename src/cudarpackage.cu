@@ -153,7 +153,7 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   data_t data(ytyp, xtyp, xtxp, g, v, 1);
   
   ivec_d ZETA(zp, zp+g);
-  summary2 smry(g, k, v, ZETA, data);
+  summary2 smry(k, ZETA, data);
   
   /*smry.print_Mk();
   smry.print_yty();
