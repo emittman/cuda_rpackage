@@ -29,8 +29,8 @@ struct left_mult_chol_inv{
     cublasHandle_t handle;
     cublasCreate_v2(&handle);
     int n=dim, lda=dim, incx=1;
-    double *z = thrust::raw_pointer_cast(&(get<0>(tup)));
-    double *L = thrust::raw_pointer_cast(&(get<1>(tup)));
+    double *z = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
+    double *L = thrust::raw_pointer_cast(&(thrust::get<1>(tup)));
     cublasDtrsv(handle, CUBLAS_FILL_MODE_LOWER, CUBLAS_OP_T, CUBLAS_DIAG_NON_UNIT, n, L, z, incx); // t(L)^{-1} %*% t(t(L)^{-1}) = (L%*%t(L))^{-1}
     cublasDestroy(handle);
   }
