@@ -3,6 +3,7 @@
 
 #include "curand_kernel.h"
 #include "cuda_usage.h"
+#include <R.h>
 
 __device__ double rgamma(curandState *state, double a, double b);
 
