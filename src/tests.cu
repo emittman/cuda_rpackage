@@ -7,6 +7,7 @@
 #include "header/distribution.h"
 #include "header/beta_hat.h"
 #include "header/wrap_R.h"
+#include "header/summary2.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
