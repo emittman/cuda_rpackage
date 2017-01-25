@@ -158,3 +158,8 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
   UNPROTECT(1);
   return out;
 }
+/*
+extern "C" SEXP Rtest_MVNormal(SEXP data, SEXP zeta, SEXP priors, SEXP SEXP mu, SEXP chol_prec)
+
+void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){
+*/

@@ -48,10 +48,10 @@ host_fns/cholesky.o: host_fns/cholesky.cu
 
 host_fns/iter_getter.o: host_fns/iter_getter.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
-	
+
 host_fns/summary2.o: host_fns/summary2.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
-	
+
 host_fns/chain.o: host_fns/chain.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
 
@@ -63,15 +63,16 @@ host_fns/distribution.o: host_fns/distribution.cu
 
 host_fns/big_matrix_multiply.o: host_fns/big_matrix_multiply.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
-	
+
 host_fns/cluster_weights.o: host_fns/cluster_weights.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
-	
+
 host_fns/multinomial.o: host_fns/multinomial.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
-	
+
 host_fns/draw_MVNormal.o: host_fns/draw_MVNormal.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
+
 
 #util functions
 util/cuda_usage.o: util/cuda_usage.cu
@@ -83,7 +84,7 @@ dev_link/libquadform.a: dev_link/quad_form.o
 
 dev_link/quad_form.o: dev_link/quad_form.cu
 	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
-	
+
 dev_link/libbetahat.a: dev_link/beta_hat.o
 	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
