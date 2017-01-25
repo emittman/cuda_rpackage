@@ -4,6 +4,7 @@
 #include "iterator.h"
 #include "chain.h"
 #include "printing.h"
+#include "distribution.h"
 
 
 struct scale_vec{
