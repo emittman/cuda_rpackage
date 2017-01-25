@@ -111,7 +111,7 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   linTransSomeBeta_zip scale_tup2 = thrust::tuple<gSCIter, gRepTimes<realIter>::iterator>(betaUnocc, prior_vars);
   linTransSomeBeta_zip scale_zip2 = thrust::make_zip_iterator(scale_tup2);
   mult_scalar_by_sqrt f2;
-  thrust::for_each(zip2, zip2 + num_unoccupied*V, f2);
+  thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
   
   //shift by prior mean
   thrust::transform(prior_mean, prior_mean + num_unoccupied*V, thrust::plus<double>());
