@@ -8,6 +8,8 @@
 #include "header/beta_hat.h"
 #include "header/wrap_R.h"
 #include "header/summary2.h"
+#include "header/cholesky.h"
+#include "header/construct_prec.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
