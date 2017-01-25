@@ -93,8 +93,8 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   int num_unoccupied = K - num_occupied;
   
   //scale by prior sd
-  linTransSomeBeta_zip scale_tup2 = thrust::tuple<gSCIter, gRepTimes<realIter>::iterator>(betaUnocc, prior_vars);
-  linTransSomeBeta_zip scale_zip2 = thrust::make_zip_iterator(scale_tup2);
+  linTransSomeBeta_tup scale_tup2 = thrust::tuple<gSCIter, gRepTimes<realIter>::iterator>(betaUnocc, prior_vars);
+  linTransSomeBeta_zip scale_zip2 = thrust::zip_iterator<linTransSomeBeta_tup>(scale_tup2);
   mult_scalar_by_sqrt f2;
   thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
   
