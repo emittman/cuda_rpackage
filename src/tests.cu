@@ -192,7 +192,6 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   std::cout << "prec_matrices:\n";
   printVec(prec, smry.V*smry.V, smry.num_occupied);
   
-  /*
   //cholesky decomposition
   realIter b=prec.begin(), e = prec.end();
   chol_multiple(b, e,  data.V, smry.num_occupied);
@@ -206,7 +205,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   std::cout << "beta_hat:\n";
   printVec(bhat, data.V, priors.K);
-  */
+  
   //draw beta
   fvec_d beta(data.V*priors.K, 0.0);
   //smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
