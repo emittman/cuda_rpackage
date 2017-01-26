@@ -167,10 +167,10 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
-  //ivec_d zeta_d(zeta_h.begin(),zeta_h.end());  
+  ivec_d zeta_d(zeta_h.begin(),zeta_h.end());  
   
-  summary2 smry(priors.K, zeta_d, data);
-  /*
+  /*summary2 smry(priors.K, zeta_d, data);
+  
   smry.print_Mk();
   smry.print_yty();
   smry.print_xty();
