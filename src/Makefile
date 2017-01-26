@@ -1,5 +1,7 @@
 NVCC_FLAGS = -arch=sm_35 -Xcompiler -fPIC
 
+DEBUG_FLAGS = -DTHRUST_DEBUG
+
 R_INC = ${R_HOME}/include
 
 CUDA_PATH = /usr/local/cuda-8.0/lib64
@@ -29,7 +31,7 @@ TEST_OBJS = tests.o
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
 	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(TEST_OBJS) -o $(TARGET) -I$(R_INC)\
-	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS)
+	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS) $(DEBUG_FLAGS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
