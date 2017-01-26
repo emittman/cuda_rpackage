@@ -42,7 +42,7 @@ host_fns/wrap_R.o: host_fns/wrap_R.cu
 
 #tests
 tests.o: tests.cu
-	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@ $(DEBUG_FLAGS)
 
 #host functions
 host_fns/cholesky.o: host_fns/cholesky.cu

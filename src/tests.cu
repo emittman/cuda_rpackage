@@ -202,6 +202,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   std::cout << "smry.V= " << smry.V << "\n";
   std::cout << "smry.num_occupied= " << smry.num_occupied << "\n";
   
+  std::cout << "printing for the hell of it!\n";
   //conditional means
   fvec_d bhat(smry.num_occupied * data.V);
   thrust::copy(data.xty.begin(), data.xty.end(), bhat.begin());
