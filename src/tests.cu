@@ -204,10 +204,11 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   beta_hat(prec, bhat, smry.num_occupied, data.V);
   
   std::cout << "beta_hat:\n";
-  printVec(bhat, data.V, priors.K);
+  printVec(bhat, data.V, smry.num_occupied);
   
   //draw beta
-  fvec_d beta(data.V*priors.K, 0.0);
+  int beta_size = data.V*priors.K;
+  fvec_d beta(beta_size, 0.0);
   //smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
   
   fvec_h beta_h(beta.begin(), beta.end());
