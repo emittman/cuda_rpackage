@@ -224,7 +224,6 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   //print value
   printVec(beta_h, data.V, priors.K);
   
-  fvec_h beta_h(smry.num_occupied * data.V);
   SEXP out = PROTECT(allocVector(REALSXP, beta_size));
 
   for(int i=0; i < beta_size; ++i){
