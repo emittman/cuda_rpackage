@@ -6,7 +6,7 @@ reps <- 10
 V <- 2
 n_per_v <- 3
 group <- rep(1:K, each=reps)
-zeta <- as.integer(rep(1:4, each=reps))
+zeta <- as.integer(rep(0:3, each=reps))
 
 X <- kronecker(diag(V), rep(1, n_per_v))
 
