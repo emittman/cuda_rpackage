@@ -163,7 +163,8 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
 }
 
 
-extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
+extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
+  int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
@@ -179,6 +180,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
+  setup_kernel<<<data.K, data.V>>>(seed, devStates);
   
   
   //make precision matrices
