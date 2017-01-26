@@ -200,26 +200,28 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   printVec(prec, smry.V*smry.V, smry.num_occupied);
   
   //conditional means
-  fvec_d bhat(smry.xty_sums.begin(), smry.xty_sums.end());
+  fvec_d bhat(smry.num_occupied * data.V);
+  thrust::copy(data.xty.begin(), data.xty.end(), bhat.begin());
+  std::cout << "container for beta_hat (initialized):\n"
+  printVec(bhat, data.V, smry.num_occupied);
+  
   beta_hat(prec, bhat, smry.num_occupied, data.V);
   
   std::cout << "beta_hat:\n";
-  //printVec(bhat, data.V, smry.num_occupied);
+  printVec(bhat, data.V, smry.num_occupied);
   
   //draw beta
   int beta_size = data.V*priors.K;
-  fvec_d beta(beta_size, 0.0);
+  fvec_h beta_h(beta_size, 0.0);
+  fvec_d beta(beta_h.begin(), beta_h.end());
   //smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
-  
-  fvec_h beta_h(beta.begin(), beta.end());
   
   //print value
   printVec(beta_h, data.V, priors.K);
   
   SEXP out = PROTECT(allocVector(REALSXP, priors.K * data.V));
-  
 
-  for(int i=0; i<priors.K*data.V; ++i){
+  for(int i=0; i<beta_size; ++i){
     REAL(out)[i] = beta_h[i];
   }
   
