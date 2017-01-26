@@ -171,11 +171,11 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   ivec_d zeta_d(zeta_h.begin(),zeta_h.end());  
   
   summary2 smry(priors.K, zeta_d, data);
-  /*
+  
   smry.print_Mk();
   smry.print_yty();
   smry.print_xty();
-  */
+  
   
   //instantiate RNGs
   curandState *devStates;
