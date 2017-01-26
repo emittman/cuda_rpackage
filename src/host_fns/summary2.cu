@@ -64,7 +64,10 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
 void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){
   
   //replace current beta with standard normal draws
-  getNormal<<<K, 1>>>(states, thrust::raw_pointer_cast(beta.data()));
+  getNormal<<<K, V>>>(states, thrust::raw_pointer_cast(beta.data()));
+  
+  std::cout << "N(0,1) draws:\n";
+  printVec(beta, V, K);
   
   //scale occupied betas by t(chol_prec)^-1
   scale_chol_inv(chol_prec, beta, occupied, num_occupied, V);
