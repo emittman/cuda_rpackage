@@ -72,6 +72,9 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   //scale occupied betas by t(chol_prec)^-1
   scale_chol_inv(chol_prec, beta, occupied, num_occupied, V);
 
+  std::cout << "scaled draws:\n";
+  printVec(beta, V, K);
+  
   //typedef: iterate along select columns of matrix of doubles
   typedef thrust::permutation_iterator<realIter, SCIntIter> gSCIter;
   
@@ -82,6 +85,8 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   //shift occupied betas by beta_hat
   thrust::transform(beta_hat.begin(), beta_hat.end(), betaOcc, betaOcc, thrust::plus<double>());
   
+  std::cout << "occupied draws:\n";
+  printVec(beta, V, K);
   //now, access to unoccupied betas
   SCIntIter unocc_idx = getSCIntIter(unoccupied.begin(), unoccupied.end(), V);
   gSCIter betaUnocc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), unocc_idx);
