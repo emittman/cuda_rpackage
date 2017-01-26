@@ -19,7 +19,7 @@
 struct mult_scalar_by_sqrt{
   template <typename T>
   __host__ __device__ void operator()(T tup){
-    thrust::get<0>(tup) *= sqrt(thrust::get<1>(tup));
+    thrust::get<0>(tup) *= 1 / sqrt(thrust::get<1>(tup));
   }
 };
 
