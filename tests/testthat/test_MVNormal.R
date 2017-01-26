@@ -1,5 +1,5 @@
 context("Conditiona MVN sampling")
-
+set.seed(102030)
 seed <- as.integer(10101)
 K <- 4
 reps <- 10
