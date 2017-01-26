@@ -205,7 +205,9 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   std::cout << "printing for the hell of it!\n";
   //conditional means
   fvec_d bhat(smry.num_occupied * data.V);
-  thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(), bhat.begin());
+  fvec_h tmp(smry.num_occupied * data.V);
+  thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(),tmp.begin());
+  thrust::copy(tmp.begin(), tmp.end(), bhat.begin());
   std::cout << "xty_sums:\n";
   printVec(smry.xty_sums, data.V, smry.num_occupied);
   std::cout << "container for beta_hat (initialized):\n";
