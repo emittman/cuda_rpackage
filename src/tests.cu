@@ -199,6 +199,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   std::cout << "chol_matrices:\n";
   printVec(prec, smry.V*smry.V, smry.num_occupied);
   
+  /*
   //conditional means
   fvec_d bhat(smry.num_occupied * data.V);
   thrust::copy(data.xty.begin(), data.xty.end(), bhat.begin());
@@ -209,7 +210,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   std::cout << "beta_hat:\n";
   printVec(bhat, data.V, smry.num_occupied);
-  
+  */
   //draw beta
   int beta_size = data.V*priors.K;
   fvec_h beta_h(beta_size, 0.0);
