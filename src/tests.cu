@@ -204,7 +204,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   //conditional means
   std::cout << "xty_sums:\n";
-  thrust::device_ptr<double> xty_ptr = smry.xty_sums.begin();
+  thrust::device_ptr<double> xty_ptr = &smry.xty_sums[0];
   thrust::copy(xty_ptr, xty_ptr + smry.num_occupied * data.V, std::ostream_iterator<double>(std::cout, " "));  
   fvec_d bhat(smry.num_occupied * data.V);
   thrust::copy(xty_ptr, xty_ptr + smry.num_occupied * data.V, bhat.begin());
