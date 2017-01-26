@@ -179,6 +179,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
   
+  /*
   //make precision matrices
   fvec_d prec(smry.num_occupied * smry.V * smry.V, 0.0);
   fvec_d tau2(priors.K, 1.0);
@@ -192,7 +193,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   //conditional means
   fvec_d bhat(smry.xty_sums.begin(), smry.xty_sums.end());
   beta_hat(prec, bhat, smry.num_occupied, data.V);
-  
+  */
   //draw beta
   fvec_d beta(data.V*priors.K, 0.0);
   //smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
