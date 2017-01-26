@@ -211,7 +211,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   beta_hat(prec, bhat, smry.num_occupied, data.V);
   
-  /*
+  
   std::cout << "beta_hat:\n";
   printVec(bhat, data.V, smry.num_occupied);
   
@@ -223,11 +223,11 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   //print value
   printVec(beta_h, data.V, priors.K);
-  */
+  
   fvec_h beta_h(smry.num_occupied * data.V);
-  SEXP out = PROTECT(allocVector(REALSXP, smry.num_occupied * data.V));
+  SEXP out = PROTECT(allocVector(REALSXP, beta_size));
 
-  for(int i=0; i<smry.num_occupied * data.V; ++i){
+  for(int i=0; i < beta_size; ++i){
     REAL(out)[i] = beta_h[i];
   }
   
