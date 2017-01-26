@@ -180,7 +180,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
-  setup_kernel<<<data.K, data.V>>>(seed, devStates);
+  setup_kernel<<<priors.K, data.V>>>(seed, devStates);
   
   
   //make precision matrices
