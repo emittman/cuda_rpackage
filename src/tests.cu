@@ -163,14 +163,13 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
 }
 
 
-extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors, SEXP K){
-  int k = INTEGER(K)[0];
+extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
   ivec_d zeta_d(zeta_h.begin(),zeta_h.end());  
   
-  summary2 smry(k, zeta_d, data);
+  summary2 smry(priors.K, zeta_d, data);
   
   smry.print_Mk();
   smry.print_yty();
@@ -178,13 +177,13 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors, S
   
   //instantiate RNGs
   curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, data.V*k * sizeof(curandState)));
+  CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
   
   //make precision matrices
   fvec_d prec(smry.num_occupied * smry.V * smry.V, 0.0);
-  fvec_d tau2(k, 1.0);
+  fvec_d tau2(priors.K, 1.0);
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), tau2.begin(), tau2.end(),
-                 smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), k, data.V);
+                 smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
   
   //cholesky decomposition
   realIter b=prec.begin(), e = prec.end();
@@ -195,17 +194,17 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors, S
   beta_hat(prec, bhat, smry.num_occupied, data.V);
   
   //draw beta
-  fvec_d beta(data.V*k, 0.0);
+  fvec_d beta(data.V*priors.K, 0.0);
   smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
   
   fvec_h beta_h(beta.begin(), beta.end());
   
   //print value
-  printVec(beta_h, data.V, k);
+  printVec(beta_h, data.V, priors.K);
   
-  SEXP out = PROTECT(allocVector(REALSXP, k * data.V));
+  SEXP out = PROTECT(allocVector(REALSXP, priors.K * data.V));
   
-  for(int i=0; i<smry.K*data.V; ++i){
+  for(int i=0; i<priors.K*data.V; ++i){
     REAL(out)[i] = beta_h[i];
   }
   
