@@ -87,6 +87,7 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   
   std::cout << "occupied draws:\n";
   printVec(beta, V, K);
+  
   //now, access to unoccupied betas
   SCIntIter unocc_idx = getSCIntIter(unoccupied.begin(), unoccupied.end(), V);
   gSCIter betaUnocc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), unocc_idx);
@@ -106,6 +107,10 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
   mult_scalar_by_sqrt f2;
   thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
   
+  std::cout << "unoccupied are scaled now:\n";
+  printVec(beta, V, K);
   //shift by prior mean
   thrust::transform(prior_mean, prior_mean + num_unoccupied*V, betaUnocc, betaUnocc, thrust::plus<double>());
+  std::cout << "and shifted (final draws):\n";
+  printVec(beta, V, K);
 }
