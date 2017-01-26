@@ -198,7 +198,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   //draw beta
   fvec_d beta(data.V*priors.K, 0.0);
-  //smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
+  smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
   
   fvec_h beta_h(beta.begin(), beta.end());
   
