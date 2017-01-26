@@ -187,11 +187,11 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), tau2.begin(), tau2.end(),
                  smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
   
-  /*
+  
   //cholesky decomposition
   realIter b=prec.begin(), e = prec.end();
   chol_multiple(b, e,  data.V, smry.num_occupied);
-  
+  /*
   //conditional means
   fvec_d bhat(smry.xty_sums.begin(), smry.xty_sums.end());
   beta_hat(prec, bhat, smry.num_occupied, data.V);
