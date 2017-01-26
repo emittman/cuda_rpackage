@@ -202,11 +202,9 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   std::cout << "smry.V= " << smry.V << "\n";
   std::cout << "smry.num_occupied= " << smry.num_occupied << "\n";
   
-  std::cout << "printing for the hell of it!\n";
   //conditional means
   std::cout << "xty_sums:\n";
-  printVec(smry.xty_sums, data.V, smry.num_occupied);
-  
+  thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(), std::ostream_iterator<double>(std::cout, " "));  
   fvec_d bhat(smry.num_occupied * data.V);
   thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(),bhat.begin());
   cudaDeviceSynchronize();
