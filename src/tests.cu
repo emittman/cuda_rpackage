@@ -207,6 +207,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   thrust::copy(data.xty.begin(), data.xty.end(), bhat.begin());
   std::cout << "container for beta_hat (initialized):\n";
   printVec(bhat, data.V, smry.num_occupied);
+  
   /*
   beta_hat(prec, bhat, smry.num_occupied, data.V);
   
