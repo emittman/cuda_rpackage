@@ -13,7 +13,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
-
+#include <cuda.h>
 
 extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP N){
   int g = INTEGER(G)[0], v = INTEGER(V)[0], n = INTEGER(N)[0];
@@ -209,7 +209,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   fvec_d bhat(smry.num_occupied * data.V);
   thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(),bhat.begin());
-  
+  cudaDeviceSynchronize();
   std::cout << "container for beta_hat (initialized):\n";
   printVec(bhat, data.V, smry.num_occupied);
   
