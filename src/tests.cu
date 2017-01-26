@@ -180,13 +180,14 @@ extern"C" SEXP Rtest_MVNormal(SEXP seed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
   
-  /*
+  
   //make precision matrices
   fvec_d prec(smry.num_occupied * smry.V * smry.V, 0.0);
   fvec_d tau2(priors.K, 1.0);
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), tau2.begin(), tau2.end(),
                  smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
   
+  /*
   //cholesky decomposition
   realIter b=prec.begin(), e = prec.end();
   chol_multiple(b, e,  data.V, smry.num_occupied);
