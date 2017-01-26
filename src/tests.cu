@@ -226,11 +226,9 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   //print value
   std::cout << "beta_draws:\n";
-  printVec(beta_h, data.V, priors.K);
+  printVec(beta, data.V, priors.K);
   
-  std::cout << "container for beta_hat (initialized):\n";
-  printVec(bhat, data.V, smry.num_occupied);
-
+  thrust::copy(beta.begin(), beta.end(), beta_h.begin());
   
   SEXP out = PROTECT(allocVector(REALSXP, beta_size));
 
