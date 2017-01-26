@@ -1,6 +1,6 @@
 context("Weight normalization with log_sum_exp")
 
-dim <- 4e3
+dim <- 1e2
 
 x <- matrix(rnorm(dim^2), dim, dim)
 
