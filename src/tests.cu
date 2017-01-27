@@ -262,6 +262,9 @@ extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
 extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   int k = INTEGER(K)[0];
   data_t data = Rdata_wrap(Rdata);
+  std::cout << "\n G= " << data.G << "\n";
+  std::cout << "\n xty:\n";
+  printVec(data.xty, data.V, data.G);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
   ivec_d zeta_d(zeta_h.begin(), zeta_h.end());
   summary2 smry(k, zeta_d, data);
