@@ -10,6 +10,7 @@
 #include "header/summary2.h"
 #include "header/cholesky.h"
 #include "header/construct_prec.h"
+#include "header/multi_dot_product.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -236,6 +237,24 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
     REAL(out)[i] = beta_h[i];
   }
   
+  UNPROTECT(1);
+  return out;
+}
+
+extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
+  int dim = INTEGER(Rdim)[0], n = INTEGER(Rn)[0];
+  fvec_h x_h(REAL(Rx), REAL(Rx) + dim*n);
+  fvec_h y_h(REAL(Ry), REAL(Ry) + dim*n);
+  fvec_d x_d(x_h.begin(), x_h.end());
+  fvec_d y_d(y_h.begin(), y_h.end());
+  fvec_d z_d(n);
+  multi_dot_prod(x, y, z, dim, n);
+  fvec_h z_h(n);
+  thrust::copy(z_d.begin(), z_d.end(), z_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, n));
+  for(int i = 0; i < n; ++i){
+    REAL(out)[i] = z_h[i];
+  }
   UNPROTECT(1);
   return out;
 }
