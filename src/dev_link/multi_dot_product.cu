@@ -20,9 +20,9 @@ struct dot_prod {
 void multi_dot_prod(fvec_d &x, fvec_d &y, fvec_d &z, int dim, int n){
   rowIter x_first = getRowIter(dim, 0);
   rowIter y_first = getRowIter(dim, 0);
-  strideIter x = thrust::permutation_iterator<realIter, rowIter>(x.begin(), x_first);
-  strideIter y = thrust::permutation_iterator<realIter, rowIter>(y.begin(), y_first);
-  dot_tup my_tuple = thrust::make_tuple(x, y, z.begin());
+  strideIter x_it = thrust::permutation_iterator<realIter, rowIter>(x.begin(), x_first);
+  strideIter y_it = thrust::permutation_iterator<realIter, rowIter>(y.begin(), y_first);
+  dot_tup my_tuple = thrust::make_tuple(x_it, y_it, z.begin());
   thrust::zip_iterator<dot_tup> zipped = thrust::zip_iterator<dot_tup>(my_tuple);
   dot_prod f(dim);
   thrust::for_each(zipped, zipped + n, f);
