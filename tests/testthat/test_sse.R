@@ -1,6 +1,5 @@
 context("Sum of squared errors")
 
-seed <- as.integer(10101)
 K <- as.integer(4)
 reps <- 4
 V <- 2
@@ -11,7 +10,7 @@ zeta <- rep(0:(K-1), each=reps)
 
 X <- kronecker(diag(V), rep(1, n_per_v))
 
-beta <- matrix(rnorm(K*V), V, K)
+beta <- matrix(seq(1, 5, length.out = V*K), V, K)
 
 y <- t(matrix(rnorm(K*V*n_per_v*reps, X %*% beta[,group]), V*n_per_v, K*reps))
 
