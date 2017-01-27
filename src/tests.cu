@@ -258,3 +258,21 @@ extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
   UNPROTECT(1);
   return out;
 }
+
+extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
+  int k = INTEGER(K)[0];
+  data_t data = Rdata_wrap(Rdata);
+  ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
+  summary2 smry(k, zeta_d, data);
+  fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied);
+  fvec_d sse_d(smry.num_occupied);
+  sumSqErr(sse, beta, data.xtx);
+  fvec_h sse_h(smry.num_occupied);
+  thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, smry.num_occupied));
+  for(int i=0; i<smry.num_occupied; ++i){
+    REAL(out)[i] = sse_h[i];
+  }
+  UNPROTECT(1);
+  return out;
+}
