@@ -118,15 +118,15 @@ void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol
 typedef thrust::tuple<realIter,realIter,realIter> tup3;
 typedef thrust::zip_iterator<tup3> zip3;
 
-void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec &xtx){
+void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
   fvec_d SSE(num_occupied);
-  quad_form_multi(xtx, beta, SSR, num_occupied, dim);
+  quad_form_multi(xtx, beta, SSE, num_occupied, V);
 
   fvec_d ytxb(num_occupied);
   multi_dot_prod(beta, xty_sums, ytxb, V, num_occupied);
   thrust::transform(ytxb.begin(), ytxb.end(), ytxb.begin, -2.0 * thrust::placeholders::_1);
   
-  tup3 my_tuple = thrust::make_tuple(SSR.begin(), ytxb.begin(), yty_sums.begin());
+  tup3 my_tuple = thrust::make_tuple(SSE.begin(), ytxb.begin(), yty_sums.begin());
   zip3 my_zip = thrust::make_zip_iterator(my_tuple);
   thrust::for_each(my_zip, my_zip + num_occupied, add3());
   return SSE;

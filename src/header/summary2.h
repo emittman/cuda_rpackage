@@ -8,6 +8,8 @@
 #include "curand_kernel.h"
 #include "transpose.h"
 #include "beta_hat.h"
+#include "quad_form.h"
+#include "multi_dot_product.h"
 #include <thrust/copy.h>
 #include <thrust/reduce.h>
 #include <thrust/unique.h>
@@ -49,7 +51,7 @@ struct summary2{
   void print_yty(){ printVec(yty_sums, 1, num_occupied);}
   void print_xty(){ printVec(xty_sums, V, num_occupied);}
   void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors);
-  void sumSqErr(fvec_d &sse, fvec_d &beta, fvec &xtx);
+  void sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx);
 };
 
 #endif
