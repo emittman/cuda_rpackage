@@ -12,7 +12,7 @@ DL_LIBS = dev_link/libquadform.a dev_link/libbetahat.a dev_link/libmultiprod.a
 
 DL_PATH = ./dev_link
 
-DL_FLAGS = -lquadform -lbetahat
+DL_FLAGS = -lquadform -lbetahat -lmultiprod
 
 TARGET = cudarpackage.so
 
