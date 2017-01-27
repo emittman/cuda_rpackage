@@ -5,7 +5,7 @@ typedef thrust::tuple<double &, double &, double &> dot_eltup;
 struct dot_prod {
   int dim;
   __host__ __device__ dot_prod(int _dim): dim(_dim){}
-  __host__ __device__ void operator()(dot_eltup &Tup){
+  __host__ __device__ void operator()(dot_eltup Tup){
     cublasHandle_t handle;
     cublasCreate_v2(&handle);
     int incx=1, incy=1;
