@@ -23,7 +23,7 @@ bxxb <- sapply(1:K, function(k) reps * t(beta[,k]) %*% matrix(data$xtx,V,V) %*% 
 yxb <- sapply(1:K, function(k) t(beta[,k]) %*% rowSums(data$xty[,which(zeta == k-1)]))
 yty <- sapply(1:K, function(k) sum(data$yty[which(zeta == k-1)]))
 
-sseR <- bbxb + yty - 2*yxb
+sseR <- bxb + yty - 2*yxb
 
 test_that("Answers comport",{
   expect_equal(sse, sseR)
