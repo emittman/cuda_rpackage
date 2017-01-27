@@ -188,7 +188,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   fvec_d prec(smry.num_occupied * smry.V * smry.V, 0.0);
   fvec_d tau2(priors.K, 1.0);
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), tau2.begin(), tau2.end(),
-                 smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
+                 smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), smry.num_occupied, data.V);
   
   std::cout << "prec_matrices:\n";
   printVec(prec, smry.V*smry.V, smry.num_occupied);
