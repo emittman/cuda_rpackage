@@ -248,7 +248,7 @@ extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
   fvec_d x_d(x_h.begin(), x_h.end());
   fvec_d y_d(y_h.begin(), y_h.end());
   fvec_d z_d(n);
-  multi_dot_prod(x, y, z, dim, n);
+  multi_dot_prod(x_d, y_d, z_d, dim, n);
   fvec_h z_h(n);
   thrust::copy(z_d.begin(), z_d.end(), z_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, n));
