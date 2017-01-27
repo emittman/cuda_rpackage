@@ -265,7 +265,10 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
   ivec_d zeta_d(zeta_h.begin(), zeta_h.end());
   summary2 smry(k, zeta_d, data);
+  std::cout << "\nxty_sums:\n";
   printVec(smry.xty_sums, smry.V, smry.num_occupied);
+  std::cout << "\nzeta:\n";
+  printVec(zeta, data.G, 1);
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied);
   fvec_d sse_d(smry.num_occupied);
   smry.sumSqErr(sse_d, beta, data.xtx);
