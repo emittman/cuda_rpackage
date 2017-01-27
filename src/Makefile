@@ -22,7 +22,8 @@ HST_OBJS = host_fns/cholesky.o host_fns/iter_getter.o host_fns/summary2.o host_f
 host_fns/construct_prec.o host_fns/distribution.o host_fns/big_matrix_multiply.o\
 host_fns/cluster_weights.o host_fns/multinomial.o host_fns/wrap_R.o
 
-DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a dev_link/beta_hat.o dev_link/libbetahat.a\
+DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a\
+dev_link/beta_hat.o dev_link/libbetahat.a\
 dev_link/multi_dot_product.o dev_link/libmultiprod.a
 
 WRP_OBJS = cudarpackage.o
