@@ -91,10 +91,10 @@ dev_link/beta_hat.o: dev_link/beta_hat.cu
 	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
 dev_link/libmultiprod.a: dev_link/multi_dot_product.o
-  nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
+	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
  
 dev_link/multi_dot_product.o: dev_link/multi_dot_product.cu
-  nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
+	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
 #make clean
 .PHONY: clean
