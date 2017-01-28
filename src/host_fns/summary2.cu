@@ -119,24 +119,22 @@ typedef thrust::tuple<realIter,realIter,realIter> tup3;
 typedef thrust::zip_iterator<tup3> zip3;
 
 void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
-  fvec_d SSE(num_occupied);
   std::cout << "xtx:\n";
   printVec(xtx, V, V);
   std::cout << "beta:\n";
   printVec(beta, V, K);
-  quad_form_multi(xtx, beta, SSE, num_occupied, V);
+  quad_form_multi(xtx, beta, sse, num_occupied, V);
   std::cout << "\nbxxb\n";
-  printVec(SSE, num_occupied, 1);
+  printVec(sse, num_occupied, 1);
   fvec_d ytxb(num_occupied);
   multi_dot_prod(beta, xty_sums, ytxb, V, num_occupied);
   std::cout << "\nytxb:\n";
   printVec(ytxb, num_occupied, 1);    thrust::transform(ytxb.begin(), ytxb.end(), ytxb.begin(), -2.0 * thrust::placeholders::_1);
   std::cout << "\nytxb * -2:\n";
   printVec(ytxb, num_occupied, 1);  
-  tup3 my_tuple = thrust::make_tuple(SSE.begin(), ytxb.begin(), yty_sums.begin());
+  tup3 my_tuple = thrust::make_tuple(sse.begin(), ytxb.begin(), yty_sums.begin());
   zip3 my_zip = thrust::make_zip_iterator(my_tuple);
   thrust::for_each(my_zip, my_zip + num_occupied, add3());
   std::cout << "3 added:\n";
-  printVec(SSE, num_occupied, 1);
-
+  printVec(sse, num_occupied, 1);
 }
