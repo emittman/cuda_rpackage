@@ -277,8 +277,8 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   smry.sumSqErr(sse_d, beta, data.xtx);
   fvec_h sse_h(smry.num_occupied);
   thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
-  std::cout << "sse_h:\n";
-  printVec(sse_h, smry.num_occupied, 1);
+  std::cout << "sse_d:\n";
+  printVec(sse_d, smry.num_occupied, 1);
   thrust::device_ptr<double> sse_ptr = &sse_d[0];
   thrust::copy(sse_ptr, sse_ptr + smry.num_occupied, sse_h.begin());
   std::cout << "sse_h after:\n";
