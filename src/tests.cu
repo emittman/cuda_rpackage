@@ -276,9 +276,13 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   fvec_d sse_d(smry.num_occupied);
   smry.sumSqErr(sse_d, beta, data.xtx);
   fvec_h sse_h(smry.num_occupied);
+  thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
   std::cout << "sse_h:\n";
   printVec(sse_h, smry.num_occupied, 1);
-  thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
+  thrust::device_ptr<double> sse_ptr = thrust::cast_raw_pointer(&sse_d[0]);
+  thrust::copy(sse_ptr, sse_ptr + smry.num_occupied)
+  std::cout << "sse_h after:\n";
+  printVec(sse_h, smry.num_occupied, 1);
   SEXP out = PROTECT(allocVector(REALSXP, smry.num_occupied));
   for(int i=0; i<smry.num_occupied; ++i){
     REAL(out)[i] = sse_h[i];
