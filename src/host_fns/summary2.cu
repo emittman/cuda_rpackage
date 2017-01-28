@@ -124,6 +124,9 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
   std::cout << "beta:\n";
   printVec(beta, V, K);
   quad_form_multi(xtx, beta, sse, num_occupied, V);
+  //M_k occupied
+  thrust::permutation_iterator<realIter, intIter> Mk_iter = thrust::make_permutation_iterator(Mk.begin(), occupied.begin());
+  thrust::transform(sse.begin(), sse.end(), Mk_iter, thrust::multiplies<double>());
   std::cout << "\nbxxb\n";
   printVec(sse, num_occupied, 1);
   fvec_d ytxb(num_occupied);
