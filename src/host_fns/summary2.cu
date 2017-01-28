@@ -120,6 +120,10 @@ typedef thrust::zip_iterator<tup3> zip3;
 
 void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
   fvec_d SSE(num_occupied);
+  std::cout << "xtx:\n";
+  printVec(xtx, V, V);
+  std::cout << "beta:\n";
+  printVec(beta, V, K);
   quad_form_multi(xtx, beta, SSE, num_occupied, V);
   std::cout << "\nbxxb\n";
   printVec(SSE, num_occupied, 1);
