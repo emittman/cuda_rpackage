@@ -136,6 +136,7 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
   tup3 my_tuple = thrust::make_tuple(SSE.begin(), ytxb.begin(), yty_sums.begin());
   zip3 my_zip = thrust::make_zip_iterator(my_tuple);
   thrust::for_each(my_zip, my_zip + num_occupied, add3());
+  std::cout << "3 added:\n";
   printVec(SSE, num_occupied, 1);
 
 }
