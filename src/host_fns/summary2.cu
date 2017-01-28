@@ -7,6 +7,12 @@ struct is_zero: thrust::unary_function<int, bool>{
   }
 };
 
+struct fi_multiply: thrust::binary_function<double, int>{
+  __host__ __device__ double operator()(double x, int y){
+    return x * y;
+  }
+};
+
 // zeta passed by value, data passed by reference
 summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.V), occupied(_K), Mk(_K, 0){
   
@@ -127,7 +133,7 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
   //M_k occupied
   typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
-  thrust::transform(sse.begin(), sse.end(), Mk_iter, thrust::multiplies<double>());
+  thrust::transform(sse.begin(), sse.end(), Mk_iter, fi_multiply());
   std::cout << "\nbxxb\n";
   printVec(sse, num_occupied, 1);
   fvec_d ytxb(num_occupied);
