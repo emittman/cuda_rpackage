@@ -133,7 +133,7 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
   //M_k occupied
   typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
-  thrust::transform(sse.begin(), sse.end(), Mk_iter, fi_multiply());
+  thrust::transform(sse.begin(), sse.end(), Mk_iter, sse.begin(), fi_multiply());
   std::cout << "\nbxxb\n";
   printVec(sse, num_occupied, 1);
   fvec_d ytxb(num_occupied);
