@@ -7,7 +7,7 @@ struct is_zero: thrust::unary_function<int, bool>{
   }
 };
 
-struct fi_multiply: thrust::binary_function<double, int>{
+struct fi_multiply: thrust::binary_function<double, int, double>{
   __host__ __device__ double operator()(double x, int y){
     return x * y;
   }
