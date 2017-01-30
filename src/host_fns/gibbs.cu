@@ -1,7 +1,8 @@
 #include "../header/gibbs.h"
+
 struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
   double operator()(double p, int x){
-    return p + x/2;
+    return p + x/2.0;
   }
 };
 
@@ -29,7 +30,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   intIter Mk_iter = smry.Mk.begin();
   realIter a_begin = a.begin();
   modify_gamma_par_w_flt f;
-  thrust::transform(a_begin, a_begin + 1, Mk_iter, a_begin, f);
+  //thrust::transform(a_begin, a_begin + 1, Mk_iter, a_begin, f);
   
   std::cout << "a transformed:\n";
 
@@ -45,5 +46,5 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   //double *b_ptr = thrust::raw_pointer_cast(b.data());
   
   //generate
-  //getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
+  getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
 }
