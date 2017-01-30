@@ -75,7 +75,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   if(max(zeta)>K-1) stop("C uses zero indexing!")
   
   if(!is.null(C)){
-    P = length(C)/V
+    P = as.integer(length(C)/V)
   } else {
     P = as.integer(V)
     C = diag(V)
