@@ -30,8 +30,6 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   std::cout << "a_d filled:\n";
   printVec(a_d, K, 1);
   // modify gamma parameters for occupied clusters
-  //typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
-  //typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
   typedef thrust::tuple<realIter, intIter> tuple1;
   typedef thrust::zip_iterator<tuple1> zip1;
   tuple1 tup1 = thrust::tuple<realIter, intIter>(a_d.begin(), smry.Mk.begin());
@@ -40,21 +38,17 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   modify_gamma_par f;
   thrust::for_each(zp1, zp1 + K, f);
   
-  //IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
-  //std::cout << "I thought Mk was length " << smry.Mk.size() << "\n";
-  //std::cout << "and that a was length " << a.size() << " \n";
-  //printVec(smry.Mk, K, 1);
-  
-  //intIter Mk_iter = smry.Mk.begin();
-  //realIter a_begin = a.begin();
-  //modify_gamma_par_w_flt f;
-  //thrust::transform(a_begin, a_begin + 1, Mk_iter, a_begin, f);
-  
   std::cout << "a transformed:\n";
   printVec(a_d, K, 1);
-  //intIter occ_begin = smry.occupied.begin();
-  //FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b.begin(), occ_begin);
-  //thrust::transform(b_occ, b_occ + smry.num_occupied, sse.begin(), b_occ, modify_gamma_par_w_flt());
+  
+  typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
+  FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b.begin(), smry.occupied.begin());
+  typedef thrust::tuple<FltPermIter, realIter> tuple2;
+  typedef thrust::zip_iterator<tuple2> zip2;
+  tuple2 tup2 = thrust::typle<realIter, FltPermIter>(b.occ, sse.begin());
+  zip2 zp2 = thrust::zip_iterator<tup2>(tup2);
+  thrust::for_each(zp2, zp2 + K, modify_gamma_par());
+  
   std::cout << "b transformed:\n";
   printVec(b_d, K, 1);
   // raw pointers
