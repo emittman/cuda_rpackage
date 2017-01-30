@@ -95,7 +95,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   } else{
     meansquares = rep(0, V*G)
   }
-  list(G = G, V = V, K = K, P = P, beta = beta, pi = pi, tau2 = tau,
+  list(G = G, V = V, K = K, P = P, beta = beta, pi = pi, tau2 = tau2,
        zeta = as.integer(zeta), C = C, probs = probs, means = means, meansquares = meansquares)
 }
 
