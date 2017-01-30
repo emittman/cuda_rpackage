@@ -294,7 +294,7 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   return out;
 }
 
-extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rpriors){
+/*extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rpriors){
   int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
@@ -323,4 +323,4 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rprior
   }
   UNPROTECT(1);
   return out;
-}
+}*/
