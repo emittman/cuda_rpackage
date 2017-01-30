@@ -1,6 +1,6 @@
 #include "../header/gibbs.h"
-
-struct modify_gamma_par{
+template<typename T>
+struct modify_gamma_par: thrust::binary_function<double, T, double>{
   template<typename T>
   double operator()(double p, T x){
     return p + x/2;
