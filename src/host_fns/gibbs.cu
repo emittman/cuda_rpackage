@@ -13,6 +13,7 @@ struct modify_gamma_par_w_flt: thrust::binary_function<double, double, double>{
 };
 
 void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &smry){
+  fvec_d sse(smry.num_occupied);
   int K = chain.K;
   smry.sumSqErr(sse, chain.beta, data.xtx);
   std::cout << "sse:\n";
