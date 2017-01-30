@@ -37,12 +37,12 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   
   std::cout << "a transformed:\n";
 
-  printVec(a, K, 1);
+  printVec(a_tmp, K, 1);
   //intIter occ_begin = smry.occupied.begin();
   //FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b.begin(), occ_begin);
   //thrust::transform(b_occ, b_occ + smry.num_occupied, sse.begin(), b_occ, modify_gamma_par_w_flt());
   std::cout << "b transformed:\n";
-  printVec(b, K, 1);
+  printVec(b_tmp, K, 1);
   // raw pointers
   //double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
   //double *a_ptr = thrust::raw_pointer_cast(a.data());
