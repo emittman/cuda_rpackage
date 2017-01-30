@@ -1,11 +1,11 @@
 #include "../header/gibbs.h"
-struct modify_gamma_par_w_int{
+struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
   double operator()(double p, int x){
     return p + x/2;
   }
 };
 
-struct modify_gamma_par_w_flt{
+struct modify_gamma_par_w_flt: thrust::binary_function<double, double, double>{
   double operator()(double p, double x){
     return p + x/2;
   }
@@ -27,21 +27,22 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   printVec(smry.Mk, smry.K, 1);
   
   intIter Mk_iter = smry.Mk.begin();
-  //realIter a_begin = a.begin();
-  thrust::transform(a.begin(), a.end(), Mk_iter, a.begin(), modify_gamma_par_w_int());
+  realIter a_begin = a.begin();
+  modify_gamma_par_w_flt f;
+  thrust::transform(a_begin, a_begin + smry.K, Mk_iter, a_begin, f);
   
   std::cout << "a transformed:\n";
 
   printVec(a, priors.K, 1);
-  intIter occ_begin = smry.occupied.begin();
-  FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b.begin(), occ_begin);
+  //intIter occ_begin = smry.occupied.begin();
+  //FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b.begin(), occ_begin);
   //thrust::transform(b_occ, b_occ + smry.num_occupied, sse.begin(), b_occ, modify_gamma_par_w_flt());
   std::cout << "b transformed:\n";
   printVec(b, priors.K, 1);
   // raw pointers
-  double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
-  double *a_ptr = thrust::raw_pointer_cast(a.data());
-  double *b_ptr = thrust::raw_pointer_cast(b.data());
+  //double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
+  //double *a_ptr = thrust::raw_pointer_cast(a.data());
+  //double *b_ptr = thrust::raw_pointer_cast(b.data());
   
   //generate
   //getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
