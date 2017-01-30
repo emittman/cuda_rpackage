@@ -19,15 +19,15 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   std::cout << "a filled:\n";
   printVec(a, priors.K, 1);
   // modify gamma parameters for occupied clusters
-  typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
+  //typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
-  IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
-  //thrust::transform(a.begin(), a.end(), Mk_iter, a.begin(), modify_gamma_par_w_int());
+  /IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
+  thrust::transform(a.begin(), a.end(), smry.Mk.begin(), a.begin(), modify_gamma_par_w_int());
   std::cout << "a transformed:\n";
-  /*
+
   printVec(a, priors.K, 1);
-  FltPermIter sse_iter = thrust::permutation_iterator<realIter, intIter>(sse.begin(), smry.occupied.begin());
-  thrust::transform(b.begin(), b.end(), sse_iter, b.begin(), modify_gamma_par_w_flt());
+  FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b.begin(), smry.occupied.begin());
+  thrust::transform(b_occ, b_occ + smry.num_occupied, sse.begin(), b_occ, modify_gamma_par_w_flt());
   std::cout << "b transformed:\n";
   printVec(b, priors.K, 1);
   // raw pointers
