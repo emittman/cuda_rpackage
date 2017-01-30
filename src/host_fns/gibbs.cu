@@ -15,7 +15,7 @@ struct modify_gamma_par_w_flt: thrust::binary_function<double, double, double>{
 struct modify_gamma_par {
   template<typename T>
   void operator()(T tup){
-    thrust::get<0>(tup) = thrust::get<0>(tup) + 1.0/ 2.0 * thrust::get<1>(tup);
+    thrust::get<0>(tup) = thrust::get<0>(tup) + 1.0;/// 2.0 * thrust::get<1>(tup);
   }
 };
 
