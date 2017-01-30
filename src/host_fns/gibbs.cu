@@ -52,10 +52,10 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   std::cout << "b transformed:\n";
   printVec(b_d, K, 1);
   // raw pointers
-  //double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
-  //double *a_ptr = thrust::raw_pointer_cast(a.data());
-  //double *b_ptr = thrust::raw_pointer_cast(b.data());
+  double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
+  double *a_ptr = thrust::raw_pointer_cast(a_d.data());
+  double *b_ptr = thrust::raw_pointer_cast(b_d.data());
   
   //generate
-  //getGamma<<<K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
+  getGamma<<<K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
 }
