@@ -45,7 +45,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
   typedef thrust::tuple<FltPermIter, realIter> tuple2;
   typedef thrust::zip_iterator<tuple2> zip2;
-  tuple2 tup2 = thrust::tuple<realIter, FltPermIter>(b_occ, sse.begin());
+  tuple2 tup2 = thrust::tuple<FltPermIter, realIter>(b_occ, sse.begin());
   zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
   thrust::for_each(zp2, zp2 + K, modify_gamma_par());
   
