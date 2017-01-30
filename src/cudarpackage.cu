@@ -122,7 +122,7 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
   CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
   
-  return Rout;
+  return out;
 }
 
 extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
@@ -163,7 +163,7 @@ extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
   CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
   
-  return Rout;
+  return out;
 }
 
 extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
