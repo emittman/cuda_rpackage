@@ -49,10 +49,10 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
   if(alpha<=0) stop("alpha must be positive!")
   if(a<=0) stop("a must be postive!")
   if(b<=0) stop("b must be postive!")
-  list(K, V = as.integer(length(prior_mean)),
-       as.numeric(prior_mean),
-       1/as.numeric(prior_sd)^2,
-       alpha, a, b)
+  list(K = K, V = as.integer(length(prior_mean)),
+       mu_0 = as.numeric(prior_mean),
+       lambda2 = 1/as.numeric(prior_sd)^2,
+       alpha = alpha, a = a, b = b)
 }
 
 #' @title Function \code{formatChain}
@@ -95,6 +95,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   } else{
     meansquares = rep(0, V*G)
   }
-  list(G, V, K, P, beta, pi, tau2, as.integer(zeta), C, probs, means, meansquares)
+  list(G = G, V = V, K = K, P = P, beta = beta, pi = pi, tau2 = tau,
+       zeta = as.integer(zeta), C = C, probs = probs, means = means, meansquares = meansquares)
 }
 
