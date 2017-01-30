@@ -39,5 +39,5 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   double *b_ptr = thrust::raw_pointer_cast(b.data());
   
   //generate
-  getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
+  //getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
 }
