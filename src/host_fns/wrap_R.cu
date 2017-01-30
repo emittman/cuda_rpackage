@@ -36,7 +36,6 @@ chain_t Rchain_wrap(SEXP Rchain){
   double *probs = REAL(VECTOR_ELT(Rchain, 9)),
          *means = REAL(VECTOR_ELT(Rchain, 10)),
          *meansquares = REAL(VECTOR_ELT(Rchain, 11));
-  chain_t chain();
+  chain_t chain(G, V, K, P, beta, pi, tau2, zeta, C, probs, means, meansquares);
   return chain;
-         
 }
