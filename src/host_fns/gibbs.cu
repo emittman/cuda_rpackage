@@ -29,7 +29,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   
   intIter Mk_iter = smry.Mk.begin();
   realIter a_begin = a.begin();
-  modify_gamma_par_w_flt f;
+  //modify_gamma_par_w_flt f;
   //thrust::transform(a_begin, a_begin + 1, Mk_iter, a_begin, f);
   
   std::cout << "a transformed:\n";
@@ -41,9 +41,9 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   std::cout << "b transformed:\n";
   printVec(b, priors.K, 1);
   // raw pointers
-  //double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
-  //double *a_ptr = thrust::raw_pointer_cast(a.data());
-  //double *b_ptr = thrust::raw_pointer_cast(b.data());
+  double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
+  double *a_ptr = thrust::raw_pointer_cast(a.data());
+  double *b_ptr = thrust::raw_pointer_cast(b.data());
   
   //generate
   getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
