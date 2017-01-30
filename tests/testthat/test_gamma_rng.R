@@ -26,7 +26,7 @@ for(i in 1:values) {
   }
   
   test_that("Results match expectations", {
-    expect_(test, c(TRUE, TRUE))
+    expect_equal(test, c(TRUE, TRUE))
   })
 }  
   
