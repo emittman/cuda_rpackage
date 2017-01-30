@@ -1,29 +1,33 @@
 context("Sum of squared errors")
 
-K <- as.integer(4)
-reps <- 4
-V <- 2
-n_per_v <- 5
-group <- rep(1:K, each=reps)
+set.seed(13017)
 
-zeta <- rep(0:(K-1), each=reps)
+for(i in 1:3){
+  K <- as.integer(4)
+  reps <- 4
+  V <- 2
+  n_per_v <- 5
+  group <- rep(1:K, each=reps)
 
-X <- kronecker(diag(V), rep(1, n_per_v))
+  zeta <- sample(rep(0:(K-1), each=reps), K*reps)
 
-beta <- matrix(seq(1, 5, length.out = V*K), V, K)
+  X <- kronecker(diag(V), rep(1, n_per_v))
 
-y <- t(matrix(rnorm(K*V*n_per_v*reps, X %*% beta[,group], .001), V*n_per_v, K*reps))
+  beta <- matrix(seq(1, 5, length.out = V*K), V, K)
 
-data <- formatData(y, X, transform_y = identity)
+  y <- t(matrix(rnorm(K*V*n_per_v*reps, X %*% beta[,group], .1), V*n_per_v, K*reps))
 
-sse <- .Call("RsumSqErr", data, zeta, K, beta)
+  data <- formatData(y, X, transform_y = identity)
 
-bxxb <- sapply(1:K, function(k) reps * t(beta[,k]) %*% matrix(data$xtx,V,V) %*% beta[,k])
-yxb <- sapply(1:K, function(k) t(beta[,k]) %*% rowSums(data$xty[,which(zeta == k-1)]))
-yty <- sapply(1:K, function(k) sum(data$yty[which(zeta == k-1)]))
+  sse <- .Call("RsumSqErr", data, zeta, K, beta)
 
-sseR <- bxxb + yty - 2*yxb
+  bxxb <- sapply(1:K, function(k) reps * t(beta[,k]) %*% matrix(data$xtx,V,V) %*% beta[,k])
+  yxb <- sapply(1:K, function(k) t(beta[,k]) %*% rowSums(data$xty[,which(zeta == k-1)]))
+  yty <- sapply(1:K, function(k) sum(data$yty[which(zeta == k-1)]))
 
-test_that("Answers comport",{
-  expect_equal(sse, sseR)
-})
+  sseR <- bxxb + yty - 2*yxb
+
+  test_that("Answers comport",{
+    expect_equal(sse, sseR)
+  })
+}
