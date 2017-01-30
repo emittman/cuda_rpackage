@@ -29,7 +29,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   intIter Mk_iter = smry.Mk.begin();
   realIter a_begin = a.begin();
   modify_gamma_par_w_flt f;
-  thrust::transform(a_begin, a_begin + smry.K, Mk_iter, a_begin, f);
+  thrust::transform(a_begin, a_begin + 1, Mk_iter, a_begin, f);
   
   std::cout << "a transformed:\n";
 
