@@ -1,6 +1,6 @@
 #include "../header/gibbs.h"
 
-struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
+/*struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
   double operator()(double p, int x){
     return p + x/2.0;
   }
@@ -9,6 +9,13 @@ struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
 struct modify_gamma_par_w_flt: thrust::binary_function<double, double, double>{
   double operator()(double p, double x){
     return p + x/2;
+  }
+};*/
+
+struct modify_gamma_par {
+  template<typename T>
+  void operator()(T tup){
+    thrust::get<0>(tup) = thrust::get<0>(tup) + thrust::get<1>(tup) / 2.0;
   }
 };
 
@@ -25,6 +32,14 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   // modify gamma parameters for occupied clusters
   //typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   //typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
+  typedef thrust::tuple<realIter, intIter> tuple1;
+  typedef thrust::zip_iterator<tuple1> zip1;
+  tuple1 tup1 = thrust::tuple<realIter, intIter>(a_tmp.begin(), smry.Mk.begin());
+  zip1 zp1 = thrust::zip_iterator<tuple1>(tup1);
+  
+  modify_gamma_par f;
+  thrust::for_each(zp1, zp1 + K, f);
+  
   //IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
   //std::cout << "I thought Mk was length " << smry.Mk.size() << "\n";
   //std::cout << "and that a was length " << a.size() << " \n";
