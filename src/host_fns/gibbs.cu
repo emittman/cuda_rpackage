@@ -5,7 +5,7 @@ struct modify_gamma_par{
   double operator()(double p, T x){
     return p + x/2;
   }
-}
+};
 
 void draw_tau2(curandState *states, chain_t &chain, priors_t &prior, data_t &data, summary2 &smry){
   fvec_d sse(smry.num_occupied);
@@ -22,10 +22,10 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &prior, data_t &dat
   thrust::transform(b.begin(), b.end(), sse_iter, b.begin(), modify_gamma_par());
   
   // raw pointers
-  thrust::device_ptr<double> tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
-  thrust::device_ptr<double> a_ptr = thrust::raw_pointer_cast(a.data());
-  thrust::device_ptr<double> b_ptr = thrust::raw_pointer_cast(b.data());
+  double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
+  double *a_ptr = thrust::raw_pointer_cast(a.data());
+  double *b_ptr = thrust::raw_pointer_cast(b.data());
   
   // generate
-  getGamma(states, a_ptr, b_ptr, tau2_ptr);
+  getGamma<<<chain.K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
 }
