@@ -43,6 +43,14 @@ __global__ void setup_kernel(int seed, curandState *states) {
     curand_init(seed, id, 0, &states[id]);
 }
 
+__global__ void getGamma(curandState *states, double *a, double *b, double *result){
+  
+  int id = threadIdx.x + blockIdx.x * blockDim.x;
+  
+  result[id] = rgamma(&(states[id]), a[id], b[id]);
+}
+
+
 __global__ void getBeta(curandState *states, double *a, double *b, double *result){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;

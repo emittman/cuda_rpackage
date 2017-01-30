@@ -84,6 +84,47 @@ extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, S
   return out_prec;
 }
 
+extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
+
+  int n = length(a), seed = INTEGER(Rseed)[0];
+
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, n * sizeof(curandState)));
+  
+  //temporary memory
+  
+  fvec_d out_d(n);
+  fvec_h out_h(n);
+ 
+  fvec_d a_d(REAL(a), REAL(a)+n);
+  fvec_d b_d(REAL(b), REAL(b)+n);
+  
+  double *out_d_ptr = thrust::raw_pointer_cast(out_d.data());
+  double *a_d_ptr = thrust::raw_pointer_cast(a_d.data());
+  double *b_d_ptr = thrust::raw_pointer_cast(b_d.data());
+    
+  //set up RNGs
+  setup_kernel<<<n,1>>>(seed, devStates);
+  
+  //sample from Gamma(a, b)
+  getGamma<<<n,1>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr);
+  
+  //copy to host
+  thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
+  
+  //transfer memory
+  SEXP out = PROTECT(allocVector(REALSXP, n));
+  for(int i=0; i<n; ++i)
+    REAL(out)[i] = out_h[i];
+  
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
+  UNPROTECT(1);
+  
+  return Rout;
+}
+
 extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
 
   int n = length(a), seed = INTEGER(Rseed)[0];
@@ -94,27 +135,29 @@ extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
   
   //temporary memory
   
-  fvec_d out(n);
+  fvec_d out_d(n);
+  fvec_h out_h(n);
  
-  double *aptr = REAL(a);
-  double *bptr = REAL(b);
-  fvec_d da(aptr, aptr+n);
-  fvec_d db(bptr, bptr+n);
+  fvec_d a_d(REAL(a), REAL(a)+n);
+  fvec_d b_d(REAL(b), REAL(b)+n);
   
-  double *outptr = thrust::raw_pointer_cast(out.data());
-  double *daptr = thrust::raw_pointer_cast(da.data());
-  double *dbptr = thrust::raw_pointer_cast(db.data());
+  double *out_d_ptr = thrust::raw_pointer_cast(out_d.data());
+  double *a_d_ptr = thrust::raw_pointer_cast(a_d.data());
+  double *b_d_ptr = thrust::raw_pointer_cast(b_d.data());
     
   //set up RNGs
   setup_kernel<<<n,1>>>(seed, devStates);
   
   //sample from Beta(a, b)
-  getBeta<<<n,1>>>(devStates, daptr, dbptr, outptr);
+  getBeta<<<n,1>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr);
+  
+  //copy to host
+  thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
   
   //transfer memory
-  SEXP Rout = PROTECT(allocVector(REALSXP, n));
+  SEXP out = PROTECT(allocVector(REALSXP, n));
   for(int i=0; i<n; ++i)
-    REAL(Rout)[i] = out[i];
+    REAL(out)[i] = out_h[i];
   
   //clean up
   CUDA_CALL(cudaFree(devStates));
