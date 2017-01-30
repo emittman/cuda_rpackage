@@ -54,3 +54,47 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
        1/as.numeric(prior_sd)^2,
        alpha, a, b)
 }
+
+#' @title Function \code{formatChain}
+#' @description format chain state
+#' @export
+#' @param beta V*K array
+#' @param pi K array in $(0, 1)$
+#' @param tau2 K array in $(0, \infty)$
+#' @param zeta G array in $\{0,...,K-1\}$
+#' @param C P*V array of linear combinations
+#' @param probs P*G array of probabilities
+#' @param means G*V array
+#' @param meansquares G*V array
+
+formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, meansquares=NULL){
+  G = as.integer(length(zeta))
+  V = as.integer(length(beta)/length(pi))
+  K = as.integer(length(beta)/V)
+  
+  if(max(zeta)>K-1) stop("C uses zero indexing!")
+  
+  if(!is.null(C)){
+    P = length(C)/V
+  } else {
+    P = as.integer(V)
+    C = diag(V)
+  }
+  if(!is.null(probs)){
+    if(length(probs) != P*G) stop("probs doesn't match C and/or G!")
+  } else {
+    probs = rep(0, P*G)
+  }
+  if(!is.null(means)){
+    if(length(means) != V*G) stop("means is wrong dimension!")
+  } else{
+    means = rep(0, V*G)
+  }
+  if(!is.null(meansquares)){
+    if(length(meansquares) != V*G) stop("means is wrong dimension!")
+  } else{
+    meansquares = rep(0, V*G)
+  }
+  list(G, V, K, P, beta, pi, tau2, as.integer(zeta), C, probs, means, meansquares)
+}
+

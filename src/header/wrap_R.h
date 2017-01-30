@@ -6,5 +6,6 @@
 
 data_t Rdata_wrap(SEXP Rdata);
 priors_t Rpriors_wrap(SEXP Rpriors);
+chain_t Rchain_wrap(SEXP Rchain);
 
 #endif

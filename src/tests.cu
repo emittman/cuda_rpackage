@@ -150,19 +150,21 @@ extern "C" SEXP Rbeta_hat(SEXP R_Lvec, SEXP R_xty, SEXP K, SEXP V){
 }
 
 
-extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors){
+extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
+  chain_t chain = Rchain_wrap(Rchain);
   std::cout << "y transpose x\n";
   printVec(data.ytx, data.G, data.V);
   std::cout << "prior location\n";
   printVec(priors.mu0, priors.V, 1);
+  std::cout << "Contrasts on location parameters";
+  printVec(chain.C, chain.P, chain.V);
   SEXP out = PROTECT(allocVector(INTSXP, 1));
   INTEGER(out)[0] = 0;
   UNPROTECT(1);
   return out;
 }
-
 
 extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   int seed = INTEGER(Rseed)[0];

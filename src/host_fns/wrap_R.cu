@@ -22,3 +22,21 @@ priors_t Rpriors_wrap(SEXP Rpriors){
   priors_t priors(K, V, mu0, lambda, alpha, a, b);
   return priors;
 }
+
+chain_t Rchain_wrap(SEXP Rchain){
+  int G = INTEGER(VECTOR_ELT(Rchain, 0))[0],
+      V = INTEGER(VECTOR_ELT(Rchain, 1))[0],
+      K = INTEGER(VECTOR_ELT(Rchain, 2))[0],
+      P = INTEGER(VECTOR_ELT(Rchain, 3))[0];
+  double *beta = REAL(VECTOR_ELT(Rchain, 4)),
+         *pi   = REAL(VECTOR_ELT(Rchain, 5)),
+         *tau2 = REAL(VECTOR_ELT(Rchain, 6)),
+         *zeta = REAL(VECTOR_ELT(Rchain, 7));
+  int *C = INTEGER(VECTOR_ELT(Rchain, 8));
+  double *probs = REAL(VECTOR_ELT(Rchain, 9)),
+         *means = REAL(VECTOR_ELT(Rchain, 10)),
+         *meansquares = REAL(VECTOR_ELT(Rchain, 11));
+  chain_t chain();
+  return chain;
+         
+}
