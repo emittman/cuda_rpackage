@@ -21,7 +21,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   // modify gamma parameters for occupied clusters
   //typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
-  /IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
+  IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
   thrust::transform(a.begin(), a.end(), smry.Mk.begin(), a.begin(), modify_gamma_par_w_int());
   std::cout << "a transformed:\n";
 
