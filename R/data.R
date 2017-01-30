@@ -60,7 +60,7 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
 #' @export
 #' @param beta V*K array
 #' @param pi K array in $(0, 1)$
-#' @param tau2 K array in $(0, \infty)$
+#' @param tau2 K array in $(0, ...)$
 #' @param zeta G array in $\{0,...,K-1\}$
 #' @param C P*V array of linear combinations
 #' @param probs P*G array of probabilities
