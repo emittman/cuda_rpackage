@@ -309,7 +309,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rprior
   std::cout << "tau2 before:\n";
   printVec(chain.tau2, chain.K, 1);
  
-  draw_tau2(devStates, chain, priors, smry);
+  draw_tau2(devStates, chain, priors, data, smry);
   
   std::cout << "tau2 after:\n";
   printVec(chain.tau2, chain.K, 1);
