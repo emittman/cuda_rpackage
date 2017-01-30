@@ -12,7 +12,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   smry.sumSqErr(sse, chain.beta, data.xtx);
   fvec_d a(priors.K, priors.a);
   fvec_d b(priors.K, priors.b);
-  
+  std::cout << "a filled:\n";
+  printVec(a, priors.K, 1);
   // modify gamma parameters for occupied clusters
   typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
