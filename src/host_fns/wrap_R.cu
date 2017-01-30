@@ -30,9 +30,9 @@ chain_t Rchain_wrap(SEXP Rchain){
       P = INTEGER(VECTOR_ELT(Rchain, 3))[0];
   double *beta = REAL(VECTOR_ELT(Rchain, 4)),
          *pi   = REAL(VECTOR_ELT(Rchain, 5)),
-         *tau2 = REAL(VECTOR_ELT(Rchain, 6)),
-         *zeta = INTEGER(VECTOR_ELT(Rchain, 7));
-  int *C = REAL(VECTOR_ELT(Rchain, 8));
+         *tau2 = REAL(VECTOR_ELT(Rchain, 6));
+  int    *zeta = INTEGER(VECTOR_ELT(Rchain, 7));
+  double *C = REAL(VECTOR_ELT(Rchain, 8));
   double *probs = REAL(VECTOR_ELT(Rchain, 9)),
          *means = REAL(VECTOR_ELT(Rchain, 10)),
          *meansquares = REAL(VECTOR_ELT(Rchain, 11));
