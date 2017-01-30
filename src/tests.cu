@@ -294,19 +294,25 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   return out;
 }
 
-extern "C" SEXP Rtest_draw_tau2(SEXP Rdata, SEXP Rchain, SEXP priors){
+extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rpriors){
+  int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
   summary2 smry(chain.K, chain.zeta, data);
  
-  std::cout << "tau2 before:\n";
-  printVec(chain.tau2, chain.K);
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
+  setup_kernel<<<priors.K, 1>>>(seed, devStates);
  
-  draw_tau2(chain, priors, smry);
+  std::cout << "tau2 before:\n";
+  printVec(chain.tau2, chain.K, 1);
+ 
+  draw_tau2(devStates, chain, priors, smry);
   
   std::cout << "tau2 after:\n";
-  printVec(chain.tau2, chain.K);
+  printVec(chain.tau2, chain.K, 1);
   
   fvec_h tau2(chain.K);
   thrust::copy(chain.tau2.begin(), chain.tau2.end(), tau2.begin());
