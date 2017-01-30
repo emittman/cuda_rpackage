@@ -75,7 +75,7 @@ host_fns/multinomial.o: host_fns/multinomial.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 
 host_fns/gibbs.o: host_fns/gibbs.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS) -lcurand
 
 #util functions
 util/cuda_usage.o: util/cuda_usage.cu

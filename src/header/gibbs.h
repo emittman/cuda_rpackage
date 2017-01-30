@@ -6,6 +6,6 @@
 #include "chain.h"
 #include "distribution.h"
 
-void draw_tau2(curandState *states, chain_t &chain, priors_t &prior, summary2 &summary);
+void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary);
 
 #endif

@@ -7,11 +7,11 @@ struct modify_gamma_par{
   }
 };
 
-void draw_tau2(curandState *states, chain_t &chain, priors_t &prior, data_t &data, summary2 &smry){
+void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &smry){
   fvec_d sse(smry.num_occupied);
   smry.sumSqErr(sse, chain.beta, data.xtx);
-  fvec_d a(prior.K, prior.a);
-  fvec_d b(prior.K, prior.b);
+  fvec_d a(priors.K, prior.a);
+  fvec_d b(priors.K, prior.b);
   
   // modify gamma parameters for occupied clusters
   typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
