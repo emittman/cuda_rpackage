@@ -11,6 +11,7 @@
 #include "header/cholesky.h"
 #include "header/construct_prec.h"
 #include "header/multi_dot_product.h"
+#include "header/gibbs.h"
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
@@ -288,6 +289,31 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   SEXP out = PROTECT(allocVector(REALSXP, smry.num_occupied));
   for(int i=0; i<smry.num_occupied; ++i){
     REAL(out)[i] = sse_h[i];
+  }
+  UNPROTECT(1);
+  return out;
+}
+
+extern "C" SEXP Rtest_draw_tau2(SEXP Rdata, SEXP Rchain, SEXP priors){
+  data_t data = Rdata_wrap(Rdata);
+  chain_t chain = Rchain_wrap(Rchain);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  summary2 smry(chain.K, chain.zeta, data);
+ 
+  std::cout << "tau2 before:\n";
+  printVec(chain.tau2, chain.K);
+ 
+  draw_tau2(chain, priors, smry);
+  
+  std::cout << "tau2 after:\n";
+  printVec(chain.tau2, chain.K);
+  
+  fvec_h tau2(chain.K);
+  thrust::copy(chain.tau2.begin(), chain.tau2.end(), tau2.begin());
+  
+  SEXP out = PROTECT(allocVector(REALSXP, chain.K));
+  for(int i=0; i<chain.K; ++i){
+    REAL(out)[i] = tau2[i];
   }
   UNPROTECT(1);
   return out;
