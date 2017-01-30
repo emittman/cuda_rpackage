@@ -1,8 +1,12 @@
 #include "../header/gibbs.h"
-template<typename T>
-struct modify_gamma_par: thrust::binary_function<double, T, double>{
-  template<typename T>
-  double operator()(double p, T x){
+struct modify_gamma_par_w_int{
+  double operator()(double p, int x){
+    return p + x/2;
+  }
+};
+
+struct modify_gamma_par_w_flt{
+  double operator()(double p, double x){
     return p + x/2;
   }
 };
@@ -18,11 +22,11 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
   IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(smry.Mk.begin(), smry.occupied.begin());
-  thrust::transform(a.begin(), a.end(), Mk_iter, a.begin(), modify_gamma_par());
+  thrust::transform(a.begin(), a.end(), Mk_iter, a.begin(), modify_gamma_par_w_int());
   std::cout << "a transformed:\n";
   printVec(a, priors.K, 1);
   FltPermIter sse_iter = thrust::permutation_iterator<realIter, intIter>(sse.begin(), smry.occupied.begin());
-  thrust::transform(b.begin(), b.end(), sse_iter, b.begin(), modify_gamma_par());
+  thrust::transform(b.begin(), b.end(), sse_iter, b.begin(), modify_gamma_par_w_dbl());
   std::cout << "b transformed:\n";
   printVec(b, priors.K, 1);
   // raw pointers
