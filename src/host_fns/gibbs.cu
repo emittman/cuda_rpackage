@@ -1,17 +1,10 @@
 #include "../header/gibbs.h"
 #include <thrust/scan.h>
 
-/*struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
-  double operator()(double p, int x){
-    return p + x/2.0;
-  }
-};
-
-struct modify_gamma_par_w_flt: thrust::binary_function<double, double, double>{
-  double operator()(double p, double x){
-    return p + x/2;
-  }
-};*/
+__host__ __device__ double log_sum_exp::operator()(double &x, double &y){
+  double M = max(x, y);
+  return log(exp(y-M) + exp(x-M)) + M;
+}
 
 struct modify_gamma_par {
   template<typename T>
@@ -80,4 +73,9 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
                     thrust::raw_pointer_cast(Vk.data()));
   std::cout <<"Vk:\n";
   printVec(Vk, K, 1);
+  fvec_d Ck(K);
+  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), 1, log(1 - thrust::placeholders::_1), thrust::multiplies<double>());
+  std::cout << "Ck:\n";
+  printVec(Ck, K, 1);
+  
 }
