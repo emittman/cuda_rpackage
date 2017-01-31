@@ -1,3 +1,5 @@
+set.seed(13117)
+
 K <- as.integer(4)
 G <- as.integer(10)
 V <- as.integer(2)

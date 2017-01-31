@@ -89,6 +89,8 @@ extern "C" SEXP RgetUniform(SEXP Rseed, SEXP upperR){
   SEXP out = PROTECT(allocVector(REALSXP, n));
   for(int i = 0; i < n; ++i) REAL(out)[i] = upper_d[i];
   
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
   return out;
 }
@@ -131,6 +133,8 @@ extern "C" SEXP Rgnl_multinomial(SEXP Rseed, SEXP probs, SEXP K, SEXP G){
   SET_VECTOR_ELT(out, 0, out_z);
   SET_VECTOR_ELT(out, 1, out_p);
   
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
   UNPROTECT(3);
   return out;
 }
@@ -240,6 +244,8 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
     REAL(out)[i] = beta_h[i];
   }
   
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
   return out;
 }
@@ -321,6 +327,9 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rprior
   for(int i=0; i<chain.K; ++i){
     REAL(out)[i] = tau2[i];
   }
+  
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
   return out;
 }
@@ -337,5 +346,13 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata)
   setup_kernel<<<priors.K, 1>>>(seed, devStates);
 
   draw_pi(devStates, chain, priors, smry);
+  
+  SEXP out = PROTECT(allocVector(REALSXP), 1);
+  REAL(out)[0] = 0;
+  
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
+  UNPROTECT(1);
+  return out;
 }
 
