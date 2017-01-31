@@ -82,7 +82,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   std::cout <<"Vk:\n";
   printVec(Vk, K, 1);
   fvec_d Ck(K, 0.0);
-  transform_inclusive_scan(Vk.begin()+1, Vk.end(), Ck.begin()+1, log_1m(), thrust::plus<double>());
+  transform_inclusive_scan(Vk.begin(), Vk.end()-1, Ck.begin()+1, log_1m(), thrust::plus<double>());
   std::cout << "Ck:\n";
   printVec(Ck, K, 1);
   transform(Vk.begin(), Vk.end(), Ck.begin(), chain.pi.begin(), exp_log_plus());
