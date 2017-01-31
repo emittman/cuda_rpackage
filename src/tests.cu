@@ -341,6 +341,7 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata)
   chain_t chain = Rchain_wrap(Rchain);
   std::cout << "checkpoint 0\n";
   priors_t priors = Rpriors_wrap(Rpriors);
+  std::cout << "checkpoint 0.5\n";"
   summary2 smry(chain.K, chain.zeta, data);
   std::cout << "checkpoint 1\n";
   //instantiate RNGs
