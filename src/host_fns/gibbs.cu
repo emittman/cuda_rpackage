@@ -8,6 +8,12 @@ struct log_1m {
   }
 };
 
+struct exp_log_plus {
+  __host__ __device__ double operator()(double &x, double &y){
+    return exp(log(x) + y);
+  }
+};
+
 struct modify_gamma_par {
   template<typename T>
   __host__ __device__ void operator()(T tup){
@@ -60,7 +66,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   int K = priors.K;
   fvec_d Tk(K);
   fvec_d Mkp1(K);
-  fvec_d Vk(K);
+  fvec_d Vk(K, 1.0);
   std::cout << "Tk init:\n";
   printVec(Tk, K, 1);
   thrust::exclusive_scan(summary.Mk.rbegin(), summary.Mk.rend(), Tk.rbegin());
@@ -70,14 +76,16 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   std::cout <<"Tk transformed";
   printVec(Tk, K, 1);
   thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
-  getBeta<<<K, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()),
+  getBeta<<<K-1, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()),
                     thrust::raw_pointer_cast(Tk.data()),
                     thrust::raw_pointer_cast(Vk.data()));
   std::cout <<"Vk:\n";
   printVec(Vk, K, 1);
-  fvec_d Ck(K);
-  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), log_1m(), 1, thrust::multiplies<double>());
+  fvec_d Ck(K,0.0);
+  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), log_1m(), 1, thrust::plus<double>());
   std::cout << "Ck:\n";
   printVec(Ck, K, 1);
-  
+  transform(Vk.begin(), Vk.end(), Ck.begin(), chain.pi.begin(), exp_log_plus());
+  std::cout << "pi:\n";
+  printVec(chain.pi, K, 1);
 }
