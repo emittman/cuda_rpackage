@@ -347,7 +347,7 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata)
 
   draw_pi(devStates, chain, priors, smry);
   
-  SEXP out = PROTECT(allocVector(REALSXP), 1);
+  SEXP out = PROTECT(allocVector(REALSXP, 1));
   REAL(out)[0] = 0;
   
   //clean up
