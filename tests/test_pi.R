@@ -14,7 +14,7 @@ X <- kronecker(diag(V), rep(1, n_per_v))
 
 beta <- matrix(seq(1, 5, length.out = V*K), V, K)
 
-y <- t(matrix(rnorm(G*V*n_per_v, X %*% beta[,group], .1), V*n_per_v, G))
+y <- t(matrix(rnorm(G*V*n_per_v, X %*% beta[,(zeta+1)], .1), V*n_per_v, G))
 
 data <- formatData(y, X, transform_y = identity)
 

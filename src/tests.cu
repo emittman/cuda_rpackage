@@ -337,19 +337,14 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rprior
 extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
   int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
-  std::cout << "checkpoint -1\n";
   chain_t chain = Rchain_wrap(Rchain);
-  std::cout << "checkpoint 0\n";
   priors_t priors = Rpriors_wrap(Rpriors);
-  std::cout << "checkpoint 0.5\n";
   summary2 smry(chain.K, chain.zeta, data);
-  std::cout << "checkpoint 1\n";
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
   setup_kernel<<<priors.K, 1>>>(seed, devStates);
-  std::cout << "checkpoint 2\n";
-  
+
   draw_pi(devStates, chain, priors, smry);
   
   SEXP out = PROTECT(allocVector(REALSXP, 1));

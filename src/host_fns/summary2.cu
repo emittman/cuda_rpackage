@@ -15,39 +15,28 @@ struct fi_multiply: thrust::binary_function<double, int, double>{
 
 // zeta passed by value, data passed by reference
 summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.V), occupied(_K), Mk(_K, 0){
-  std::cout << "In summary2(), checkpoint 0\n";
   // local allocations
   ivec_d perm(G); // will store permutation
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
-    std::cout << "In summary2(), checkpoint 1\n";
 
   // sort, identify occupied
-  std::cout << "zeta:\n";
-  printVec(zeta, G, 1);
-  std::cout << "perm:\n";
-  printVec(perm, G, 1);
   thrust::sort_by_key(zeta.begin(), zeta.end(), perm.begin());
-    std::cout << "In summary2(), checkpoint 1.1\n";
 
   ivec_d::iterator endptr;
   endptr = thrust::unique_copy(zeta.begin(), zeta.end(), occupied.begin());
-    std::cout << "In summary2(), checkpoint 1.2\n";
 
   occupied.erase(endptr, occupied.end());
   num_occupied = occupied.size();
-    std::cout << "In summary2(), checkpoint 2\n";
 
   // calculate Mk
   thrust::permutation_iterator<intIter, intIter> mapMk = thrust::permutation_iterator<intIter,intIter>(Mk.begin(), occupied.begin());
   thrust::reduce_by_key(zeta.begin(), zeta.end(), thrust::make_constant_iterator<int>(1), thrust::make_discard_iterator(), mapMk);
-    std::cout << "In summary2(), checkpoint 3\n";
 
   // unoccupied
   unoccupied.reserve(K - num_occupied);
   endptr = thrust::copy_if(thrust::make_counting_iterator<int>(0),
                            thrust::make_counting_iterator<int>(K), Mk.begin(), unoccupied.begin(), is_zero());
   unoccupied.erase(endptr, unoccupied.end());
-    std::cout << "In summary2(), checkpoint 4\n";
 
   //size vectors
   yty_sums.reserve(num_occupied);
@@ -60,7 +49,6 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   // "arrange" data
   thrust::permutation_iterator<realIter, intIter> sort_yty = thrust::permutation_iterator<realIter, intIter>(data.yty.begin(), perm.begin());
   thrust::reduce_by_key(zeta.begin(), zeta.end(), sort_yty, thrust::make_discard_iterator(), yty_sums.begin());
-    std::cout << "In summary2(), checkpoint 5\n";
 
   /* ytx_sums
    * 
@@ -72,13 +60,11 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   thrust::permutation_iterator<realIter, RSIntIter> sort_ytx = thrust::permutation_iterator<realIter, RSIntIter>(data.ytx.begin(), in_index);
   // reduce
   thrust::reduce_by_key(zeta_rep, zeta_rep + G*V, sort_ytx, thrust::make_discard_iterator(), ytx_sums.begin());
-    std::cout << "In summary2(), checkpoint 6\n";
 
   /* xty_sums
   * 
     */
     transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), num_occupied, V, xty_sums.begin());
-  std::cout << "In summary2(), checkpoint 7\n";
 }
 
 void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){

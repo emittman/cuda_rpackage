@@ -62,7 +62,6 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
 }
 
 void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary){
-  std::cout << "In draw_pi(), checkpoint 1\n";
   ivec_d Tk(priors.K);
   std::cout << "Tk init:\n";
   printVec(Tk, priors.K, 1);
