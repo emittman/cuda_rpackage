@@ -62,9 +62,6 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
 
 void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary){
   ivec_d Tk(priors.K);
-  typedef thrust::device_iterator<int>::reverse_iterator revIntIter;
-  revIntIter Tk_rev = Tk.rbegin();
-  revIntIter Mk_rev = summary.Mk.rbegin();
-  thrust::exclusive_scan(Mk_rev, Mk_rev + priors.K, Tk_rev);
+  thrust::exclusive_scan(summary.Mk.rbegin(), summary.Mk.rend(), Tk.rbegin());
   printVec(Tk, priors.K, 1);
 }
