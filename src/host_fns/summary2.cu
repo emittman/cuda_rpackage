@@ -15,7 +15,7 @@ struct fi_multiply: thrust::binary_function<double, int, double>{
 
 // zeta passed by value, data passed by reference
 summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.V), occupied(_K), Mk(_K, 0){
-  
+  std::cout << "In summary2(), checkpoint 0\n";
   // local allocations
   ivec_d perm(data.G); // will store permutation
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
@@ -64,7 +64,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   * 
     */
     transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), num_occupied, V, xty_sums.begin());
-  
+  std::cout << "In summary2(), checkpoint N\n";
 }
 
 void summary2::draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors){
