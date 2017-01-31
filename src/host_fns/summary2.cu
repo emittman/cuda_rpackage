@@ -23,7 +23,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
 
   // sort, identify occupied
   std::cout << "zeta:\n";
-  printVec(zeta, G, 1)
+  printVec(zeta, G, 1);
   std::cout << "perm:\n";
   printVec(perm, G, 1);
   thrust::sort_by_key(zeta.begin(), zeta.end(), perm.begin());
