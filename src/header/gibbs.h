@@ -5,7 +5,10 @@
 #include "summary2.h"
 #include "chain.h"
 #include "distribution.h"
+#include <thrust/iterator/reverse_iterator.h>
 
 void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &summary);
+
+void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary);
 
 #endif

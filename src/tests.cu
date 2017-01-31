@@ -324,3 +324,18 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rprior
   UNPROTECT(1);
   return out;
 }
+
+extern "C" SEXP Rtest_draw_beta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
+  int seed = INTEGER(Rseed)[0];
+  data_t data = Rdata_wrap(Rdata);
+  chain_t chain = Rchain_wrap(Rchain);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  summary2 smry(chain.K, chain.zeta, data);
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
+  setup_kernel<<<priors.K, 1>>>(seed, devStates);
+
+  draw_pi(devStates, chain, priors, smry);
+}
+
