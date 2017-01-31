@@ -75,7 +75,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   std::cout <<"Vk:\n";
   printVec(Vk, K, 1);
   fvec_d Ck(K);
-  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), 1, log_1m(), thrust::multiplies<double>());
+  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), log_1m(), 1, thrust::multiplies<double>());
   std::cout << "Ck:\n";
   printVec(Ck, K, 1);
   
