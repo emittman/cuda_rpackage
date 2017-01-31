@@ -62,10 +62,13 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
 }
 
 void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary){
-  ivec_d Tk(priors.K);
+  fvec_d Tk(priors.K);
   std::cout << "Tk init:\n";
   printVec(Tk, priors.K, 1);
   thrust::exclusive_scan(summary.Mk.rbegin(), summary.Mk.rend(), Tk.rbegin());
   std::cout << "Tk filled:\n";
+  printVec(Tk, priors.K, 1);
+  thrust::transform(Tk.begin(), Tk.end(), Tk.begin(), thrust::placeholders::_1 + priors.alpha);
+  std::cout <<"Tk transformed";
   printVec(Tk, priors.K, 1);
 }

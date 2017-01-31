@@ -23,7 +23,7 @@ chain <- formatChain(beta, rep(1/K, K), rep(1.2, K), as.integer(zeta))
 priors <- formatPriors(K, c(0,0), c(1,1), 1, 0.1, .3)
 
 print(zeta)
-table(zeta)
+print(table(zeta))
 .Call("Rtest_draw_pi", seed, chain, priors, data)
 #extern "C" SEXP Rtest_draw_beta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
   
