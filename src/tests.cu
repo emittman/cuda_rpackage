@@ -325,7 +325,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rseed, SEXP Rdata, SEXP Rchain, SEXP Rprior
   return out;
 }
 
-extern "C" SEXP Rtest_draw_beta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
+extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
   int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
