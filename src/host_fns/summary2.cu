@@ -17,11 +17,15 @@ struct fi_multiply: thrust::binary_function<double, int, double>{
 summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.V), occupied(_K), Mk(_K, 0){
   std::cout << "In summary2(), checkpoint 0\n";
   // local allocations
-  ivec_d perm(data.G); // will store permutation
+  ivec_d perm(G); // will store permutation
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
     std::cout << "In summary2(), checkpoint 1\n";
 
   // sort, identify occupied
+  std::cout << "zeta:\n";
+  printVec(zeta, G, 1)
+  std::cout << "perm:\n";
+  printVec(perm, G, 1);
   thrust::sort_by_key(zeta.begin(), zeta.end(), perm.begin());
     std::cout << "In summary2(), checkpoint 1.1\n";
 
