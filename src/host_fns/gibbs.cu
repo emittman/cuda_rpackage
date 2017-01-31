@@ -2,9 +2,9 @@
 #include <thrust/scan.h>
 #include <thrust/transform_scan.h>
 
-__host__ __device__ double log_sum_exp::operator()(double &x, double &y){
-  double M = max(x, y);
-  return log(exp(y-M) + exp(x-M)) + M;
+struct log_1m {
+__host__ __device__ double log_1m::operator()(double &x){
+  return log(1-x);
 }
 
 struct modify_gamma_par {
@@ -75,7 +75,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   std::cout <<"Vk:\n";
   printVec(Vk, K, 1);
   fvec_d Ck(K);
-  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), 1, log(1 - thrust::placeholders::_1), thrust::multiplies<double>());
+  transform_exclusive_scan(Vk.begin(), Vk.end(), Ck.begin(), 1, log_1m(), thrust::multiplies<double>());
   std::cout << "Ck:\n";
   printVec(Ck, K, 1);
   
