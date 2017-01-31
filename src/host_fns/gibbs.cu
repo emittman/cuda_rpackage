@@ -1,6 +1,6 @@
 #include "../header/gibbs.h"
 #include <thrust/scan.h>
-#include <thrust/transfor_scan.h>
+#include <thrust/transform_scan.h>
 
 __host__ __device__ double log_sum_exp::operator()(double &x, double &y){
   double M = max(x, y);
