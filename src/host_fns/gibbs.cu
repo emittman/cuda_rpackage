@@ -3,9 +3,10 @@
 #include <thrust/transform_scan.h>
 
 struct log_1m {
-__host__ __device__ double log_1m::operator()(double &x){
-  return log(1-x);
-}
+  __host__ __device__ double operator()(double &x){
+    return log(1-x);
+  }
+};
 
 struct modify_gamma_par {
   template<typename T>
