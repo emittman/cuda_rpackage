@@ -75,7 +75,9 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   std::cout <<"Tk transformed";
   printVec(Tk, K, 1);
   thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
-  getBeta<<<K, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()), thrust::raw_pointer_cast(Tk.data()));
+  getBeta<<<K, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()),
+                    thrust::raw_pointer_cast(Tk.data()),
+                    thrust::raw_pointer_cast(Vk.data()));
   std::cout <<"Vk:\n";
   printVec(Vk, K, 1);
 }
