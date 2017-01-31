@@ -23,8 +23,12 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
 
   // sort, identify occupied
   thrust::sort_by_key(zeta.begin(), zeta.end(), perm.begin());
+    std::cout << "In summary2(), checkpoint 1.1\n";
+
   ivec_d::iterator endptr;
   endptr = thrust::unique_copy(zeta.begin(), zeta.end(), occupied.begin());
+    std::cout << "In summary2(), checkpoint 1.2\n";
+
   occupied.erase(endptr, occupied.end());
   num_occupied = occupied.size();
     std::cout << "In summary2(), checkpoint 2\n";
