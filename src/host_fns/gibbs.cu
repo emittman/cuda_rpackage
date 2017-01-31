@@ -1,4 +1,5 @@
 #include "../header/gibbs.h"
+#include <thrust/scan.h>
 
 /*struct modify_gamma_par_w_int: thrust::binary_function<double, int, double>{
   double operator()(double p, int x){
@@ -62,6 +63,9 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
 
 void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary){
   ivec_d Tk(priors.K);
+  std::cout << "Tk init:\n";
+  printVec(Tk, priors.K, 1);
   thrust::exclusive_scan(summary.Mk.rbegin(), summary.Mk.rend(), Tk.rbegin());
+  std::cout << "Tk filled:\n";
   printVec(Tk, priors.K, 1);
 }
