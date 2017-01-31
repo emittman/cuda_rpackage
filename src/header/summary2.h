@@ -50,7 +50,6 @@ struct summary2{
   void print_Mk(){ printVec(Mk, 1, K);}
   void print_yty(){ printVec(yty_sums, 1, num_occupied);}
   void print_xty(){ printVec(xty_sums, V, num_occupied);}
-  void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors);
   void sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx);
 };
 

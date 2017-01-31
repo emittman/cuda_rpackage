@@ -230,7 +230,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   int beta_size = data.V*priors.K;
   fvec_h beta_h(beta_size, 0.0);
   fvec_d beta(beta_h.begin(), beta_h.end());
-  smry.draw_MVNormal(devStates, bhat, prec, beta, priors);
+  draw_MVNormal(devStates, bhat, prec, beta, priors, smry);
   
   //print value
   std::cout << "beta_draws:\n";
