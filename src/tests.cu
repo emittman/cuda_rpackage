@@ -34,7 +34,7 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
 }
 
 extern "C" SEXP Rcluster_weights(SEXP A, SEXP B, SEXP C, SEXP D, SEXP E, SEXP G, SEXP N, SEXP K){
-  int g = INTEGER(G)[0], v = INTEGER(V)[0], n = INTEGER(N)[0], k = INTEGER(K)[0];
+  int g = INTEGER(G)[0], n = INTEGER(N)[0], k = INTEGER(K)[0];
   fvec_h a_h(REAL(A), REAL(A) + g*k);
   fvec_d a(g*k);
   thrust::copy(a_h.begin(), a_h.end(), a.begin());
@@ -42,7 +42,7 @@ extern "C" SEXP Rcluster_weights(SEXP A, SEXP B, SEXP C, SEXP D, SEXP E, SEXP G,
   fvec_d c(REAL(C), REAL(C) + k);
   fvec_d d(REAL(D), REAL(D) + g);
   fvec_d e(REAL(E), REAL(E) + k);
-  cluster_weights(a, b, c, d, e, g, v, n, k);
+  cluster_weights(a, b, c, d, e, g, n, k);
   thrust::copy(a.begin(), a.end(), a_h.begin());
   SEXP OUT = PROTECT(allocVector(REALSXP, g*k));
   for(int i=0; i<g*k; ++i) REAL(OUT)[i] = a_h[i];
@@ -371,7 +371,7 @@ extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdat
   ivec_h zeta_h(data.G);
   thrust::copy(chain.zeta.begin(), chain.zeta.end(), zeta_h.begin());
 
-  SEXP out = PROTECT(allocVecter(INTSXP, data.G));
+  SEXP out = PROTECT(allocVector(INTSXP, data.G));
   for(int i=0; i<data.G; ++i){
     INTEGER(out)[i] = zeta_h[i];
   }
