@@ -5,7 +5,7 @@
 #include "summary2.h"
 #include "chain.h"
 #include "distribution.h"
-#include "cluster_probabilities.h"
+#include "cluster_probability.h"
 #include "quad_form.h"
 #include "multinomial.h"
 #include <thrust/iterator/reverse_iterator.h>
