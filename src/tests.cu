@@ -356,3 +356,27 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata)
   return out;
 }
 
+extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
+  int seed = INTEGER(Rseed)[0];
+  data_t data = Rdata_wrap(Rdata);
+  chain_t chain = Rchain_wrap(Rchain);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
+  setup_kernel<<<priors.K, 1>>>(seed, devStates);
+
+  draw_zeta(devStates, data, chain, priors);
+  
+  ivec_h zeta_h(data.G);
+  thrust::copy(chain.zeta.begin(), chain.zeta.end(), zeta_h.begin());
+
+  SEXP out = PROTECT(allocVecter(INTSXP, data.G));
+  for(int i=0; i<data.G; ++i){
+    INTEGER(out)[i] = zeta_h[i];
+  }
+  //clean up
+  CUDA_CALL(cudaFree(devStates));
+  UNPROTECT(1);
+  return out;
+}

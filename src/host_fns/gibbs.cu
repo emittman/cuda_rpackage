@@ -144,3 +144,13 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   std::cout << "pi:\n";
   printVec(chain.pi, K, 1);
 }
+
+void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors){
+  fvec_d bxxb(priors.K);
+  fvec_d grid(data.G*priors.K);
+  quad_form_multi(data.xtx, chain.beta, bxxb, priors.K, data.V);
+  cluster_weights(grid, chain.pi, chain.tau2, data.yty, bxxb, data.G, data.N, priors.K);
+  normalize_wts(grid, priors.K, data.G);
+  gnl_multinomial(chain.zeta, grid, states, priors.K, data.G);
+}
+
