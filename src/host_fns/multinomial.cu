@@ -25,6 +25,12 @@ struct exponential{
 
 };
 
+struct log{
+  __host__ __device__ double operator()(const double &x){
+    return log(x);
+  }
+};
+
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
   normalize_wts(probs, K, G);
   fvec_d u(G);
@@ -40,6 +46,9 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   
   double *u_ptr = thrust::raw_pointer_cast(u.data());
   getUniform<<<G, 1>>>(states, u_ptr);
+
+  thrust::transform(u.begin(), u.end(), u.begin(), log());
+
   gRepEach<realIter>::iterator u_rep = getGRepEachIter(u.begin(), u.end(), K);
 
   ivec_d dummies(K*G);
