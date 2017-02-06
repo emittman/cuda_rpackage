@@ -363,8 +363,8 @@ extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdat
   priors_t priors = Rpriors_wrap(Rpriors);
   //instantiate RNGs
   curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
-  setup_kernel<<<priors.K, 1>>>(seed, devStates);
+  CUDA_CALL(cudaMalloc((void **) &devStates, priors.G * sizeof(curandState)));
+  setup_kernel<<<priors.G, 1>>>(seed, devStates);
 
   draw_zeta(devStates, data, chain, priors);
   printVec(chain.zeta, data.G, 1);
