@@ -9,10 +9,6 @@ void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
   big_matrix_multiply(chain.beta, data.xty, big_grid, data.V, chain.K, data.V, data.G);
   fvec_d bxxb(chain.K);
   quad_form_multi(data.xtx, chain.beta, bxxb, chain.K, data.V);
-  std::cout << "bxxb[0]: " << bxxb[0] <<"\n";
-  std::cout << "bxxb[K-1]: " << bxxb[chain.K-1] << "\n";
-  std::cout << "bxty[0]: " << big_grid[0] << "\n";
-  std::cout << "bxty[data.G*chain.K-1]: " << big_grid[data.G*chain.K-1] << "\n";
   gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(chain.pi.begin(), chain.pi.end(), chain.K, 1);
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
   gRepEach<realIter>::iterator yty_iter = getGRepEachIter(data.yty.begin(), data.yty.end(), chain.K, 1);
@@ -20,5 +16,4 @@ void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
   weight_zip zipped = thrust::zip_iterator<weight_tup>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
   clust_prob f(data.N);
   thrust::for_each(zipped, zipped + data.G*chain.K, f);
-  std::cout << "result(0,0): " << big_grid[0] << "\n";
 }

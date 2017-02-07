@@ -375,7 +375,7 @@ extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdat
   setup_kernel<<<data.G, 1>>>(seed, devStates);
 
   draw_zeta(devStates, data, chain, priors);
-  printVec(chain.zeta, data.G, 1);
+  //printVec(chain.zeta, data.G, 1);
   ivec_h zeta_h(data.G);
   thrust::copy(chain.zeta.begin(), chain.zeta.end(), zeta_h.begin());
 

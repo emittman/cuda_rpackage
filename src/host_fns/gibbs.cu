@@ -80,12 +80,12 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   fvec_d sse(smry.num_occupied);
   int K = chain.K;
   smry.sumSqErr(sse, chain.beta, data.xtx);
-  std::cout << "sse:\n";
-  printVec(sse, K, 1);
+  //std::cout << "sse:\n";
+  //printVec(sse, K, 1);
   fvec_d a_d(K, priors.a);
   fvec_d b_d(K, priors.b);
-  std::cout << "a_d filled:\n";
-  printVec(a_d, K, 1);
+  //std::cout << "a_d filled:\n";
+  //printVec(a_d, K, 1);
   // modify gamma parameters for occupied clusters
   typedef thrust::tuple<realIter, intIter> tuple1;
   typedef thrust::zip_iterator<tuple1> zip1;
@@ -95,8 +95,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   modify_gamma_par f;
   thrust::for_each(zp1, zp1 + K, f);
   
-  std::cout << "a transformed:\n";
-  printVec(a_d, K, 1);
+  //std::cout << "a transformed:\n";
+  //printVec(a_d, K, 1);
   
   typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
   FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
@@ -122,27 +122,27 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   fvec_d Tk(K);
   fvec_d Mkp1(K);
   fvec_d Vk(K, 1.0);
-  std::cout << "Tk init:\n";
-  printVec(Tk, K, 1);
+  //std::cout << "Tk init:\n";
+  //printVec(Tk, K, 1);
   thrust::exclusive_scan(summary.Mk.rbegin(), summary.Mk.rend(), Tk.rbegin());
-  std::cout << "Tk filled:\n";
-  printVec(Tk, K, 1);
+  //std::cout << "Tk filled:\n";
+  //printVec(Tk, K, 1);
   thrust::transform(Tk.begin(), Tk.end(), Tk.begin(), thrust::placeholders::_1 + priors.alpha);
-  std::cout <<"Tk transformed";
-  printVec(Tk, K, 1);
+  //std::cout <<"Tk transformed";
+  //printVec(Tk, K, 1);
   thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
   getBeta<<<K-1, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()),
                     thrust::raw_pointer_cast(Tk.data()),
                     thrust::raw_pointer_cast(Vk.data()));
-  std::cout <<"Vk:\n";
-  printVec(Vk, K, 1);
+  //std::cout <<"Vk:\n";
+  //printVec(Vk, K, 1);
   fvec_d Ck(K, 0.0);
   transform_inclusive_scan(Vk.begin(), Vk.end()-1, Ck.begin()+1, log_1m(), thrust::plus<double>());
-  std::cout << "Ck:\n";
-  printVec(Ck, K, 1);
+  //std::cout << "Ck:\n";
+  //printVec(Ck, K, 1);
   transform(Vk.begin(), Vk.end(), Ck.begin(), chain.pi.begin(), exp_log_plus());
-  std::cout << "pi:\n";
-  printVec(chain.pi, K, 1);
+  //std::cout << "pi:\n";
+  //printVec(chain.pi, K, 1);
 }
 
 void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors){
