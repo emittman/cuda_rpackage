@@ -33,22 +33,24 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
   return zero;
 }
 
-extern "C" SEXP Rcluster_weights(SEXP A, SEXP B, SEXP C, SEXP D, SEXP E, SEXP G, SEXP N, SEXP K){
-  int g = INTEGER(G)[0], n = INTEGER(N)[0], k = INTEGER(K)[0];
-  fvec_h a_h(REAL(A), REAL(A) + g*k);
-  fvec_d a(g*k);
-  thrust::copy(a_h.begin(), a_h.end(), a.begin());
-  fvec_d b(REAL(B), REAL(B) + k);
-  fvec_d c(REAL(C), REAL(C) + k);
-  fvec_d d(REAL(D), REAL(D) + g);
-  fvec_d e(REAL(E), REAL(E) + k);
-  cluster_weights(a, b, c, d, e, g, n, k);
-  thrust::copy(a.begin(), a.end(), a_h.begin());
-  SEXP OUT = PROTECT(allocVector(REALSXP, g*k));
-  for(int i=0; i<g*k; ++i) REAL(OUT)[i] = a_h[i];
+extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors){
+  data_t data = Rdata_wrap(Rdata);
+  chain_t chain = Rchain_wrap(Rchain);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  fvec_d bxxb(priors.K);
+  fvec_d grid(data.G*priors.K);
+  quad_form_multi(data.xtx, chain.beta, bxxb, priors.K, data.V);
+  cluster_weights(grid, chain.pi, chain.tau2, data.yty, bxxb, data.G, data.N, priors.K);
+  normalize_wts(grid, priors.K, data.G);
+  
+  fvec_h grid_h(data.G*priors.K);
+  thrust::copy(grid.begin(), grid.end(), grid_h.begin());
+  SEXP OUT = PROTECT(allocVector(REALSXP, data.G*priors.K));
+  for(int i=0; i<data.G*priors.K; ++i) REAL(OUT)[i] = grid_h[i];
   UNPROTECT(1);
   return OUT;
 }
+
 
 extern "C" SEXP Rnormalize_wts(SEXP grid, SEXP dim1, SEXP dim2){
   int k=INTEGER(dim1)[0], g = INTEGER(dim2)[0];
