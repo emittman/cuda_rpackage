@@ -54,7 +54,7 @@ host_fns/iter_getter.o: host_fns/iter_getter.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
 
 host_fns/summary2.o: host_fns/summary2.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS) -lcurand
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 
 host_fns/chain.o: host_fns/chain.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@
@@ -75,7 +75,7 @@ host_fns/multinomial.o: host_fns/multinomial.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 
 host_fns/gibbs.o: host_fns/gibbs.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS) -lcurand
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 
 #util functions
 util/cuda_usage.o: util/cuda_usage.cu
