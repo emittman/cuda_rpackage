@@ -54,7 +54,7 @@ plyr::ldply(1:times, function(i){
 
   Rout <- sapply(1:G, function(g){
     sapply(1:K, function(k){
-      log(pi[k]) + N * sqrt(tau2[k]) + -0.5 * tau2[k] * (data$yty[g] - 2 * data$xty[,g] + t(beta[,g]) %*% data$xtx %*% beta[,g])
+      log(pi[k]) + N * sqrt(tau2[k]) + -0.5 * tau2[k] * (data$yty[g] - 2 * data$xty[,g] + t(beta[,g]) %*% matrix(data$xtx,V,V) %*% beta[,g])
     })
   })
   
