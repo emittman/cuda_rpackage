@@ -52,14 +52,15 @@ plyr::ldply(1:times, function(i){
   
   chain <- formatChain(beta, pi, tau2, zeta)
 
-  idk <- rep(1:K, times=G)
-  idg <- rep(1:G, each=K)
-  Rout <- log(pi[idk]) + 0.5 * N * log(tau2[idk]) + -0.5 * tau2[idk] * (data$yty[idg] - 
-          2 * t(beta[,idk]) %*% data$xty[,idg] + t(beta[,idk]) %*% matrix(data$xtx,V,V) %*% beta[,idk])
+  Rout <- sapply(1:G, function(g){
+    sapply(1:K, function(k){
+      log(pi[k]) + N * 0.5 * log(tau2[k]) + -0.5 * tau2[k] * (data$yty[g] - 2 * t(beta[,k]) %*% data$xty[,g] + t(beta[,k]) %*% matrix(data$xtx,V,V) %*% beta[,k])
+    })
+  })
   
   Cout <- .Call("Rcluster_weights", data, chain, priors);
 
   test_that("Weights are correct, given bxxb and bxty", {
-    expect_equal(Rout, Cout)
+    expect_equal(as.numeric(Rout), Cout))
   })  
 })
