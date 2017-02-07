@@ -61,6 +61,6 @@ plyr::ldply(1:times, function(i){
   Cout <- .Call("Rcluster_weights", data, chain, priors);
 
   test_that("Weights are correct, given bxxb and bxty", {
-    expect_equal(as.numeric(Rout), Cout))
+    expect_equal(as.numeric(Rout), Cout)
   })  
 })
