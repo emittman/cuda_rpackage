@@ -3,6 +3,7 @@
 
 #include "iter_getter.h"
 #include "quad_form.h"
+#include "chain.h"
 
 // used here to compute all combinations of t(beta_k) %*% t(X) %*% y_g
 void big_matrix_multiply(fvec_d &A, fvec_d &B, fvec_d &big_grid, int a1, int a2, int b1, int b2);

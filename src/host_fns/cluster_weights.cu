@@ -13,10 +13,10 @@ void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
   std::cout << "bxxb[K-1]: " << bxxb[K-1] << "\n";
   std::cout << "bxty[0]: " << big_grid[0] << "\n";
   std::cout << "bxty[G*K-1]: " << big_grid[G*K-1] << "\n";
-  gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(pi.begin(), pi.end(), K, 1);
-  gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(tau2.begin(), tau2.end(), K, 1);
-  gRepEach<realIter>::iterator yty_iter = getGRepEachIter(yty.begin(), yty.end(), K, 1);
-  gRepTimes<realIter>::iterator bxxb_iter = getGRepTimesIter(bxxb.begin(), bxxb.end(), K, 1);
+  gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(chain.pi.begin(), chain.pi.end(), chain.K, 1);
+  gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
+  gRepEach<realIter>::iterator yty_iter = getGRepEachIter(data.yty.begin(), data.yty.end(), chain.K, 1);
+  gRepTimes<realIter>::iterator bxxb_iter = getGRepTimesIter(bxxb.begin(), bxxb.end(), chain.K, 1);
   weight_zip zipped = thrust::zip_iterator<weight_tup>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
   clust_prob f(N);
   thrust::for_each(zipped, zipped + G*K, f);
