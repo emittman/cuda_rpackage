@@ -387,3 +387,19 @@ extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdat
   UNPROTECT(1);
   return out;
 }
+
+extern "C" SEXP Rtest_running_mean(SEXP Rmean, SEXP Rnew, SEXP Rpow, SEXP Rstep){
+  int pow = INTEGER(Rpow)[0];
+  int step = INTEGER(Rstep)[0];
+  int len = length(Rmean);
+  fvec_h mean_h(REAL(Rmean), REAL(Rmean) + len);
+  fvec_h new_h(REAL(Rnew), REAL(Rnew) + len);
+  fvec_d mean_d(mean_h.begin(), mean_h.end());
+  fvec_d new_d(new_h.begin(), new_h.end());
+  update_running_means(mean_d, new_d, len, step, pow);
+  thrust::copy(mean_d.begin(), mean_d.end(), mean_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, len));
+  for(int i=0; i<len; i++) REAL(out)[i] = mean_h[i];
+  UNPROTECT(1);
+  return out;
+}
