@@ -40,14 +40,8 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   thrust::copy(strided_iter, strided_iter + G, u.begin());
   printVec(u, G, 1);
   
-  thrust::transform(u.begin(), u.end(), u.begin(), exponential());
-  
-  printVec(u, G, 1);
-  
   double *u_ptr = thrust::raw_pointer_cast(u.data());
   getUniform<<<G, 1>>>(states, u_ptr);
-
-  thrust::transform(u.begin(), u.end(), u.begin(), logorithmic());
 
   gRepEach<realIter>::iterator u_rep = getGRepEachIter(u.begin(), u.end(), K);
 
