@@ -19,6 +19,6 @@ void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
   gRepTimes<realIter>::iterator bxxb_iter = getGRepTimesIter(bxxb.begin(), bxxb.end(), chain.K, 1);
   weight_zip zipped = thrust::zip_iterator<weight_tup>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
   clust_prob f(data.N);
-  thrust::for_each(zipped, zipped + G*K, f);
+  thrust::for_each(zipped, zipped + data.G*chain.K, f);
   std::cout << "result(0,0): " << big_grid[0] << "\n";
 }
