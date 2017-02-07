@@ -10,7 +10,7 @@ X <- matrix(rnorm(len*N), len, N);
 for(p in pows){
 
   Rout <- drop(apply(X, 1, function(row) mean(row^p)))
-  Cout <- X[,1]^pow
+  Cout <- X[,1]^p
   for(i in 2:N){
     Cout <- .Call("Rtest_running_mean", Cout, X[,i], p, i)
   }
