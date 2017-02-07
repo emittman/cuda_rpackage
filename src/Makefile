@@ -69,7 +69,7 @@ host_fns/big_matrix_multiply.o: host_fns/big_matrix_multiply.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
 
 host_fns/cluster_weights.o: host_fns/cluster_weights.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
+	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS) -lquad_form
 
 host_fns/multinomial.o: host_fns/multinomial.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
