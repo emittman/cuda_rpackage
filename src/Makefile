@@ -79,7 +79,7 @@ host_fns/gibbs.o: host_fns/gibbs.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 
 host_fns/running_mean.o: host_fns/running_mean.cu
-	nvcc -c $(NVCC FLAGS) $< -o $@
+	nvcc -c $(NVCC FLAGS) $< -o $@ $(LIBS)
 
 #util functions
 util/cuda_usage.o: util/cuda_usage.cu
