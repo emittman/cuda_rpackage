@@ -38,7 +38,7 @@ plyr::ldply(1:times, function(i){
   tau2 <- 1/rexp(K, 1)
   
   zeta <- sample(0:(K-1), G, replace=T)
-  
+
   beta <- matrix(rnorm(K*V), V, K)
   
   group <- rep(1:V, each=N/V)
@@ -54,7 +54,7 @@ plyr::ldply(1:times, function(i){
 
   Rout <- sapply(1:G, function(g){
     sapply(1:K, function(k){
-      log(pi[k]) + N * sqrt(tau2[k]) + -0.5 * tau2[k] * (data$yty[g] - 2 * data$xty[,g] + t(beta[,g]) %*% matrix(data$xtx,V,V) %*% beta[,g])
+      log(pi[k]) + N * sqrt(tau2[k]) + -0.5 * tau2[k] * (data$yty[g] - 2 * t(beta[,k]) %*% data$xty[,g] + t(beta[,k]) %*% matrix(data$xtx,V,V) %*% beta[,k])
     })
   })
   
