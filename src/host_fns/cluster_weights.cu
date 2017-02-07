@@ -6,6 +6,10 @@ __host__ __device__ void clust_prob::operator()(weight_tup_el Tup){
 }
   
 void cluster_weights(fvec_d &big_grid, fvec_d &pi, fvec_d &tau2, fvec_d &yty, fvec_d &bxxb, int G, int N, int K){
+  std::cout << "bxxb[0]: " << bxxb[0] <<"\n";
+  std::cout << "bxxb[K-1]: " << bxxb[K-1] << "\n";
+  std::cout << "bxty[0]: " << big_grid[0] << "\n";
+  std::cout << "bxty[G*K-1]: " << big_grid[G*K-1] << "\n";
   gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(pi.begin(), pi.end(), K, 1);
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(tau2.begin(), tau2.end(), K, 1);
   gRepEach<realIter>::iterator yty_iter = getGRepEachIter(yty.begin(), yty.end(), K, 1);
@@ -13,4 +17,5 @@ void cluster_weights(fvec_d &big_grid, fvec_d &pi, fvec_d &tau2, fvec_d &yty, fv
   weight_zip zipped = thrust::zip_iterator<weight_tup>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
   clust_prob f(N);
   thrust::for_each(zipped, zipped + G*K, f);
+  std::cout << "result(0,0): " << big_grid[0] << "\n";
 }
