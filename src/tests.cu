@@ -44,10 +44,8 @@ extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors){
   data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
-  fvec_d bxxb(priors.K);
   fvec_d grid(data.G*priors.K);
-  quad_form_multi(data.xtx, chain.beta, bxxb, priors.K, data.V);
-  cluster_weights(grid, chain.pi, chain.tau2, data.yty, bxxb, data.G, data.N, priors.K);
+  cluster_weights(grid, data, chain);
   //normalize_wts(grid, priors.K, data.G);
   
   fvec_h grid_h(data.G*priors.K);

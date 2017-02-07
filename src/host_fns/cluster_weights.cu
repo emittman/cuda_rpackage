@@ -5,7 +5,10 @@ __host__ __device__ void clust_prob::operator()(weight_tup_el Tup){
     thrust::get<0>(Tup) = log(thrust::get<1>(Tup)) + n * 0.5 * log(thrust::get<2>(Tup)) + -0.5 * thrust::get<2>(Tup) * ( thrust::get<3>(Tup) - 2 * thrust::get<0>(Tup) + thrust::get<4>(Tup) );
 }
   
-void cluster_weights(fvec_d &big_grid, fvec_d &pi, fvec_d &tau2, fvec_d &yty, fvec_d &bxxb, int G, int N, int K){
+void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
+  big_matrix_multiply(chain.beta, data.xty, big_grid, data.V, chain.K, data.V, data.G);
+  fvec_d bxxb(chain.K);
+  quad_form_multi(data.xtx, chain.beta, bxxb, chain.K, data.V);
   std::cout << "bxxb[0]: " << bxxb[0] <<"\n";
   std::cout << "bxxb[K-1]: " << bxxb[K-1] << "\n";
   std::cout << "bxty[0]: " << big_grid[0] << "\n";

@@ -2,6 +2,7 @@
 #define CLUST_PROB
 
 #include "iter_getter.h"
+#include "quad_form.h"
 
 // used here to compute all combinations of t(beta_k) %*% t(X) %*% y_g
 void big_matrix_multiply(fvec_d &A, fvec_d &B, fvec_d &big_grid, int a1, int a2, int b1, int b2);
@@ -19,7 +20,7 @@ struct clust_prob{
   __host__ __device__ void operator()(weight_tup_el Tup);
 };  
 
-void cluster_weights(fvec_d &big_grid, fvec_d &pi, fvec_d &tau2, fvec_d &yty, fvec_d &bxxb, int G, int N, int K);
+void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain);
 
 
 #endif
