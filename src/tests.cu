@@ -16,7 +16,13 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
+// This prevents the replacement of "beta" by Rmath.h
+#ifdef beta
+#undef beta
+#endif
+
 #include <cuda.h>
+
 
 extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP N){
   int g = INTEGER(G)[0], v = INTEGER(V)[0], n = INTEGER(N)[0];
