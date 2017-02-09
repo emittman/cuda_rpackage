@@ -13,9 +13,7 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N)
 
 samples_t::samples_t(int _iter, int _K_save, int _V, int *idx):
     iter(_iter), K_save(_K_save), V(_V),
-    save_idx(idx, idx + K_save), save_beta(iter*K_save*V), save_tau2(iter*K_save), save_pi(iter*K_save){
-    beta_iter = getSCIntIter(save_idx.begin(), save_idx.end(), V);
-  }
+    save_idx(idx, idx + K_save), save_beta(iter*K_save*V), save_tau2(iter*K_save), save_pi(iter*K_save), beta_iter(getSCIntIter(save_idx.begin(), save_idx.end(), V)){}
 
 void samples_t::write_samples(int i, chain_t &chain){
   thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_iter);
