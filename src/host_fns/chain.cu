@@ -19,11 +19,11 @@ samples_t::samples_t(int _iter, int _K_save, int _V, int *idx):
 
 void samples_t::write_samples(int i, chain_t &chain){
   thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_iter);
-  thrust::copy(betaI, betaI + K_save*V, saved_beta.begin() + K_save*V*i);
+  thrust::copy(betaI, betaI + K_save*V, save_beta.begin() + K_save*V*i);
   thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2.begin(), save_idx.begin());
-  thrust::copy(tau2I, tau2I + K_save, saved_tau2.begin() + K_save*i);
+  thrust::copy(tau2I, tau2I + K_save, save_tau2.begin() + K_save*i);
   thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi.begin(), save_idx.begin());
-  thrust::copy(piI, piI + K_save, saved_pi.begin() + K_save*i);
+  thrust::copy(piI, piI + K_save, save_pi.begin() + K_save*i);
 }
 
 void chain_t::update_probabilities(int step){
