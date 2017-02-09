@@ -75,11 +75,9 @@ struct samples_t{
   fvec_h save_pi;
   SCIntIter beta_iter;
   
-  samples_t(int _iter, int _K_save, int _V, int *idx): iter(_iter), K_save(_K_save), V(_V){
-    save_idx(idx, idx + K_save);
-    save_beta(iter*K_save*V);
-    save_tau2(iter*K_save);
-    save_pi(iter*K_save);
+  samples_t(int _iter, int _K_save, int _V, int *idx): iter(_iter), K_save(_K_save), V(_V),
+    save_idx(idx, idx + K_save), save_beta(iter*K_save*V), save_tau2(iter*K_save),
+    save_pi(iter*K_save){
     beta_iter = getSCIntIter(save_idx.begin(), save_idx.end(), V);
   }
   
