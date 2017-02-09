@@ -32,7 +32,7 @@ void chain_t::update_probabilities(int step){
   big_matrix_multiply(C, beta, grid, V, P, V, K);
   thrust::transform(grid.begin(), grid.end(), Igrid.begin(), thrust::placeholders::_1 > 0);
   repEachIter colIt = getRepEachIter(P, 1);
-  thrust::reduce_by_key(colIt, colIt + P*K, Igrid.begin(), resultK.begin(), thrust::equal_to<int>(), thrust::minimum<int>());
+  thrust::reduce_by_key(colIt, colIt + P*K, Igrid.begin(), thrust::make_discard_iterator(), resultK.begin(), thrust::equal_to<int>(), thrust::minimum<int>());
   /* map by zeta*/
   fvec_d resultG(G);
   thrust::permutation_iterator<realIter, intIter> map_result = thrust::permutation_iterator<realIter, intIter>(resultK.begin(), zeta.begin());
