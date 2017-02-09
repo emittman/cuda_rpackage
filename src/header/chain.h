@@ -3,6 +3,8 @@
 
 #include "iter_getter.h"
 #include "transpose.h"
+#include "cluster_probability.h"
+#include "running_mean.h"
 
 struct data_t{
   

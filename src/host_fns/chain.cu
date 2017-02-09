@@ -15,11 +15,11 @@ samples_t::samples_t(int _iter, int _K_save, int _V, int *idx):
   }
 
 void samples_t::write_samples(int i, chain_t &chain){
-  thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta, beta_iter);
+  thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_iter);
   thrust::copy(betaI, betaI + K_save*V, beta_saved.begin() + K_save*V*i);
-  thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2, save_idx.begin());
+  thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2.begin(), save_idx.begin());
   thrust::copy(tau2I, tau2I + K_save, tau2_saved.begin() + K_save*i);
-  thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi, save_idx.begin());
+  thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi.begin(), save_idx.begin());
   thrust::copy(piI, piI + K_save, pi_saved.begin() + K_save*i);
 }
 
@@ -45,6 +45,6 @@ void chain_t::update_means(int step){
   thrust::permutation_iterator<realIter, SCIntIter> map_beta = thrust::permutation_iterator<realIter, SCIntIter>(beta, map_zeta);
   thrust::copy(map_beta, map_beta+G*V, beta_g.begin());
   update_running_means(means, beta_g, G*V, step, 1);
-  update_running_means(meanssquares, beta_g, G*V, step, 2);
+  update_running_means(meansquares, beta_g, G*V, step, 2);
 }
 
