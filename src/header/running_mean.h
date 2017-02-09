@@ -1,3 +1,6 @@
+#ifndef RUNNING_MN
+#define RUNNING_MN
+
 #include "iter_getter.h"
 
 struct update_mean{
@@ -13,3 +16,5 @@ typedef thrust::tuple<realIter, realIter, thrust::constant_iterator<int> > updat
 typedef thrust::zip_iterator<update_tup> update_zip;
 
 void update_running_means(fvec_d &means, fvec_d &new_obs, int length, int step, int power);
+
+#endif
