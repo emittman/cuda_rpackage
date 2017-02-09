@@ -19,11 +19,11 @@ samples_t::samples_t(int _iter, int _K_save, int _V, int *idx):
 
 void samples_t::write_samples(int i, chain_t &chain){
   thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_iter);
-  thrust::copy(betaI, betaI + K_save*V, beta_saved.begin() + K_save*V*i);
+  thrust::copy(betaI, betaI + K_save*V, saved_beta.begin() + K_save*V*i);
   thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2.begin(), save_idx.begin());
-  thrust::copy(tau2I, tau2I + K_save, tau2_saved.begin() + K_save*i);
+  thrust::copy(tau2I, tau2I + K_save, saved_tau2.begin() + K_save*i);
   thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi.begin(), save_idx.begin());
-  thrust::copy(piI, piI + K_save, pi_saved.begin() + K_save*i);
+  thrust::copy(piI, piI + K_save, saved_pi.begin() + K_save*i);
 }
 
 void chain_t::update_probabilities(int step){
@@ -37,7 +37,7 @@ void chain_t::update_probabilities(int step){
   thrust::reduce_by_key(colIt, colIt + P*K, Igrid.begin(), resultK.begin(), thrust::equal_to<int>(), thrust::minimum<int>());
   /* map by zeta*/
   fvec_d resultG(G);
-  thrust::permutation_iterator<intIter, intIter> map_result = thrust::permutation_iterator<intIter, intIter>(resultK.begin(), zeta.begin());
+  thrust::permutation_iterator<realIter, intIter> map_result = thrust::permutation_iterator<realIter, intIter>(resultK.begin(), zeta.begin());
   thrust::copy(map_result, map_result+G, resultG.begin());
   update_running_means(probs, resultG, G, step, 1);
 }
@@ -45,7 +45,7 @@ void chain_t::update_probabilities(int step){
 void chain_t::update_means(int step){
   fvec_d beta_g(G*V);
   SCIntIter map_zeta = getSCIntIter(zeta.begin(), zeta.end(), V);
-  thrust::permutation_iterator<realIter, SCIntIter> map_beta = thrust::permutation_iterator<realIter, SCIntIter>(beta, map_zeta);
+  thrust::permutation_iterator<realIter, SCIntIter> map_beta = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), map_zeta);
   thrust::copy(map_beta, map_beta+G*V, beta_g.begin());
   update_running_means(means, beta_g, G*V, step, 1);
   update_running_means(meansquares, beta_g, G*V, step, 2);
