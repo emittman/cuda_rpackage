@@ -18,7 +18,7 @@ void samples_t::write_samples(int i, chain_t &chain){
 }
 
 void chain_t::update_probabilities(int step){
-  /* multiply C %*% beta, eval if > 0, resultK = (min(Col) == 1)[all true]
+  /* multiply C %*% beta, eval if > 0, resultK = (min(Col) == 1)[all true]*/
   fvec_d grid(P*K);
   ivec_d Igrid(P*K);
   fvec_d resultK(K);
