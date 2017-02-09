@@ -92,37 +92,5 @@ struct mcmc_t{
   mcmc_t(data_t* _data, priors_t* _priors, chain_t* _chain): data(_data), priors(_priors), chain(_chain){}
   
 };
-
-  
-  // void initialize_chain(chain_t &chain){
-  //   // Fill with default/"agnostic" starting values
-  //   for(int i=0; i<chain.K; i++){
-  //     chain.pi[i] = 1.0/(double)chain.K;
-  //     chain.sigma2[i] = 1.0;
-  //   }
-  //   
-  //   for(int i=0; i<chain.K*chain.V; i++){
-  //     chain.beta[i] = rnorm(0,chain.lambda2);
-  //   }
-  //   
-  // }
-  // 
-  // void print_chain_state(chain_t &chain){
-  //   
-  //   Rprintf("z:\n");
-  //   print_mat(chain.z, 1, chain.G);
-  //   Rprintf("Gk:\n");
-  //   print_mat(chain.Gk, 1, chain.K);
-  //   Rprintf("beta:\n");
-  //   print_mat(chain.beta, chain.V, chain.K);
-  //   Rprintf("pi:\n");
-  //   print_mat(chain.pi, 1, chain.K);
-  //   Rprintf("sigma2:\n");
-  //   print_mat(chain.sigma2, 1, chain.K);
-  //   Rprintf("lambda2:\n %lf \n", chain.lambda2);
-  //   Rprintf("alpha:\n %lf \n", chain.alpha);
-  //   Rprintf("a:\n %lf \n", chain.a);
-  //   Rprintf("b:\n %lf \n", chain.b);
-  // }
   
 #endif // CHAIN_H
