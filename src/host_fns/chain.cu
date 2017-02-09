@@ -17,6 +17,14 @@ void samples_t::write_samples(int i, chain_t &chain){
   thrust::copy(piI, piI + K_save, pi_saved.begin() + K_save*i);
 }
 
+chain_t::chain_t(int _G, int _V, int _K, int _P, double *_beta, double *_pi, double *_tau2,
+          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares):
+    G(_G), V(_V), K(_K), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
+    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _G*_P),
+    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V){
+      beta_iter = getSCIntIter(save_idx.begin(), save_idx.end(), V);
+    }
+
 void chain_t::update_probabilities(int step){
   /* multiply C %*% beta, eval if > 0, resultK = (min(Col) == 1)[all true]*/
   fvec_d grid(P*K);
