@@ -55,7 +55,10 @@ struct chain_t{
   fvec_d meansquares;
   
   chain_t(int _G, int _V, int _K, int _P, double *_beta, double *_pi, double *_tau2,
-          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares);
+          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares):
+    G(_G), V(_V), K(_K), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
+    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _G*_P),
+    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V){}
   
   void update_means(int step);
   void update_probabilities(int step);
@@ -72,11 +75,7 @@ struct samples_t{
   fvec_h save_pi;
   SCIntIter beta_iter;
   
-  samples_t(int _iter, int _K_save, int _V, int *idx): iter(_iter), K_save(_K_save), V(_V),
-    save_idx(idx, idx + K_save), save_beta(iter*K_save*V), save_tau2(iter*K_save),
-    save_pi(iter*K_save){
-    beta_iter = getSCIntIter(save_idx.begin(), save_idx.end(), V);
-  }
+  samples_t(int _iter, int _K_save, int _V, int *idx);
   
   void write_samples(int i, chain_t &chain);
   

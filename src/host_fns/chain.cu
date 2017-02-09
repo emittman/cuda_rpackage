@@ -8,6 +8,12 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N)
     transpose(xty.begin(), xty.end(), V, G, ytx.begin());
 }
 
+samples_t::samples_t(int _iter, int _K_save, int _V, int *idx):
+    iter(_iter), K_save(_K_save), V(_V),
+    save_idx(idx, idx + K_save), save_beta(iter*K_save*V), save_tau2(iter*K_save), save_pi(iter*K_save){
+    beta_iter = getSCIntIter(save_idx.begin(), save_idx.end(), V);
+  }
+
 void samples_t::write_samples(int i, chain_t &chain){
   thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta, beta_iter);
   thrust::copy(betaI, betaI + K_save*V, beta_saved.begin() + K_save*V*i);
@@ -16,14 +22,6 @@ void samples_t::write_samples(int i, chain_t &chain){
   thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi, save_idx.begin());
   thrust::copy(piI, piI + K_save, pi_saved.begin() + K_save*i);
 }
-
-chain_t::chain_t(int _G, int _V, int _K, int _P, double *_beta, double *_pi, double *_tau2,
-          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares):
-    G(_G), V(_V), K(_K), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
-    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _G*_P),
-    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V){
-      beta_iter = getSCIntIter(save_idx.begin(), save_idx.end(), V);
-    }
 
 void chain_t::update_probabilities(int step){
   /* multiply C %*% beta, eval if > 0, resultK = (min(Col) == 1)[all true]*/
