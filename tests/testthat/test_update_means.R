@@ -25,13 +25,13 @@ meansquares <- meansquares + ((beta[,zeta+1])^2 - meansquares)/step
 probs <- probs + (colMeans(C %*% beta[,zeta+1] > 0) - probs)/step
 
 test_that("probs equal",{
-  expect_equal(outC[[1]], probs)
+  expect_equal(outC[[1]], as.numeric(probs))
 })
 
 test_that("means equal",{
-  expect_equal(outC[[2]], means)
+  expect_equal(outC[[2]], as.numeric(means))
 })
 
 test_that("meansquares equal",{
-  expect_equal(outC[[3]], meansquares)
+  expect_equal(outC[[3]], as.numeric(meansquares))
 })

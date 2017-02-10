@@ -420,7 +420,7 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   printVec(chain.probs, G, 1);
   
   chain.update_means(step);
-  
+  chain.update_probabilities(step);
   std::cout << "New means:\n";
   printVec(chain.means, chain.V, chain.G);
   
