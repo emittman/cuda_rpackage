@@ -418,7 +418,6 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   chain.update_means(step);
   
   std::cout << "New means:\n";
-  printVec(chain.means, chain.V, chain.G)
   printVec(chain.means, chain.V, chain.G);
   
   SEXP out = PROTECT(allocVector(VECSXP, 3));
