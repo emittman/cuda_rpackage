@@ -410,7 +410,7 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   chain_t chain = Rchain_wrap(Rchain);
   chain.update_means(step);
   SEXP out = PROTECT(allocVector(VECSXP, 3));
-  SEXP means = PROCTECT(allocVector(REALSXP, chain.G));
+  SEXP means = PROTECT(allocVector(REALSXP, chain.G));
   SEXP meansquares = PROTECT(allocVector(REALSXP, chain.G));
   SEXP probs = PROTECT(allocVector(REALSXP, chain.G));
   for(int i=0; i<chain.G; i++){
