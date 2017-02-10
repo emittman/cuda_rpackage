@@ -67,7 +67,7 @@ struct chain_t{
   
 struct samples_t{
   int n_iter;
-  int step
+  int step;
   int K_save;
   int V;
   ivec_d save_idx;

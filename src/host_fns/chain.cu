@@ -13,7 +13,7 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N)
 
 samples_t::samples_t(int _n_iter, int _K_save, int _V, int *idx):
     n_iter(_n_iter), step(0), K_save(_K_save), V(_V),
-    save_idx(idx, idx + K_save), save_beta(iter*K_save*V), save_tau2(iter*K_save), save_pi(iter*K_save), beta_iter(getSCIntIter(save_idx.begin(), save_idx.end(), V)){}
+    save_idx(idx, idx + _K_save), save_beta(_n_iter*_K_save*V), save_tau2(_n_iter*_K_save), save_pi(_n_iter*_K_save), beta_iter(getSCIntIter(save_idx.begin(), save_idx.end(), _V)){}
 
 void samples_t::write_samples(chain_t &chain){
   if(step < n_iter){
