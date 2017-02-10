@@ -421,9 +421,9 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   printVec(chain.means, chain.V, chain.G);
   
   SEXP out = PROTECT(allocVector(VECSXP, 3));
-  SEXP means = PROTECT(allocVector(REALSXP, chain.G));
-  SEXP meansquares = PROTECT(allocVector(REALSXP, chain.G));
-  SEXP probs = PROTECT(allocVector(REALSXP, chain.G));
+  SEXP means = PROTECT(allocVector(REALSXP, G*V));
+  SEXP meansquares = PROTECT(allocVector(REALSXP, G*V));
+  SEXP probs = PROTECT(allocVector(REALSXP, G));
   for(int i=0; i<G; i++){
     REAL(probs)[i] = chain.probs[i];
   }
