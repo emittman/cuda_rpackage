@@ -2,7 +2,7 @@ context("Update means")
 
 G <- 50
 K <- 20
-V <- 2
+V <- 3
 
 beta <- matrix(rnorm(K*V),V,K)
 pi <- rbeta(K, 1, 9)
@@ -10,8 +10,8 @@ pi <- pi/sum(pi)
 tau2 <- rgamma(K, 2, 2)
 zeta <- as.integer(sample(0:(K-1), G, replace=T))
 
-C <- matrix(c(1, 0,
-              0, 1), 2, 2, byrow=2)
+C <- matrix(c(1, -1, 0,
+              0, 1, -1), 2, 3, byrow=2)
 
 probs <- rbeta(G, 1, 1)
 means <- matrix(rnorm(G*V),V,G)
