@@ -415,10 +415,17 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   printVec(chain.beta, V, K);
   std::cout << "zeta:\n";
   printVec(chain.zeta, G, 1);
+  
+  std::cout <<"probs before:\n";
+  printVec(chain.probs, G, 1);
+  
   chain.update_means(step);
   
   std::cout << "New means:\n";
   printVec(chain.means, chain.V, chain.G);
+  
+  std::cout << "New probs:\n";
+  printVec(chain.probs, chain.G, 1);
   
   SEXP out = PROTECT(allocVector(VECSXP, 3));
   SEXP means = PROTECT(allocVector(REALSXP, G*V));
