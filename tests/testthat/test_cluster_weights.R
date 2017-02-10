@@ -5,7 +5,7 @@ V <- as.integer(3)
 K <- as.integer(50)
 N <- as.integer(4)*V
 
-times <- 10
+times <- 3
 
 # plyr::ldply(1:times, function(i){
 #   pi <- rbeta(K, 1, 1)
