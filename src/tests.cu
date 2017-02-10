@@ -408,7 +408,19 @@ extern "C" SEXP Rtest_running_mean(SEXP Rmean, SEXP Rnew, SEXP Rpow, SEXP Rstep)
 extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   int step = INTEGER(Rstep)[0];
   chain_t chain = Rchain_wrap(Rchain);
+  
+  std::cout << "means before:\n";
+  printVec(chain.means, chain.V, chain.G);
+  std::cout << "beta:\n";
+  printVec(chain.beta, chain.V, chain.K);
+  std::cout << "zeta:\n";
+  printVec(chain.zeta, chain.G, 1);
   chain.update_means(step);
+  
+  std::cout << "New means:\n";
+  printVec(chain.means, chain.V, chain.G)
+  printVec(chain.means, chain.V, chain.G);
+  
   SEXP out = PROTECT(allocVector(VECSXP, 3));
   SEXP means = PROTECT(allocVector(REALSXP, chain.G));
   SEXP meansquares = PROTECT(allocVector(REALSXP, chain.G));
