@@ -19,7 +19,7 @@ meansquares <- rnorm(G*V)^2
 
 chain <- formatChain(beta, pi, tau2, zeta, C, probs, means, meansquares)
 step <- 12
-outR <- .Call("Rtest_update_means", chain, as.integer(step))
+outC <- .Call("Rtest_update_means", chain, as.integer(step))
 means <- means + (beta-means)/step
 meansquares <- meansquares + (beta^2 - meansquares)/step
 probs <- probs + (colMeans(C %*% matrix(beta, V, K)>0) - probs)/step
