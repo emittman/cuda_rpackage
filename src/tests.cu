@@ -404,3 +404,27 @@ extern "C" SEXP Rtest_running_mean(SEXP Rmean, SEXP Rnew, SEXP Rpow, SEXP Rstep)
   UNPROTECT(1);
   return out;
 }
+
+extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
+  int step = INTEGER(Rstep)[0];
+  chain_t chain = Rchain_wrap(Rchain);
+  chain.update_means(step);
+  SEXP out = PROTECT(allocVector(VECSXP, 3));
+  SEXP means = PROCTECT(allocVector(REALSXP, chain.G));
+  SEXP meansquares = PROTECT(allocVector(REALSXP, chain.G));
+  SEXP probs = PROTECT(allocVector(REALSXP, chain.G));
+  for(int i=0; i<chain.G; i++){
+    REAL(means)[0] = chain.means[i];
+    REAL(meansquares)[0] = chain.meansquares[i];
+    REAL(probs)[0] = chain.probs[i];
+  }
+  SET_VECTOR_ELT(out, 0, probs);
+  SET_VECTOR_ELT(out, 1, means);
+  SET_VECTOR_ELT(out, 2, meansquares);
+  UNPROTECT(4);
+  return out;
+}
+
+extern "C" SEXP Rtest_write_samples(SEXP, SEXP){
+
+}

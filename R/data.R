@@ -63,7 +63,7 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
 #' @param tau2 K array in $(0, ...)$
 #' @param zeta G array in $\{0,...,K-1\}$
 #' @param C P*V array of linear combinations
-#' @param probs P*G array of probabilities
+#' @param probs G array of probabilities
 #' @param means G*V array
 #' @param meansquares G*V array
 
@@ -81,9 +81,9 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
     C = diag(V)
   }
   if(!is.null(probs)){
-    if(length(probs) != P*G) stop("probs doesn't match C and/or G!")
+    if(length(probs) != G) stop("probs doesn't match C and/or G!")
   } else {
-    probs = rep(0, P*G)
+    probs = rep(0, G)
   }
   if(!is.null(means)){
     if(length(means) != V*G) stop("means is wrong dimension!")
@@ -96,6 +96,6 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
     meansquares = rep(0, V*G)
   }
   list(G = G, V = V, K = K, P = P, beta = beta, pi = pi, tau2 = tau2,
-       zeta = as.integer(zeta), C = C, probs = probs, means = means, meansquares = meansquares)
+       zeta = as.integer(zeta), C = t(C), probs = probs, means = means, meansquares = meansquares)
 }
 
