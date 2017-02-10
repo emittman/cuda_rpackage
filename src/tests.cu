@@ -425,6 +425,6 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   return out;
 }
 
-extern "C" SEXP Rtest_write_samples(SEXP, SEXP){
-
-}
+//extern "C" SEXP Rtest_write_samples(SEXP, SEXP){
+//  
+//}
