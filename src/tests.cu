@@ -427,6 +427,7 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   for(int i=0; i<G; i++){
     REAL(probs)[i] = chain.probs[i];
   }
+  std::cout << "What?\n";
   for(int i=0; i<G*V; i++){
     REAL(means)[i] = chain.means[i];
     REAL(meansquares)[i] = chain.meansquares[i];
