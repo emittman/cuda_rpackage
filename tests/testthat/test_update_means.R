@@ -1,8 +1,8 @@
 context("Update means")
 
-G <- 100
-K <- 20
-V <- 4
+G <- 5
+K <- 2
+V <- 2
 
 beta <- rnorm(K*V)
 pi <- rbeta(K, 1, 9)
@@ -10,15 +10,15 @@ pi <- pi/sum(pi)
 tau2 <- rgamma(K, 2, 2)
 zeta <- as.integer(sample(0:(K-1), G, replace=T))
 
-C <- matrix(c(1, 0, 0, 0,
-              0, 1, 0, 0), 2, 4, byrow=2)
+C <- matrix(c(1, 0,
+              0, 1), 2, 2, byrow=2)
 
 probs <- rbeta(G, 1, 1)
 means <- rnorm(G*V)
 meansquares <- rnorm(G*V)^2
 
 chain <- formatChain(beta, pi, tau2, zeta, C, probs, means, meansquares)
-step <- 12
+step <- 1
 outC <- .Call("Rtest_update_means", chain, as.integer(step))
 means <- means + (beta-means)/step
 meansquares <- meansquares + (beta^2 - meansquares)/step
