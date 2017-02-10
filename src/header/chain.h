@@ -3,6 +3,7 @@
 
 #include "iter_getter.h"
 #include "transpose.h"
+#include "printing.h"
 
 struct data_t{
   
