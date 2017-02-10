@@ -408,13 +408,13 @@ extern "C" SEXP Rtest_running_mean(SEXP Rmean, SEXP Rnew, SEXP Rpow, SEXP Rstep)
 extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   int step = INTEGER(Rstep)[0];
   chain_t chain = Rchain_wrap(Rchain);
-  
+  int G = chain.G, V = chain.V, K = chain.K;
   std::cout << "means before:\n";
-  printVec(chain.means, chain.V, chain.G);
+  printVec(chain.means, V, G);
   std::cout << "beta:\n";
-  printVec(chain.beta, chain.V, chain.K);
+  printVec(chain.beta, V, K);
   std::cout << "zeta:\n";
-  printVec(chain.zeta, chain.G, 1);
+  printVec(chain.zeta, G, 1);
   chain.update_means(step);
   
   std::cout << "New means:\n";
@@ -425,11 +425,11 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   SEXP meansquares = PROTECT(allocVector(REALSXP, chain.G));
   SEXP probs = PROTECT(allocVector(REALSXP, chain.G));
   for(int i=0; i<chain.G; i++){
-    REAL(probs)[0] = chain.probs[i];
+    REAL(probs)[i] = chain.probs[i];
   }
   for(int i=0; i<chain.G*chain.V; i++){
-    REAL(means)[0] = chain.means[i];
-    REAL(meansquares)[0] = chain.meansquares[i];
+    REAL(means)[i] = chain.means[i];
+    REAL(meansquares)[i] = chain.meansquares[i];
   }
   SET_VECTOR_ELT(out, 0, probs);
   SET_VECTOR_ELT(out, 1, means);
