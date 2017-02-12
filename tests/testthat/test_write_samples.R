@@ -17,6 +17,6 @@ idx <- as.integer(sample(0:(G-1), G_save))
 
 chain <- formatChain(beta, pi, tau2, zeta)
 
-Cout <- .Call("Rtest_write_samples", idx, n_iter)
+Cout <- .Call("Rtest_write_samples", chain, idx, n_iter)
 
   
