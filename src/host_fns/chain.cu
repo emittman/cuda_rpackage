@@ -11,18 +11,22 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N)
     transpose(xty.begin(), xty.end(), V, G, ytx.begin());
 }
 
-samples_t::samples_t(int _n_iter, int _K_save, int _V, int *idx):
-    n_iter(_n_iter), step(0), K_save(_K_save), V(_V),
-    save_idx(idx, idx + _K_save), save_beta(_n_iter*_K_save*V), save_tau2(_n_iter*_K_save), save_pi(_n_iter*_K_save), beta_iter(getSCIntIter(save_idx.begin(), save_idx.end(), _V)){}
+samples_t::samples_t(int _n_iter, int _G_save, int _V, int *idx):
+    n_iter(_n_iter), step(0), G_save(_G_save), V(_V),
+    save_idx(idx, idx + _G_save), save_beta(_n_iter*_G_save*V), save_tau2(_n_iter*_G_save), save_pi(_n_iter*_G_save)){}
 
 void samples_t::write_samples(chain_t &chain){
+  thrust::permutation_iterator<intIter, intIter> map_save_idx = thrust::permutation_iterator<intIter, intIter>(save_idx.begin(), chain.zeta.begin());
+  ivec_d tmpVec(G_save);
+  thrust::copy(map_save_idx, map_save_idx + G_save, tmpVec);
+  SCIntIter beta_cpy = getSCIntIter(tmpVec.begin(), tmpVec.end(), chain.V);
   if(step < n_iter){
-    thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_iter);
-    thrust::copy(betaI, betaI + K_save*V, save_beta.begin() + K_save*V*step);
-    thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2.begin(), save_idx.begin());
-    thrust::copy(tau2I, tau2I + K_save, save_tau2.begin() + K_save*step);
-    thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi.begin(), save_idx.begin());
-    thrust::copy(piI, piI + K_save, save_pi.begin() + K_save*step);
+    thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_cpy);
+    thrust::copy(betaI, betaI + G_save*V, save_beta.begin() + G_save*V*step);
+    thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2.begin(), tmpVec.begin());
+    thrust::copy(tau2I, tau2I + G_save, save_tau2.begin() + G_save*step);
+    thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi.begin(), tmpVec.begin());
+    thrust::copy(piI, piI + G_save, save_pi.begin() + G_save*step);
     step += 1;
   }
   else std::cout << "step >= n_iter!";

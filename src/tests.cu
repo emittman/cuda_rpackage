@@ -432,6 +432,28 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   return out;
 }
 
-//extern "C" SEXP Rtest_write_samples(SEXP, SEXP){
-//  
-//}
+extern "C" SEXP Rtest_write_samples(SEXP chain, SEXP Ridx, SEXP Rn_iter){
+  chain_t chain = Rchain_wrap(Rchain);
+  int *idx = INTEGER(Ridx), n_iter = INTEGER(Rn_iter)[0];
+  samples_t samples = samples_t(n_iter, length(Ridx), chain.V, idx);
+  
+  for(int i=0; i<n_iter; i++){
+    samples.write_samples(chain);
+    std::cout << "Completed step " << samples.step <<"\n";
+  }
+
+  SEXP out = PROTECT(allocVector(VECSXP, 3));
+  SEXP beta_out = PROTECT(allocVector(REALSXP, V*K_out*n_iter));
+  SEXP tau2_out = PROTECT(allocVector(REALSXP, K_out*n_iter));
+  SEXP pi_out = PROTECT(allocVector(REALSXP, K_out*n_iter));
+  
+  thrust::copy(samples.save_beta.begin(), save_beta.end(), REAL(beta_out));
+  thrust::copy(samples.save_tau2.begin(), save_tau2.end(), REAL(tau2_out));
+  thrust::copy(samples.save_pi.begin(), save_pi.end(), REAL(pi_out));
+  
+  SET_VECTOR_ELT(out, 0, beta_out);
+  SET_VECTOR_ELT(out, 1, tau2_out);
+  SET_VECTOR_ELT(out, 2, pi_out);
+  UNPROTECT(4);
+  return out;
+}
