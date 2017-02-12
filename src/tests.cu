@@ -442,18 +442,19 @@ extern "C" SEXP Rtest_write_samples(SEXP Rchain, SEXP Ridx, SEXP Rn_iter){
     std::cout << "Completed step " << samples.step <<"\n";
   }
 
-  SEXP out = PROTECT(allocVector(VECSXP, 3));
+//  SEXP out = PROTECT(allocVector(VECSXP, 3));
   SEXP beta_out = PROTECT(allocVector(REALSXP, chain.V*G_out*n_iter));
-  SEXP tau2_out = PROTECT(allocVector(REALSXP, G_out*n_iter));
-  SEXP pi_out = PROTECT(allocVector(REALSXP, G_out*n_iter));
+//  SEXP tau2_out = PROTECT(allocVector(REALSXP, G_out*n_iter));
+//  SEXP pi_out = PROTECT(allocVector(REALSXP, G_out*n_iter));
   
   thrust::copy(samples.save_beta.begin(), samples.save_beta.end(), REAL(beta_out));
-  thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(tau2_out));
-  thrust::copy(samples.save_pi.begin(), samples.save_pi.end(), REAL(pi_out));
+//  thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(tau2_out));
+//  thrust::copy(samples.save_pi.begin(), samples.save_pi.end(), REAL(pi_out));
   
-  SET_VECTOR_ELT(out, 0, beta_out);
-  SET_VECTOR_ELT(out, 1, tau2_out);
-  SET_VECTOR_ELT(out, 2, pi_out);
-  UNPROTECT(4);
-  return out;
+//  SET_VECTOR_ELT(out, 0, beta_out);
+//  SET_VECTOR_ELT(out, 1, tau2_out);
+//  SET_VECTOR_ELT(out, 2, pi_out);
+//  UNPROTECT(4);
+  UNPROTECT(1);
+  return beta_out;
 }
