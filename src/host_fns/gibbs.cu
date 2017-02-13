@@ -27,14 +27,14 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   //replace current beta with standard normal draws
   getNormal<<<K, V>>>(states, thrust::raw_pointer_cast(beta.data()));
   
-  //std::cout << "N(0,1) draws:\n";
-  //printVec(beta, V, K);
+  std::cout << "N(0,1) draws:\n";
+  printVec(beta, V, K);
   
-  //scale occupied betas by t(chol_prec)^-1
+  scale occupied betas by t(chol_prec)^-1
   scale_chol_inv(chol_prec, beta, smry.occupied, smry.num_occupied, V);
 
-  //std::cout << "scaled draws:\n";
-  //printVec(beta, V, K);
+  std::cout << "scaled draws:\n";
+  printVec(beta, V, K);
   
   //typedef: iterate along select columns of matrix of doubles
   typedef thrust::permutation_iterator<realIter, SCIntIter> gSCIter;
