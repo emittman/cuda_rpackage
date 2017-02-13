@@ -245,7 +245,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  samples_t samples(n_iter, G_save, data.V, REAL(Ridx_save));
+  samples_t samples(n_iter, G_save, data.V, INTEGER(Ridx_save));
   
   //instantiate RNGs
   curandState *devStates;
