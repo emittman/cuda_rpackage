@@ -151,3 +151,15 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   gnl_multinomial(chain.zeta, grid, states, priors.K, data.G);
 }
 
+void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry){
+  fvec_d prec(smry.num_occupied * data.V * data.V);
+  fvec_d betahat(smry.num_occupied * data.V);
+  //get cluster (inv)scales
+  construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), chain.tau2.begin(), chain.tau2.end(), smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
+  chol_multiple(prec.begin(), prec.end(), data.V, smry.num_occupied);
+  //get cluster locations
+  beta_hat(prec, betahat, smry.num_occupied, data.V);
+  draw_MVNormal(states, betahat, prec, chain.beta, priors, smry);
+}
+
+

@@ -8,6 +8,9 @@
 #include "cluster_probability.h"
 #include "quad_form.h"
 #include "multinomial.h"
+#include "beta_hat.h"
+#include "construct_prec.h"
+#include "cholesky.h"
 #include <thrust/iterator/reverse_iterator.h>
 
 void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, summary2 &smry);
@@ -17,5 +20,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
 void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary);
 
 void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors);
+
+void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry);
 
 #endif
