@@ -27,14 +27,14 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   //replace current beta with standard normal draws
   getNormal<<<K, V>>>(states, thrust::raw_pointer_cast(beta.data()));
   
-  std::cout << "N(0,1) draws:\n";
-  printVec(beta, V, K);
+  //std::cout << "N(0,1) draws:\n";
+  //printVec(beta, V, K);
   
   //scale occupied betas by t(chol_prec)^-1
   scale_chol_inv(chol_prec, beta, smry.occupied, smry.num_occupied, V);
 
-  std::cout << "scaled draws:\n";
-  printVec(beta, V, K);
+  //std::cout << "scaled draws:\n";
+  //printVec(beta, V, K);
   
   //typedef: iterate along select columns of matrix of doubles
   typedef thrust::permutation_iterator<realIter, SCIntIter> gSCIter;
@@ -46,8 +46,8 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   //shift occupied betas by beta_hat
   thrust::transform(beta_hat.begin(), beta_hat.end(), betaOcc, betaOcc, thrust::plus<double>());
   
-  std::cout << "occupied draws:\n";
-  printVec(beta, V, K);
+  //std::cout << "occupied draws:\n";
+  //printVec(beta, V, K);
   
   //now, access to unoccupied betas
   SCIntIter unocc_idx = getSCIntIter(smry.unoccupied.begin(), smry.unoccupied.end(), V);
@@ -68,12 +68,12 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   mult_scalar_by_sqrt f2;
   thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
   
-  std::cout << "unoccupied are scaled now:\n";
-  printVec(beta, V, K);
+  //std::cout << "unoccupied are scaled now:\n";
+  //printVec(beta, V, K);
   //shift by prior mean
   thrust::transform(prior_mean, prior_mean + num_unoccupied*V, betaUnocc, betaUnocc, thrust::plus<double>());
-  std::cout << "and shifted (final draws):\n";
-  printVec(beta, V, K);
+  //std::cout << "and shifted (final draws):\n";
+  //printVec(beta, V, K);
 }
 
 void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &smry){
@@ -106,8 +106,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
   thrust::for_each(zp2, zp2 + K, modify_gamma_par());
   
-  std::cout << "b transformed:\n";
-  printVec(b_d, K, 1);
+  //std::cout << "b transformed:\n";
+  //printVec(b_d, K, 1);
   // raw pointers
   double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
   double *a_ptr = thrust::raw_pointer_cast(a_d.data());
@@ -155,7 +155,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   fvec_d prec(smry.num_occupied * data.V * data.V);
   fvec_d betahat(smry.num_occupied * data.V);
   //get cluster (inv)scales
-  construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), chain.tau2.begin(), chain.tau2.end(), smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
+  construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), chain.tau2.begin(), chain.tau2.end(), smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), smry.num_occupied, data.V);
   realIter prec_begin = prec.begin();
   realIter prec_end = prec.end();
   chol_multiple(prec_begin, prec_end, data.V, smry.num_occupied);

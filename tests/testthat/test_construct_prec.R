@@ -1,9 +1,9 @@
 context("Testing construct precision")
 
-dim <- c(1,2)
+dim <- c(1,10)
 
 for(d in dim){
-  clusts <- 2
+  clusts <- 500
   x <- matrix(round(rnorm(d^2)*3,  1), d, d)
   xtx <- t(x) %*% x
   
@@ -17,7 +17,11 @@ for(d in dim){
   
   Rprec <- sapply(1:clusts, function(cl){
     submat <- prec[,,cl] * Mk[cl]
-    diag(submat) <- diag(submat) + lambda/tau[cl]
+    if(d == 1){
+      submat <- submat + lambda/tau[cl]
+    } else{
+      diag(submat) <- diag(submat) + lambda/tau[cl]
+    }
     submat
   })
   
