@@ -441,6 +441,8 @@ extern "C" SEXP Rtest_write_samples(SEXP Rchain, SEXP Ridx, SEXP Rn_iter){
     samples.write_samples(chain);
     std::cout << "Completed step " << samples.step <<"\n";
   }
+  std::cout << "zeta:\n";
+  printVec(chain.zeta, chain.G, 1);
 
 //  SEXP out = PROTECT(allocVector(VECSXP, 3));
   SEXP beta_out = PROTECT(allocVector(REALSXP, chain.V*G_out*n_iter));

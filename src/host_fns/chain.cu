@@ -16,9 +16,13 @@ samples_t::samples_t(int _n_iter, int _G_save, int _V, int *idx):
     save_idx(idx, idx + _G_save), save_beta(_n_iter*_G_save*V), save_tau2(_n_iter*_G_save), save_pi(_n_iter*_G_save){}
 
 void samples_t::write_samples(chain_t &chain){
+
   thrust::permutation_iterator<intIter, intIter> map_save_idx = thrust::permutation_iterator<intIter, intIter>(save_idx.begin(), chain.zeta.begin());
   ivec_d tmpVec(G_save);
   thrust::copy(map_save_idx, map_save_idx + G_save, tmpVec.begin());
+
+  std::cout << "tmpVec:\n";
+  printVec(tmpVec, G_save, 1);
   SCIntIter beta_cpy = getSCIntIter(tmpVec.begin(), tmpVec.end(), chain.V);
   if(step < n_iter){
     thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_cpy);
