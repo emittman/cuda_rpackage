@@ -17,7 +17,7 @@ samples_t::samples_t(int _n_iter, int _G_save, int _V, int *idx):
 
 void samples_t::write_samples(chain_t &chain){
 
-  thrust::permutation_iterator<intIter, intIter> map_save_idx = thrust::permutation_iterator<intIter, intIter>(save_idx.begin(), chain.zeta.begin());
+  thrust::permutation_iterator<intIter, intIter> map_save_idx = thrust::permutation_iterator<intIter, intIter>(chain.zeta.begin(), save_idx.begin());
   ivec_d tmpVec(G_save);
   thrust::copy(map_save_idx, map_save_idx + G_save, tmpVec.begin());
 
