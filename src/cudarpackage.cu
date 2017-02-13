@@ -8,6 +8,8 @@
 #include "header/distribution.h"
 #include "header/cluster_probability.h"
 #include "header/printing.h"
+#include "header/gibbs.h"
+#include "header/wrap_R.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 #include <R.h>
@@ -243,7 +245,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  samples_t = samples_t(n_iter, G_save, data.V, REAL(Ridx_save));
+  samples_t samples(n_iter, G_save, data.V, REAL(Ridx_save));
   
   //instantiate RNGs
   curandState *devStates;
@@ -258,7 +260,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     draw_pi(devStates, chain, priors, summary);
     samples.write_samples(chain);
     chain.update_means(samples.step);
-    chain.update_probs(samples.step);
+    chain.update_probabilities(samples.step);
   }
   
   CUDA_CALL(cudaFree(devStates));
