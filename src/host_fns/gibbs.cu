@@ -156,7 +156,9 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   fvec_d betahat(smry.num_occupied * data.V);
   //get cluster (inv)scales
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), chain.tau2.begin(), chain.tau2.end(), smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
-  chol_multiple(prec.begin(), prec.end(), data.V, smry.num_occupied);
+  realIter prec_begin = prec.begin();
+  realIter prec_end = prec.end();
+  chol_multiple(prec_begin, prec_end, data.V, smry.num_occupied);
   //get cluster locations
   beta_hat(prec, betahat, smry.num_occupied, data.V);
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry);
