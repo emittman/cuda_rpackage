@@ -40,4 +40,17 @@ chain_t Rchain_wrap(SEXP Rchain){
   return chain;
 }
 
+SEXP Csamples_wrap(samples_t samples){
+  SEXP samples_out = PROTECT(allocVector(VECSXP, 3));
+  SEXP out_beta = PROTECT(allocVector(REALSXP, samples.G_save * samples.V * samples.n_iter));
+  SEXP out_tau2 = PROTECT(allocVector(REALSXP, samples.G_save * samples.n_iter));
+  SEXP out_pi = PROTECT(allocVector(REALSXP, samples.G_save * samples.n_iter));
+  thrust::copy(samples.save_beta.begin(), samples.save_beta.end(), REAL(out_beta));
+  thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(out_tau2));
+  thrust::copy(samples.save_pi.begin(), samples.save_pi.end(), REAL(out_pi));
+  SET_VECTOR_ELT(samples_out, 0, out_beta);
+  SET_VECTOR_ELT(samples_out, 1, out_tau2);
+  SET_VECTOR_ELT(samples_out, 2, out_pi);
   
+  return samples_out;
+}
