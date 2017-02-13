@@ -30,7 +30,7 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   std::cout << "N(0,1) draws:\n";
   printVec(beta, V, K);
   
-  scale occupied betas by t(chol_prec)^-1
+  //scale occupied betas by t(chol_prec)^-1
   scale_chol_inv(chol_prec, beta, smry.occupied, smry.num_occupied, V);
 
   std::cout << "scaled draws:\n";
