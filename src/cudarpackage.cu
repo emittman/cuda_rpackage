@@ -238,26 +238,31 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-//extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed){
-//  data_t data = Rdata_wrap(Rdata);
-//  priors_t priors = Rpriors_wrap(Rpriors);
-//  chain_t chain = Rchain_wrap(Rchain);
-//  int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-//  samples_t = samples_t(n_iter, G_save, data.V, REAL(Ridx_save));
-//  
-//  //instantiate RNGs
-//  curandState *devStates;
-//  CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-//  
-//  for(int i=0; i<n_iter; i++){
-//    //Gibbs steps
-//    draw_zeta(devStates, data, chain, priors);
-//    summary2 summary = summary2(chain.K, chain.zeta, data);
-//    draw_tau2(devStates, chain, priors, data, summary);
-//    draw_beta(devStates, data, chain, priors, summary);
-//    draw_pi(devStates, chain, priors, summary);
-//    samples.write_samples(chain);
-//    chain.update_means(samples.step);
-//    chain.update_probs(samples.step);
-//  }
-//}
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed){
+  data_t data = Rdata_wrap(Rdata);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  chain_t chain = Rchain_wrap(Rchain);
+  int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
+  samples_t = samples_t(n_iter, G_save, data.V, REAL(Ridx_save));
+  
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
+  
+  for(int i=0; i<n_iter; i++){
+    //Gibbs steps
+    draw_zeta(devStates, data, chain, priors);
+    summary2 summary = summary2(chain.K, chain.zeta, data);
+    draw_tau2(devStates, chain, priors, data, summary);
+    draw_beta(devStates, data, chain, priors, summary);
+    draw_pi(devStates, chain, priors, summary);
+    samples.write_samples(chain);
+    chain.update_means(samples.step);
+    chain.update_probs(samples.step);
+  }
+  
+  CUDA_CALL(cudaFree(devStates));
+  SEXP samples_out = Csamples_wrap(samples);
+  UNPROTECT(4);
+  return samples_out;
+}
