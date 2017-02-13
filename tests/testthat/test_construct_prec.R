@@ -4,16 +4,16 @@ dim <- c(1,2)
 
 for(d in dim){
   clusts <- 2
-  x <- matrix(round(rnorm(dim^2)*3,  1), dim, dim)
+  x <- matrix(round(rnorm(d^2)*3,  1), d, d)
   xtx <- t(x) %*% x
   
   Mk <- rpois(clusts, 3) + 1
-  lambda <- rlnorm(dim)
+  lambda <- rlnorm(d)
   tau <- rlnorm(clusts)
   
   prec <- rep(xtx, times=clusts)
-  len <- dim*dim
-  dim(prec) <- c(dim, dim, clusts)
+  len <- d*d
+  dim(prec) <- c(d, d, clusts)
   
   Rprec <- sapply(1:clusts, function(cl){
     submat <- prec[,,cl] * Mk[cl]
@@ -21,10 +21,10 @@ for(d in dim){
     submat
   })
   
-  dim(Rprec) <- c(dim, dim, clusts)
+  dim(Rprec) <- c(d, d, clusts)
   
   
-  Cprec <- Rconstruct_prec(xtx, Mk, lambda, tau, clusts, dim)
+  Cprec <- Rconstruct_prec(xtx, Mk, lambda, tau, clusts, d)
   
   test_that("Correct values",{
     expect_equal(Rprec, Cprec)
