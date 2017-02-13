@@ -19,9 +19,9 @@ chain <- formatChain(beta, pi, tau2, zeta)
 
 Cout <- .Call("Rtest_write_samples", chain, idx, n_iter)
 
-Rout <- list(beta <- rep(beta[,(zeta[idx+1]+1)], n_iter),
-             tau2 <- rep(tau2[zeta[idx+1]+1], n_iter),
-             pi <- rep(pi[zeta[idx+1]+1], n_iter))
+Rout <- list(beta = rep(beta[,(zeta[idx+1]+1)], n_iter),
+             tau2 = rep(tau2[zeta[idx+1]+1], n_iter),
+             pi = rep(pi[zeta[idx+1]+1], n_iter))
 
 test_that("betas match", {expect_equal(as.numeric(Rout$beta), Cout[[1]])})
 test_that("tau2s match", {expect_equal(as.numeric(Rout$tau2), Cout[[2]])})
