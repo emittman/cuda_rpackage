@@ -457,5 +457,5 @@ extern "C" SEXP Rtest_write_samples(SEXP Rchain, SEXP Ridx, SEXP Rn_iter){
   SET_VECTOR_ELT(out, 1, tau2_out);
   SET_VECTOR_ELT(out, 2, pi_out);
   UNPROTECT(4);
-  return beta_out;
+  return out;
 }
