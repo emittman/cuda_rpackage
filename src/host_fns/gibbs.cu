@@ -119,6 +119,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   
   //generate
   getGamma<<<K, 1>>>(states, a_ptr, b_ptr, tau2_ptr);
+  std::cout <<"tau2 immediately after getGamma:\n";
+  printVec(chain.tau2, K, 1);
 }
 
 void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary){
