@@ -148,7 +148,11 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
 void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors){
   fvec_d grid(data.G*priors.K);
   cluster_weights(grid, data, chain);
+  std::cout << "grid:\n";
+  printVec(grid, priors.K, data.G);
   gnl_multinomial(chain.zeta, grid, states, priors.K, data.G);
+  std::cout << "(inside draw_zeta) zeta:\n";
+  printVec(chain.zeta, data.G, 1);
 }
 
 void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry){
