@@ -15,6 +15,10 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
+// This prevents the replacement of "beta" by Rmath.h
+#ifdef beta
+#undef beta
+#endif
 
 extern "C" SEXP RgetDeviceCount(){
   int count = 0;
