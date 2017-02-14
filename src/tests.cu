@@ -493,6 +493,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
     printVec(chain.tau2, priors.K, 1);
     samples.write_samples(chain);
     std::cout << "step " << samples.step << ":\n";
+    printVec(samples.save_tau2, G, n_iter);
   }
   
   CUDA_CALL(cudaFree(devStates));
