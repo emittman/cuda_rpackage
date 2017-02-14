@@ -255,9 +255,15 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     //Gibbs steps
     draw_zeta(devStates, data, chain, priors);
     summary2 summary = summary2(chain.K, chain.zeta, data);
+    std::cout << "Mk:\n";
+    printVec(summary.Mk, priors.K, 1);
     draw_tau2(devStates, chain, priors, data, summary);
+    std::cout << "tau2:\n";
+    printVec(chain.tau2, priors.K, 1);
     draw_beta(devStates, data, chain, priors, summary);
     draw_pi(devStates, chain, priors, summary);
+    std::cout << "pi:\n";
+    printVec(pi, priors.K, 1);
     samples.write_samples(chain);
     chain.update_means(samples.step);
     chain.update_probabilities(samples.step);
