@@ -254,7 +254,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
     draw_zeta(devStates, data, chain, priors);
-    summary2 summary = summary2(chain.K, chain.zeta, data);
+    summary2 summary(chain.K, chain.zeta, data);
     std::cout << "Mk:\n";
     printVec(summary.Mk, priors.K, 1);
     draw_tau2(devStates, chain, priors, data, summary);
