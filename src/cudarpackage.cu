@@ -254,6 +254,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
+  setup_kernel<<<chain.G, chain.V>>>(seed, devStates)
   
   std::cout << "zeta_init:\n";
   printVec(chain.zeta, data.G, 1);
