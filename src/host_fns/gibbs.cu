@@ -16,7 +16,7 @@ struct exp_log_plus {
 
 struct modify_gamma_par {
   int N;
-  modify_gamma_par(_N): N(_N){}
+  modify_gamma_par(_N = 1): N(_N){}
   template<typename T>
   __host__ __device__ void operator()(T tup){
     thrust::get<0>(tup) = thrust::get<0>(tup) + 1.0/ 2.0 * thrust::get<1>(tup) * N;
