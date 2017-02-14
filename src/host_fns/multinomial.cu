@@ -37,7 +37,7 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   rowIter last_row_iter = getRowIter(K, K-1);
   strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
 
-  //thrust::copy(strided_iter, strided_iter + G, u.begin());
+  thrust::copy(strided_iter, strided_iter + G, u.begin());
   //printVec(u, G, 1);
   
   double *u_ptr = thrust::raw_pointer_cast(u.data());
