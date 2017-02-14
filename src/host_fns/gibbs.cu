@@ -15,8 +15,8 @@ struct exp_log_plus {
 };
 
 struct modify_gamma_par {
-  int N;
-  modify_gamma_par(int _N = 1): N(_N){}
+  double N;
+  modify_gamma_par(double _N): N(_N){}
   template<typename T>
   __host__ __device__ void operator()(T tup){
     thrust::get<0>(tup) = thrust::get<0>(tup) + 1.0/ 2.0 * thrust::get<1>(tup) * N;
@@ -93,7 +93,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   typedef thrust::zip_iterator<tuple1> zip1;
   tuple1 tup1 = thrust::tuple<realIter, intIter>(a_d.begin(), smry.Mk.begin());
   zip1 zp1 = thrust::zip_iterator<tuple1>(tup1);
-  thrust::for_each(zp1, zp1 + K, modify_gamma_par(data.N));
+  modify_gamma_par f1(data.N);
+  thrust::for_each(zp1, zp1 + K, f1);
   
   std::cout << "a transformed:\n";
   printVec(a_d, K, 1);
@@ -104,7 +105,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   typedef thrust::zip_iterator<tuple2> zip2;
   tuple2 tup2 = thrust::tuple<FltPermIter, realIter>(b_occ, sse.begin());
   zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
-  thrust::for_each(zp2, zp2 + K, modify_gamma_par());
+  modify_gamma_par f2(1.0);
+  thrust::for_each(zp2, zp2 + K, f2);
   
   std::cout << "b transformed:\n";
   printVec(b_d, K, 1);
