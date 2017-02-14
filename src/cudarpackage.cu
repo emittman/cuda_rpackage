@@ -266,6 +266,10 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     summary2 summary(chain.K, chain.zeta, data);
     std::cout << "Mk:\n";
     printVec(summary.Mk, priors.K, 1);
+    std::cout << "occupied:\n";
+    printVec(summary.occupied, summary.num_occupied, 1);
+    std::cout << "unoccupied:\n";
+    printVec(summary.unoccupied, priors.K - summary.num_occupied, 1);
     draw_tau2(devStates, chain, priors, data, summary);
     std::cout << "tau2:\n";
     printVec(chain.tau2, priors.K, 1);
