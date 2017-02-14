@@ -420,7 +420,6 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   for(int i=0; i<G; i++){
     REAL(probs)[i] = chain.probs[i];
   }
-  std::cout << "What?\n";
   for(int i=0; i<G*V; i++){
     REAL(means)[i] = chain.means[i];
     REAL(meansquares)[i] = chain.meansquares[i];
@@ -458,6 +457,7 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
+  setup_kernel<<<data.G, data.V>>>(seed, devStates);
 
   summary2 summary = summary2(chain.K, chain.zeta, data);
   
