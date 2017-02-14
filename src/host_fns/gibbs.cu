@@ -106,8 +106,10 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   tuple2 tup2 = thrust::tuple<FltPermIter, realIter>(b_occ, sse.begin());
   zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
   modify_gamma_par f2(1.0);
+  std::cout << "b filled:\n";
+  printVec(b_d, K, 1);
   thrust::for_each(zp2, zp2 + K, f2);
-  
+
   std::cout << "b transformed:\n";
   printVec(b_d, K, 1);
   // raw pointers
