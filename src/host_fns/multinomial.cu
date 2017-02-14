@@ -42,15 +42,16 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   
   double *u_ptr = thrust::raw_pointer_cast(u.data());
   getUniform<<<G, 1>>>(states, u_ptr);
-  //std::cout << "u:sampled:\n";
-  //printVec(u, G, 1);
-  //std::cout << "probs...:\n";
-  //printVec(probs, K, G);
+  std::cout << "u:sampled:\n";
+  printVec(u, G, 1);
+  std::cout << "probs...:\n";
+  printVec(probs, K, G);
   gRepEach<realIter>::iterator u_rep = getGRepEachIter(u.begin(), u.end(), K);
 
   ivec_d dummies(K*G);
-
+  std::cout << "dummies:\n";
   thrust::transform(u_rep, u_rep + K*G, probs.begin(), dummies.begin(), thrust::greater<double>());
+  printVec(dummies, K, G);
   repEachIter colI = getRepEachIter(K, 1);
   thrust::reduce_by_key(colI, colI + K*G, dummies.begin(), thrust::make_discard_iterator(), zeta.begin());
 }
