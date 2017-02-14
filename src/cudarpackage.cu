@@ -251,6 +251,9 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
   
+  std::cout << "zeta_init:\n";
+  printVec(chain.zeta, data.G, 1);
+  
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
     draw_zeta(devStates, data, chain, priors);
