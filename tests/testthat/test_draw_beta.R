@@ -29,7 +29,7 @@ expected <- data.frame(beta = data$xty / (N + priors$lambda))
 samples <- NULL
 samples[["beta"]] <- array(Cout[[1]], dim = c(V, G, n_iter))
 estimate <- apply(samples$beta, c(1, 2), mean)
-se <- sqrt(1/(n_iter+priors$lambda))
+se <- sqrt(1/(n_iter*(N+priors$lambda)))
 
 test_that("Averages match expectations", {
   test_stat <- sum(((estimate - expected)/se)^2)
