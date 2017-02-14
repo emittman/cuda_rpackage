@@ -80,12 +80,12 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   fvec_d sse(smry.num_occupied);
   int K = chain.K;
   smry.sumSqErr(sse, chain.beta, data.xtx);
-  //std::cout << "sse:\n";
-  //printVec(sse, K, 1);
+  std::cout << "sse:\n";
+  printVec(sse, K, 1);
   fvec_d a_d(K, priors.a);
   fvec_d b_d(K, priors.b);
-  //std::cout << "a_d filled:\n";
-  //printVec(a_d, K, 1);
+  std::cout << "a_d filled:\n";
+  printVec(a_d, K, 1);
   // modify gamma parameters for occupied clusters
   typedef thrust::tuple<realIter, intIter> tuple1;
   typedef thrust::zip_iterator<tuple1> zip1;
@@ -95,8 +95,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   modify_gamma_par f;
   thrust::for_each(zp1, zp1 + K, f);
   
-  //std::cout << "a transformed:\n";
-  //printVec(a_d, K, 1);
+  std::cout << "a transformed:\n";
+  printVec(a_d, K, 1);
   
   typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
   FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
@@ -106,8 +106,8 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
   thrust::for_each(zp2, zp2 + K, modify_gamma_par());
   
-  //std::cout << "b transformed:\n";
-  //printVec(b_d, K, 1);
+  std::cout << "b transformed:\n";
+  printVec(b_d, K, 1);
   // raw pointers
   double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
   double *a_ptr = thrust::raw_pointer_cast(a_d.data());
