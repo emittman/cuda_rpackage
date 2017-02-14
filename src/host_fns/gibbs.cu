@@ -83,7 +83,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   int K = chain.K;
   smry.sumSqErr(sse, chain.beta, data.xtx);
   std::cout << "sse:\n";
-  printVec(sse, K, 1);
+  printVec(sse, smry.num_occupied, 1);
   fvec_d a_d(K, priors.a);
   fvec_d b_d(K, priors.b);
   std::cout << "a_d filled:\n";
