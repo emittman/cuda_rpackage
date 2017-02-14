@@ -473,27 +473,27 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   return samples_out;
 }
 
-extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed){
-  data_t data = Rdata_wrap(Rdata);
-  priors_t priors = Rpriors_wrap(Rpriors);
-  chain_t chain = Rchain_wrap(Rchain);
-  int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  samples_t samples(n_iter, G_save, data.V, INTEGER(Ridx_save));
-  //instantiate RNGs
-  curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-  setup_kernel<<<data.G, data.V>>>(seed, devStates);
+//extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed){
+//  data_t data = Rdata_wrap(Rdata);
+//  priors_t priors = Rpriors_wrap(Rpriors);
+//  chain_t chain = Rchain_wrap(Rchain);
+//  int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
+//  samples_t samples(n_iter, G_save, data.V, INTEGER(Ridx_save));
+//  //instantiate RNGs
+//  curandState *devStates;
+//  CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
+//  setup_kernel<<<data.G, data.V>>>(seed, devStates);//
 
-  summary2 summary = summary2(chain.K, chain.zeta, data);
-  
-  for(int i=0; i<n_iter; i++){
-    //Gibbs steps
-    draw_tau2(devStates, chain, priors, data, summary);
-    samples.write_samples(chain);
-  }
-  
-  CUDA_CALL(cudaFree(devStates));
-  SEXP samples_out = Csamples_wrap(samples);
-  UNPROTECT(4);
-  return samples_out;
-}
+//  summary2 summary = summary2(chain.K, chain.zeta, data);
+//  
+//  for(int i=0; i<n_iter; i++){
+//    //Gibbs steps
+//    draw_tau2(devStates, chain, priors, data, summary);
+//    samples.write_samples(chain);
+//  }
+//  
+//  CUDA_CALL(cudaFree(devStates));
+//  SEXP samples_out = Csamples_wrap(samples);
+//  UNPROTECT(4);
+//  return samples_out;
+//}
