@@ -266,6 +266,8 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     std::cout << "tau2:\n";
     printVec(chain.tau2, priors.K, 1);
     draw_beta(devStates, data, chain, priors, summary);
+    std::cout << "beta:\n";
+    printVec(chain.beta, data.V, priors.K);
     draw_pi(devStates, chain, priors, summary);
     std::cout << "pi:\n";
     printVec(chain.pi, priors.K, 1);
