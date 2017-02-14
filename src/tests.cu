@@ -489,7 +489,10 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
     draw_tau2(devStates, chain, priors, data, summary);
+    std::cout << "tau2:\n";
+    printVec(chain.tau2, priors.K, 1);
     samples.write_samples(chain);
+    std::cout << "step " << samples.step << ":\n";
   }
   
   CUDA_CALL(cudaFree(devStates));
