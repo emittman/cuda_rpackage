@@ -263,7 +263,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     draw_beta(devStates, data, chain, priors, summary);
     draw_pi(devStates, chain, priors, summary);
     std::cout << "pi:\n";
-    printVec(pi, priors.K, 1);
+    printVec(chain.pi, priors.K, 1);
     samples.write_samples(chain);
     chain.update_means(samples.step);
     chain.update_probabilities(samples.step);
