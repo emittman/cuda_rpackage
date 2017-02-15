@@ -4,6 +4,8 @@ DEBUG_FLAGS = -DTHRUST_DEBUG
 
 R_INC = ${R_HOME}/include
 
+BOOST_INC = /usr/include/boost
+
 CUDA_PATH = /usr/local/cuda-8.0/lib64
 
 LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
@@ -38,7 +40,7 @@ $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
-	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -I$(BOOST_INC) -o $@
 
 host_fns/wrap_R.o: host_fns/wrap_R.cu
 	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
