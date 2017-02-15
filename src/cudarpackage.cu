@@ -15,6 +15,7 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
+#include <boost/progress.hpp>
 // This prevents the replacement of "beta" by Rmath.h
 #ifdef beta
 #undef beta
@@ -244,7 +245,8 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed){
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed, int verbose){
+  
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
@@ -256,33 +258,51 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
   setup_kernel<<<chain.G, chain.V>>>(seed, devStates);
   
-  std::cout << "zeta_init:\n";
-  printVec(chain.zeta, data.G, 1);
+  
+  //progress bar
+  progress_display show_progress(n_iter);
   
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
     draw_zeta(devStates, data, chain, priors);
-    std::cout << "zeta:\n";
-    printVec(chain.zeta, data.G, 1);
+    if(verbose > 1){
+      std::cout << "zeta:\n";
+      printVec(chain.zeta, data.G, 1);
+    }
+    
     summary2 summary(chain.K, chain.zeta, data);
+    if(verbose > 1){
     std::cout << "Mk:\n";
     printVec(summary.Mk, priors.K, 1);
     std::cout << "occupied:\n";
     printVec(summary.occupied, summary.num_occupied, 1);
     std::cout << "unoccupied:\n";
     printVec(summary.unoccupied, priors.K - summary.num_occupied, 1);
+    }
+    
     draw_tau2(devStates, chain, priors, data, summary);
-    std::cout << "tau2:\n";
-    printVec(chain.tau2, priors.K, 1);
+    if(verbose > 1){
+      std::cout << "tau2:\n";
+      printVec(chain.tau2, priors.K, 1);
+    }
+    
     draw_beta(devStates, data, chain, priors, summary);
-    std::cout << "beta:\n";
-    printVec(chain.beta, data.V, priors.K);
+    if(verbose > 1) {
+      std::cout << "beta:\n";
+      printVec(chain.beta, data.V, priors.K);
+    }
+    
     draw_pi(devStates, chain, priors, summary);
-    std::cout << "pi:\n";
-    printVec(chain.pi, priors.K, 1);
+    if(verbose > 1) {
+      std::cout << "pi:\n";
+      printVec(chain.pi, priors.K, 1);
+    }
+    
     samples.write_samples(chain);
     chain.update_means(samples.step);
     chain.update_probabilities(samples.step);
+    
+    ++show_progress;
   }
   
   CUDA_CALL(cudaFree(devStates));
