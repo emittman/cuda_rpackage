@@ -260,7 +260,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   
   
   //progress bar
-  progress_display show_progress(n_iter);
+  boost::progress_display show_progress(n_iter);
   
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
