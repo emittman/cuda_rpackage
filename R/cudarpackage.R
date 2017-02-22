@@ -151,5 +151,5 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose
   dim(out[['tau2']]) <- c(length(idx_save), n_iter)
   dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:n_iter)
   dim(out[['pi']]) <- c(length(idx_save), n_iter)
-  dimnames(out[['pi']]) <- c(g=idx_save+1, iter=1:n_iter)
+  dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:n_iter)
 }
