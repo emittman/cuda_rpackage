@@ -133,7 +133,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(is.null(chain)){
-    beta <- rnorm(priors$K*data$V, rep(priors$mu_0, prior$K), rep(1/sqrt(priors$lambda2), priors$K))
+    beta <- rnorm(priors$K*data$V, rep(priors$mu_0, priors$K), rep(1/sqrt(priors$lambda2), priors$K))
     tau2 <- rgamma(priors$K, priors$a, priors$b)
     zeta <- as.integer(sample(0:(priors$K-1), data$G, replace=TRUE))
     pi <- c(rbeta(priors$K-1, 1, priors$alpha), 1)
