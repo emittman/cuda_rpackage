@@ -129,6 +129,9 @@ Rdevice_mmultiply = function(A, B){
 #' @param chain list, use formatChain
 #' @param n_iter int
 #' @param idx_save int vector, which genes to save (0-indexed)
+#' @param thin int
+#' @param C numeric matrix, contrasts
+#' @param verbose int, higher verbosity -> more printing
 mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
