@@ -173,8 +173,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   thrust::device_ptr<double> xty_ptr = &smry.xty_sums[0];
   thrust::copy(xty_ptr, xty_ptr + smry.num_occupied*data.V, betahat.begin());
   beta_hat(prec, betahat, smry.num_occupied, data.V);
-  std::cout << "beta_hat:\n";
-  printVec(betahat, data.V, smry.num_occupied);
+  
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry);
 }
 
