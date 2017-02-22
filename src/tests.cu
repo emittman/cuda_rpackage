@@ -238,7 +238,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   int beta_size = data.V*priors.K;
   fvec_h beta_h(beta_size, 0.0);
   fvec_d beta(beta_h.begin(), beta_h.end());
-  draw_MVNormal(devStates, bhat, prec, beta, priors, smry);
+  draw_MVNormal(devStates, bhat, prec, beta, priors, smry, 0);
   
   //print value
   std::cout << "beta_draws:\n";
@@ -353,7 +353,7 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata)
   CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
   setup_kernel<<<priors.K, 1>>>(seed, devStates);
 
-  draw_pi(devStates, chain, priors, smry);
+  draw_pi(devStates, chain, priors, smry, 0);
   
   SEXP out = PROTECT(allocVector(REALSXP, 1));
   REAL(out)[0] = 0;
@@ -374,7 +374,7 @@ extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdat
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * sizeof(curandState)));
   setup_kernel<<<data.G, 1>>>(seed, devStates);
 
-  draw_zeta(devStates, data, chain, priors);
+  draw_zeta(devStates, data, chain, priors, 0);
   //printVec(chain.zeta, data.G, 1);
   ivec_h zeta_h(data.G);
   thrust::copy(chain.zeta.begin(), chain.zeta.end(), zeta_h.begin());
@@ -463,7 +463,7 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
-    draw_beta(devStates, data, chain, priors, summary);
+    draw_beta(devStates, data, chain, priors, summary, 0);
     samples.write_samples(chain);
   }
   
@@ -488,7 +488,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
-    draw_tau2(devStates, chain, priors, data, summary);
+    draw_tau2(devStates, chain, priors, data, summary, 0);
     std::cout << "tau2:\n";
     printVec(chain.tau2, priors.K, 1);
     samples.write_samples(chain);
