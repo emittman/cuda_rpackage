@@ -142,7 +142,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose
   }
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < priors$K)) stop("idx_save should use 0-indexing")
-  seed <- as.integer(samples(1e6, 1))
+  seed <- as.integer(sample(1e6, 1))
   out <- .Call("Rrun_mcmc", data, priors, chain, as.integer(n_iter), as.integer(idx_save), seed, as.integer(verbose))
   
   names(out) <- c("beta", "tau", "pi")
