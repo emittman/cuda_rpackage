@@ -120,4 +120,36 @@ Rdevice_mmultiply = function(A, B){
   dim(out) <- c(m,n)
   return(out)
 }
+
+#' @title Function \code{mcmc}
+#' @description Sample from posterior of DPMM
+#' @export
+#' @param data list, use formatData
+#' @param prior list, use formatPrior
+#' @param chain list, use formatChain
+#' @param n_iter int
+#' @param idx_save int vector, which genes to save (0-indexed)
+mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose=0){
+  if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
+  if(!(data$G >= priors$K)) stop("G must be <= K!")
+  if(is.null(chain)){
+    beta <- rnorm(priors$K*data$V, rep(priors$mu_0, prior$K), rep(1/sqrt(priors$lambda2), priors$K))
+    tau2 <- rgamma(priors$K, priors$a, priors$b)
+    zeta <- as.integer(sample(0:(priors$K-1), data$G, replace=TRUE))
+    pi <- c(rbeta(priors$K-1, 1, priors$alpha), 1)
+    pi <- pi * c(1, cumprod(1-pi[-priors$K]))
+    chain <- formatChain(beta, pi, tau2, zeta, C)
+  }
+  if(!(data$V == chain$V)) stop("data$V != chain$V")
+  if(!(max(idx) < priors$K)) stop("idx should use 0-indexing")
+  seed <- as.integer(samples(1e6, 1))
+  out <- .Call("Rrun_mcmc", data, priors, chain, as.integer(n_iter), as.integer(idx_save), seed, as.integer(verbose))
   
+  names(out) <- c("beta", "tau", "pi")
+  dim(out[['beta']]) <- c(data$V, length(idx_save), n_iter)
+  dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:n_iter)
+  dim(out[['tau2']]) <- c(length(idx_save), n_iter)
+  dimnames(out[['tau']]) <- list(g=idx_save+1, iter=1:n_iter)
+  dim(out[['pi']]) <- c(length(idx_save), n_iter)
+  dimnames(out[['pi']]) <- c(g=idx_save+1, iter=1:n_iter)
+}
