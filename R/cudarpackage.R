@@ -129,7 +129,7 @@ Rdevice_mmultiply = function(A, B){
 #' @param chain list, use formatChain
 #' @param n_iter int
 #' @param idx_save int vector, which genes to save (0-indexed)
-mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose=0){
+mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(is.null(chain)){
@@ -143,13 +143,16 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < priors$K)) stop("idx_save should use 0-indexing")
   seed <- as.integer(sample(1e6, 1))
-  out <- .Call("Rrun_mcmc", data, priors, chain, as.integer(n_iter), as.integer(idx_save), seed, as.integer(verbose))
+  out <- .Call("Rrun_mcmc", data, priors, chain, as.integer(n_iter), as.integer(idx_save),
+               as.integer(thin), seed, as.integer(verbose))
   
   names(out) <- c("beta", "tau2", "pi")
   dim(out[['beta']]) <- c(data$V, length(idx_save), n_iter)
   dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:n_iter)
+  out[['beta']] <- aperm(out[['beta']], c(1,3,2))
   dim(out[['tau2']]) <- c(length(idx_save), n_iter)
   dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:n_iter)
   dim(out[['pi']]) <- c(length(idx_save), n_iter)
   dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:n_iter)
+  out
 }

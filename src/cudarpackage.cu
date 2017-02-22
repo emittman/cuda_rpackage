@@ -245,13 +245,14 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed, SEXP Rverbose){
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
   
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
-  int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  samples_t samples(n_iter, G_save, data.V, INTEGER(Ridx_save));
+  int n_iter = INTEGER(Rn_iter)[0], thin = INTEGER(Rthin)[0],
+  G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
+  samples_t samples(n_iter/thin, G_save, data.V, INTEGER(Ridx_save));
   
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
@@ -300,10 +301,11 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
       std::cout << "pi:\n";
       printVec(chain.pi, priors.K, 1);
     }
-    
-    samples.write_samples(chain);
-    chain.update_means(samples.step);
-    chain.update_probabilities(samples.step);
+    if(i % thin == 0){
+      samples.write_samples(chain);
+    }
+    chain.update_means(i+1);
+    chain.update_probabilities(i+1);
     
     ++show_progress;
   }
