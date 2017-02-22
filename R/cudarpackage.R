@@ -145,11 +145,11 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, C = NULL, verbose
   seed <- as.integer(sample(1e6, 1))
   out <- .Call("Rrun_mcmc", data, priors, chain, as.integer(n_iter), as.integer(idx_save), seed, as.integer(verbose))
   
-  names(out) <- c("beta", "tau", "pi")
+  names(out) <- c("beta", "tau2", "pi")
   dim(out[['beta']]) <- c(data$V, length(idx_save), n_iter)
   dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:n_iter)
   dim(out[['tau2']]) <- c(length(idx_save), n_iter)
-  dimnames(out[['tau']]) <- list(g=idx_save+1, iter=1:n_iter)
+  dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:n_iter)
   dim(out[['pi']]) <- c(length(idx_save), n_iter)
   dimnames(out[['pi']]) <- c(g=idx_save+1, iter=1:n_iter)
 }

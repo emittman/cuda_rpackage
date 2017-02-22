@@ -264,7 +264,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
-    draw_zeta(devStates, data, chain, priors);
+    draw_zeta(devStates, data, chain, priors, verbose-1);
     if(verbose > 1){
       std::cout << "zeta:\n";
       printVec(chain.zeta, data.G, 1);
@@ -280,19 +280,19 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     printVec(summary.unoccupied, priors.K - summary.num_occupied, 1);
     }
     
-    draw_tau2(devStates, chain, priors, data, summary);
+    draw_tau2(devStates, chain, priors, data, summary, verbose-1);
     if(verbose > 1){
       std::cout << "tau2:\n";
       printVec(chain.tau2, priors.K, 1);
     }
     
-    draw_beta(devStates, data, chain, priors, summary);
+    draw_beta(devStates, data, chain, priors, summary, verbose-1);
     if(verbose > 1) {
       std::cout << "beta:\n";
       printVec(chain.beta, data.V, priors.K);
     }
     
-    draw_pi(devStates, chain, priors, summary);
+    draw_pi(devStates, chain, priors, summary, verbose-1);
     if(verbose > 1) {
       std::cout << "pi:\n";
       printVec(chain.pi, priors.K, 1);
