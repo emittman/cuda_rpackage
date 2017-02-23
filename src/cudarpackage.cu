@@ -252,7 +252,8 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], thin = INTEGER(Rthin)[0],
   G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  samples_t samples(n_iter/thin, G_save, data.V, INTEGER(Ridx_save));
+  int n_save = n_iter/thin + (n_iter % thin == 0 ? 0 : 1)
+  samples_t samples(n_save, G_save, data.V, INTEGER(Ridx_save));
   
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;

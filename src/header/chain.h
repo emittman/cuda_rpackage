@@ -67,7 +67,7 @@ struct chain_t{
   
   
 struct samples_t{
-  int n_iter;
+  int n_save;
   int step;
   int G_save;
   int V;
@@ -76,7 +76,7 @@ struct samples_t{
   fvec_h save_tau2;
   fvec_h save_pi;
 
-  samples_t(int _n_iter, int _G_save, int _V, int *idx);
+  samples_t(int _n_save, int _G_save, int _V, int *idx);
   void write_samples(chain_t &chain);
   
 };
