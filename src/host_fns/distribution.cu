@@ -1,9 +1,9 @@
 #include "../header/distribution.h"
 
 __device__ double rgamma(curandState *state, double a, double b){
-
-  float d = a - 1.0 / 3;
-  float Y, U, v;
+  #case a >= 1
+  double d = a - 1.0 / 3;
+  double Y, U, v;
   while(true){
     // Generate a standard normal random variable
     Y = curand_normal(state);
@@ -23,6 +23,14 @@ __device__ double rgamma(curandState *state, double a, double b){
       return d * v / b;
     }
   }
+}
+
+__device__ double rgamma2(curandState *state, double a, double b){
+  #case a < 1
+  double u, x;
+  u = pow(curand_uniform(state), 1/a);
+  x = rgamma(state, a, b);
+  return(u*x);
 }
 
 __device__ double rbeta(curandState *state,  double a, double b){
@@ -47,7 +55,11 @@ __global__ void getGamma(curandState *states, double *a, double *b, double *resu
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
-  result[id] = rgamma(&(states[id]), a[id], b[id]);
+  if(a[id]>=1){
+    result[id] = rgamma(&(states[id]), a[id], b[id]);
+  } else {
+    result[id] = rgamma2(&(states[id]), a[id], b[id]);
+  }
 }
 
 

@@ -7,6 +7,8 @@
 
 __device__ double rgamma(curandState *state, double a, double b);
 
+__device__ double rgamma2(curandState *state, double a, double b);
+
 __device__ double rbeta(curandState *state,  double a, double b);
 
 __global__ void setup_kernel(int seed, curandState *states);
