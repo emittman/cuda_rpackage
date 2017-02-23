@@ -304,11 +304,9 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     }
     if(i % thin == 0){
       samples.write_samples(chain);
-      std::cout << "step = " << samples.step << std::endl;
     }
     chain.update_means(i+1);
     chain.update_probabilities(i+1);
-    std::cout << "iter = " << i+1 << std::endl;
     ++show_progress;
   }
   
