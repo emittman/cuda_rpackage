@@ -144,7 +144,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, v
     chain <- formatChain(beta, pi, tau2, zeta, C)
   }
   if(!(data$V == chain$V)) stop("data$V != chain$V")
-  if(!(max(idx_save) < priors$K)) stop("idx_save should use 0-indexing")
+  if(!(max(idx_save) < priors$G)) stop("idx_save should use 0-indexing")
   seed <- as.integer(sample(1e6, 1))
   n_iter <- as.integer(n_iter)
   thin <- as.integer(thin)
