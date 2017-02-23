@@ -146,16 +146,19 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, v
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < priors$K)) stop("idx_save should use 0-indexing")
   seed <- as.integer(sample(1e6, 1))
-  out <- .Call("Rrun_mcmc", data, priors, chain, as.integer(n_iter), as.integer(idx_save),
-               as.integer(thin), seed, as.integer(verbose))
+  n_iter <- as.integer(n_iter)
+  thin <- as.integer(thin)
+  verbose <- as.integer(verbose)
+  out <- .Call("Rrun_mcmc", data, priors, chain, n_iter, as.integer(idx_save),
+               thin, seed, verbose)
   
   names(out) <- c("beta", "tau2", "pi")
-  dim(out[['beta']]) <- c(data$V, length(idx_save), n_iter)
-  dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:n_iter)
+  dim(out[['beta']]) <- c(data$V, length(idx_save), n_iter %/% thin)
+  dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:(n_iter %/% thin))
   out[['beta']] <- aperm(out[['beta']], c(1,3,2))
-  dim(out[['tau2']]) <- c(length(idx_save), n_iter)
-  dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:n_iter)
-  dim(out[['pi']]) <- c(length(idx_save), n_iter)
-  dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:n_iter)
+  dim(out[['tau2']]) <- c(length(idx_save), n_iter %/% thin)
+  dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:(n_iter %/% thin))
+  dim(out[['pi']]) <- c(length(idx_save), n_iter %/% thin)
+  dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:(n_iter %/% thin))
   out
 }
