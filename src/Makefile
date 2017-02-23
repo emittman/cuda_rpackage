@@ -36,7 +36,7 @@ TEST_OBJS = tests.o
 #final SHLIB
 $(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
 	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(TEST_OBJS) -o $(TARGET) -I$(R_INC)\
-	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS) $(DEBUG_FLAGS)
+	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS)
 
 #wrappers
 cudarpackage.o: cudarpackage.cu
@@ -47,7 +47,7 @@ host_fns/wrap_R.o: host_fns/wrap_R.cu
 
 #tests
 tests.o: tests.cu
-	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@ $(DEBUG_FLAGS)
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 #host functions
 host_fns/cholesky.o: host_fns/cholesky.cu
