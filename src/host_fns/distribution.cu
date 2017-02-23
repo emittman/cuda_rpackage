@@ -28,7 +28,7 @@ __device__ double rgamma(curandState *state, double a, double b){
 __device__ double rgamma2(curandState *state, double a, double b){
   //case a < 1
   double u, x;
-  u = pow(curand_uniform(state), 1/a);
+  u = pow(curand_uniform(state), (float)(1/a));
   x = rgamma(state, a, b);
   return(u*x);
 }
