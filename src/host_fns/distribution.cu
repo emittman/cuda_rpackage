@@ -1,7 +1,7 @@
 #include "../header/distribution.h"
 
 __device__ double rgamma(curandState *state, double a, double b){
-  #case a >= 1
+  //case a >= 1
   double d = a - 1.0 / 3;
   double Y, U, v;
   while(true){
@@ -26,7 +26,7 @@ __device__ double rgamma(curandState *state, double a, double b){
 }
 
 __device__ double rgamma2(curandState *state, double a, double b){
-  #case a < 1
+  //case a < 1
   double u, x;
   u = pow(curand_uniform(state), 1/a);
   x = rgamma(state, a, b);
