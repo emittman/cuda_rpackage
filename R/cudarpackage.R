@@ -153,12 +153,12 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, v
                thin, seed, verbose)
   
   names(out) <- c("beta", "tau2", "pi")
-  dim(out[['beta']]) <- c(data$V, length(idx_save), n_iter %/% thin)
-  dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:(n_iter %/% thin))
+  dim(out[['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
+  dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
   out[['beta']] <- aperm(out[['beta']], c(1,3,2))
-  dim(out[['tau2']]) <- c(length(idx_save), n_iter %/% thin)
-  dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:(n_iter %/% thin))
-  dim(out[['pi']]) <- c(length(idx_save), n_iter %/% thin)
-  dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:(n_iter %/% thin))
+  dim(out[['tau2']]) <- c(length(idx_save), ceiling(n_iter/ thin))
+  dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
+  dim(out[['pi']]) <- c(length(idx_save), ceiling(n_iter/ thin))
+  dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
   out
 }
