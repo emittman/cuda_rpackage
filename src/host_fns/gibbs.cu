@@ -215,7 +215,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   for(int k=0; k<smry.num_occupied; k++){
     int i = 0;
     for(int j=0; j<data.V; j++){
-      if(abs(chain.beta[smry.occupied[k*data.V + j]]) > 10)
+      if(chain.beta[smry.occupied[k*data.V + j]] > 20)
         i = 1;
       if(i>0){
         std::cout << "prec[" << k << "]" << std::endl;
