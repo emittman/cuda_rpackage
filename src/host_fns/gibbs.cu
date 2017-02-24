@@ -219,7 +219,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
         i = 1;
       if(i>0){
         std::cout << "prec[" << k << "]" << std::endl;
-        thrust::copy(prec.begin() + data.V*data.V*k, prec.begin() + (data.V*data.V)*(k+1) - 1, std::ostream_iterator<realIter>(std::cout, " "));
+        //thrust::copy(prec.begin() + data.V*data.V*k, prec.begin() + (data.V*data.V)*(k+1) - 1, std::ostream_iterator<double>(std::cout, " "));
       }
     }
   }
