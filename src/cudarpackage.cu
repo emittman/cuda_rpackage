@@ -269,12 +269,6 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
-    draw_zeta(devStates, data, chain, priors, verbose-1);
-    if(verbose > 1){
-      std::cout << "zeta:\n";
-      printVec(chain.zeta, data.G, 1);
-    }
-    
     summary2 summary(chain.K, chain.zeta, data);
     if(verbose > 1){
     std::cout << "Mk:\n";
@@ -302,6 +296,13 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
       std::cout << "pi:\n";
       printVec(chain.pi, priors.K, 1);
     }
+    
+    draw_zeta(devStates, data, chain, priors, verbose-1);
+    if(verbose > 1){
+      std::cout << "zeta:\n";
+      printVec(chain.zeta, data.G, 1);
+    }
+    
     if(i % thin == 0){
       samples.write_samples(chain);
     }
