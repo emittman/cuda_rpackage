@@ -210,19 +210,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   thrust::device_ptr<double> xty_ptr = &smry.xty_sums[0];
   thrust::copy(xty_ptr, xty_ptr + smry.num_occupied*data.V, betahat.begin());
   beta_hat(prec, betahat, smry.num_occupied, data.V);
-  
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);
-  for(int k=0; k<smry.num_occupied; k++){
-    int i = 0;
-    for(int j=0; j<data.V; j++){
-      if(chain.beta[smry.occupied[k*data.V + j]] > 20)
-        i = 1;
-      if(i>0){
-        std::cout << "prec[" << k << "]" << std::endl;
-        //thrust::copy(prec.begin() + data.V*data.V*k, prec.begin() + (data.V*data.V)*(k+1) - 1, std::ostream_iterator<double>(std::cout, " "));
-      }
-    }
-  }
 }
 
 
