@@ -279,6 +279,12 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     printVec(summary.unoccupied, priors.K - summary.num_occupied, 1);
     }
     
+    draw_zeta(devStates, data, chain, priors, verbose-1);
+    if(verbose > 1){
+      std::cout << "zeta:\n";
+      printVec(chain.zeta, data.G, 1);
+    }
+    
     draw_beta(devStates, data, chain, priors, summary, verbose-1);
     if(verbose > 1) {
       std::cout << "beta:\n";
@@ -295,12 +301,6 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     if(verbose > 1) {
       std::cout << "pi:\n";
       printVec(chain.pi, priors.K, 1);
-    }
-    
-    draw_zeta(devStates, data, chain, priors, verbose-1);
-    if(verbose > 1){
-      std::cout << "zeta:\n";
-      printVec(chain.zeta, data.G, 1);
     }
     
     if(i % thin == 0){

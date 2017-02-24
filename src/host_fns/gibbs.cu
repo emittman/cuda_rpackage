@@ -212,6 +212,15 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   beta_hat(prec, betahat, smry.num_occupied, data.V);
   
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);
+  for(int k=0; k<smry.num_occupied; k++){
+    int i = 0;
+    for(int j=0; j<data.V; j++){
+      if(abs(chain.beta[smry.occupied[k*data.V + j]]) > 10)
+        i = 1;
+    }
+    std::cout << "prec[" << k << "]" << std::endl;
+    thrust::copy(&(prec.begin() + data.V*k), &(prec.begin() + (data.V+1)*k - 1), std::ostream_iterator<double>(std::cout, " "));
+  }
 }
 
 
