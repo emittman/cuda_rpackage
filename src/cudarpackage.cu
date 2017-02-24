@@ -285,18 +285,18 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     printVec(summary.unoccupied, priors.K - summary.num_occupied, 1);
     }
     
-    draw_tau2(devStates, chain, priors, data, summary, verbose-1);
-    if(verbose > 1){
-      std::cout << "tau2:\n";
-      printVec(chain.tau2, priors.K, 1);
-    }
-    
     draw_beta(devStates, data, chain, priors, summary, verbose-1);
     if(verbose > 1) {
       std::cout << "beta:\n";
       printVec(chain.beta, data.V, priors.K);
     }
     
+    draw_tau2(devStates, chain, priors, data, summary, verbose-1);
+    if(verbose > 1){
+      std::cout << "tau2:\n";
+      printVec(chain.tau2, priors.K, 1);
+    }
+
     draw_pi(devStates, chain, priors, summary, verbose-1);
     if(verbose > 1) {
       std::cout << "pi:\n";
