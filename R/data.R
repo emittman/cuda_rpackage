@@ -52,7 +52,7 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
   list(K = K, V = as.integer(length(prior_mean)),
        mu_0 = as.numeric(prior_mean),
        lambda2 = 1/as.numeric(prior_sd)^2,
-       alpha = alpha, a = a, b = b)
+       alpha = as.numeric(alpha), a = as.numeric(a), b = as.numeric(b))
 }
 
 #' @title Function \code{formatChain}
@@ -95,7 +95,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   } else{
     meansquares = rep(0, V*G)
   }
-  list(G = G, V = V, K = K, P = P, beta = beta, pi = pi, tau2 = tau2,
+  list(G = G, V = V, K = K, P = P, beta = as.numeric(beta), pi = as.numeric(pi), tau2 = as.numeric(tau2),
        zeta = as.integer(zeta), C = t(C), probs = probs, means = means, meansquares = meansquares)
 }
 
