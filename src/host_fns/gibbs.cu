@@ -212,12 +212,12 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   construct_prior_weighted_mean(betahat, priors, chain);
   
   //scatter xty_sums
-  intIter occ_begin smry.occupied.begin();
-  intIter occ_end smry.occupied.end();
+  intIter occ_begin = smry.occupied.begin();
+  intIter occ_end = smry.occupied.end();
   SCIntIter colIter = getSCIntIter(occ_begin, occ_end, data.V);
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter betaOcc = thrust::permutation_iterator<realIter, SCIntIter>(betahat.begin(), colIter);
-  thrust::transform(smry.xty_sums.begin(), smry.xty_sums.end(), betaOcc, betaOcc, thrust::plus());
+  thrust::transform(smry.xty_sums.begin(), smry.xty_sums.end(), betaOcc, betaOcc, thrust::plus<double>());
   
   beta_hat(prec, betahat, priors.K, data.V);
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);
