@@ -31,7 +31,7 @@ void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, 
 
 }
 
-void construct_prior_weighted_mean(fvec &prior_w_mean, priors_t &priors, chain_t &chain){
+void construct_prior_weighted_mean(fvec_d &prior_w_mean, priors_t &priors, chain_t &chain){
   realIter lambda2_begin = priors.lambda2.begin();
   realIter lambda2_end   = priors.lambda2.end();
   gRepTimes<realIter>::iterator rep_lambda2 = getGRepTimesIter(lambda2_begin, lambda2_end, data.V);

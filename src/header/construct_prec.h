@@ -26,6 +26,6 @@ struct weighted_prior_mean{
   }
 };
 
-void construct_prior_weighted_mean(fvec &prior_w_mean, priors_t &priors, chain_t &chain);
+void construct_prior_weighted_mean(fvec_d &prior_w_mean, priors_t &priors, chain_t &chain);
 
 #endif
