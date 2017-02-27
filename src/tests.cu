@@ -501,3 +501,19 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   UNPROTECT(4);
   return samples_out;
 }
+
+extern "C" SEXP Rtest_wt_prior_mean(SEXP Rpriors, SEXP Rchain){
+  priors_t priors = Rwrap_priors(Rpriors);
+  chain_t chain = Rwrap_chain(Rchain);
+  fvec_d mean(priors.K * chain.V);
+  construct_prior_weighted_mean(mean, priors, chain);
+  fvec_h mean_h(priors.K * chain.V);
+  thrust::copy(mean.begin(), mean.end(), mean_h.begin());
+  SEXP out = PROTECT(allocVector(REALSXP, priors.K*chain.V));
+  for(int i=0; i<priors.K*chain.V; i++){
+    REAL(out)[i] = mean_h[i];
+  }
+  UNPROTECT(1);
+  return out;
+}
+
