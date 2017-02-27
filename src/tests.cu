@@ -503,8 +503,8 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
 }
 
 extern "C" SEXP Rtest_wt_prior_mean(SEXP Rpriors, SEXP Rchain){
-  priors_t priors = Rwrap_priors(Rpriors);
-  chain_t chain = Rwrap_chain(Rchain);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  chain_t chain = Rchain_wrap(Rchain);
   fvec_d mean(priors.K * chain.V);
   construct_prior_weighted_mean(mean, priors, chain);
   fvec_h mean_h(priors.K * chain.V);
