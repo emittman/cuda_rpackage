@@ -4,6 +4,7 @@
 #include "iterator.h"
 #include "iter_getter.h"
 #include "chain.h"
+#include <thrust/for_each.h>
 
 typedef thrust::tuple<gDiagonal<realIter>::iterator,gRepTimes<realIter>::iterator,gRepEach<realIter>::iterator> diag_tup;
 typedef thrust::zip_iterator<diag_tup> diag_zip;
