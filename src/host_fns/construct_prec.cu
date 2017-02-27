@@ -34,19 +34,19 @@ void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, 
 void construct_prior_weighted_mean(fvec_d &prior_w_mean, priors_t &priors, chain_t &chain){
   realIter lambda2_begin = priors.lambda2.begin();
   realIter lambda2_end   = priors.lambda2.end();
-  gRepTimes<realIter>::iterator rep_lambda2 = getGRepTimesIter(lambda2_begin, lambda2_end, data.V);
+  gRepTimes<realIter>::iterator rep_lambda2 = getGRepTimesIter(lambda2_begin, lambda2_end, chain.V);
   
   realIter mu0_begin = priors.mu0.begin();
   realIter mu0_end   = priors.mu0.end();
-  gRepTimes<realIter>::iterator rep_mu0 = getGRepTimesIter(mu0_begin, mu0_end, data.V);
+  gRepTimes<realIter>::iterator rep_mu0 = getGRepTimesIter(mu0_begin, mu0_end, chain.V);
   
   realIter tau2_begin = chain.tau2.begin();
   realIter tau2_end   = chain.tau2.end();
-  gRepEach<realIter>::iterator each_tau2 = getGRepEachIter(tau2_begin, tau2_end, data.V);
+  gRepEach<realIter>::iterator each_tau2 = getGRepEachIter(tau2_begin, tau2_end, chain.V);
   
   mean_tup tuple = thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, realIter>(rep_lambda2, each_tau2, rep_mu0, prior_w_mean.begin());
 }
   mean_zip zip = thrust::zip_iterator<mean_tup>(tuple);
   weighted_prior_mean f;
-  thrust::for_each(zip, zip + priors.K * data.V, f);
+  thrust::for_each(zip, zip + priors.K * chain.V, f);
 }
