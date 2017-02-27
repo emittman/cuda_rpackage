@@ -16,5 +16,16 @@ void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, 
                     realIter tau_begin, realIter tau_end, intIter Mk_begin, intIter Mk_end,
                     realIter xtx_begin, realIter xtx_end, int K, int V);
 
+typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, realIter> mean_tup;
+typedef thrust::zip_iterator<mean_tup> mean_zip;
+
+struct weighted_prior_mean{
+  template<typename T>
+  __host__ __device__ void operator()(T tup){
+    thrust::get<3>(tup) = thrust::get<0>(tup) / thrust::get<1>(tup) * thrust::get<2>(tup);
+  }
+};
+
+void construct_prior_weighted_mean(fvec &prior_w_mean, priors_t &priors, chain_t &chain);
 
 #endif

@@ -37,7 +37,7 @@ struct left_mult_chol_inv{
   }
 };
 
-void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K_occ, int V){
+void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K, int V){
   rowIter L_first = getRowIter(V*V, 0);
   rowIter xty_first = getRowIter(V, 0);
   strideIter L = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), L_first);
@@ -45,9 +45,9 @@ void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K_occ, int V){
   nrml_tuple my_tuple = thrust::make_tuple(L, x);
   thrust::zip_iterator<nrml_tuple> zipped = thrust::zip_iterator<nrml_tuple>(my_tuple);
   solve_normal_eq f(V);
-  thrust::for_each(zipped, zipped + K_occ, f);
+  thrust::for_each(zipped, zipped + K, f);
   //std::cout << "betahat:\n";
-  //printVec(beta_hat, V, K_occ);
+  //printVec(beta_hat, V, K);
 }
 
 void scale_chol_inv(fvec_d &chol_prec, fvec_d &x, ivec_d &idx, int len_idx, int dim){

@@ -201,18 +201,24 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
 void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry, int verbose=0){
   fvec_d prec(priors.K * data.V * data.V);
   fvec_d betahat(priors.K * data.V, 0.0);
+  
   //get cluster (inv)scales
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), chain.tau2.begin(), chain.tau2.end(), smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), priors.K, data.V);
   realIter prec_begin = prec.begin();
   realIter prec_end = prec.end();
   chol_multiple(prec_begin, prec_end, data.V, priors.K);
+  
+  //init betahat with lambda2/tau2 * mu0
+  construct_prior_weighted_mean(betahat, priors, chain);
+  
   //scatter xty_sums
   intIter occ_begin smry.occupied.begin();
   intIter occ_end smry.occupied.end();
   SCIntIter colIter = getSCIntIter(occ_begin, occ_end, data.V);
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
-  gColIter xtyOcc = thrust::permutation_iterator<realIter, SCIntIter>(betahat.begin(), colIter);
-  thrust::copy(xtyOcc, xtyOcc + smry.num_occupied*data.V, betahat.begin());
+  gColIter betaOcc = thrust::permutation_iterator<realIter, SCIntIter>(betahat.begin(), colIter);
+  thrust::transform(smry.xty_sums.begin(), smry.xty_sums.end(), betaOcc, betaOcc, thrust::plus());
+  
   beta_hat(prec, betahat, priors.K, data.V);
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);
 }
