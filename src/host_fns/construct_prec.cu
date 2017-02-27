@@ -44,9 +44,9 @@ void construct_prior_weighted_mean(fvec_d &prior_w_mean, priors_t &priors, chain
   realIter tau2_end   = chain.tau2.end();
   gRepEach<realIter>::iterator each_tau2 = getGRepEachIter(tau2_begin, tau2_end, chain.V);
   
-  mean_tup tup = thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, realIter>(rep_lambda2, each_tau2, rep_mu0, prior_w_mean.begin());
-}
-  mean_zip zip = thrust::zip_iterator<mean_tup>(tup);
+  realIter p_w_mean = prior_w_mean.begin();
+  
+  mean_zip zip = thrust::zip_iterator<mean_tup>(thrust::make_tuple(rep_lambda2, each_tau2, rep_mu0, p_w_mean));
   weighted_prior_mean f;
   thrust::for_each(zip, zip + priors.K * chain.V, f);
 }
