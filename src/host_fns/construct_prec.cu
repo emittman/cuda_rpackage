@@ -1,4 +1,5 @@
 #include "../header/construct_prec.h"
+#include <thrust/execution_policy.h>
 
 __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup);
@@ -65,7 +66,8 @@ void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &prio
     std::cout << std::endl;
   }
   
-  thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(), clustOcc);
+  thrust::copy(thrust::device, smry.xty_sums.begin(), smry.xty_sums.end(), clustOcc);
+  
   if(verbose>0){
     std::cout << "xty_sums:\n";
     printVec(smry.xty_sums, chain.V, smry.num_occupied);
