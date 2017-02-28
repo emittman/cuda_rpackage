@@ -66,7 +66,7 @@ void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &prio
   }
   
   realIter xty_sums_begin = smry.xty_sums.begin();
-  thrust::transform(xty_sums_begin, xty_sums_begin + smry.num_occupied * chain.V, clustOcc, clustOcc, thrust::plus<double>());
+  thrust::copy(xty_sums_begin, xty_sums_begin + smry.num_occupied * chain.V, clustOcc);
   
   if(verbose>0){
     std::cout << "xty_sums:\n";
