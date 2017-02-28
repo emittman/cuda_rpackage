@@ -506,6 +506,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   return samples_out;
 }
 
+/* Disable temporarily
 extern "C" SEXP Rtest_wt_prior_mean(SEXP Rpriors, SEXP Rchain){
   priors_t priors = Rpriors_wrap(Rpriors);
   std::cout << "priors entered\n";
@@ -522,4 +523,4 @@ extern "C" SEXP Rtest_wt_prior_mean(SEXP Rpriors, SEXP Rchain){
   UNPROTECT(1);
   return out;
 }
-
+*/
