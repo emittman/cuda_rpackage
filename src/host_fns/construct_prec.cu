@@ -40,7 +40,7 @@ void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &prio
   
   intIter occ_begin = smry.occupied.begin();
   intIter occ_end = smry.occupied.end();
-  SCIntIter colIter = getSCIntIter(occ_begin, occ_end, data.V);
+  SCIntIter colIter = getSCIntIter(occ_begin, occ_end, chain.V);
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(wt_sum_begin, colIter);
   realIter xty_sums_begin = smry.xty_sums.begin();
