@@ -15,7 +15,7 @@ struct diagAdd{
   __host__ __device__ void operator()(diag_tup_el Tup);
 };  
 
-void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk);
+void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk, int verbose);
 
 typedef thrust::tuple<realIter, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator> wt_sum_tup;
 typedef thrust::zip_iterator<wt_sum_tup> wt_sum_zip;
