@@ -75,8 +75,8 @@ Rchol_multiple = function(array){
 #' @param data constructed with formatData
 #' @param priors constructed with formatPriors
 #' @param chain constructed with formatChain
-Rconstruct_prec = function(data, priors, chain){
-  out <- .Call("Rconstruct_prec", data, priors, chain)
+Rconstruct_prec = function(data, priors, chain, verbose=0){
+  out <- .Call("Rconstruct_prec", data, priors, chain, verbose)
   dim(out) <- c(data$V, data$V, priors$K)
   return(out)
 }
