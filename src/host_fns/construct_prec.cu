@@ -19,6 +19,8 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
   thrust::copy(xtx_rep, xtx_rep + K*V*V, prec_begin);
   
   //multiply by Mk[k], tau2[k]
+  intIter Mk_begin = Mk.begin();
+  intIter Mk_end   = Mk.end();
   gRepEach<intIter>::iterator Mk_rep = getGRepEachIter(Mk_begin, Mk_end, V*V, 1);
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
   transform(prec_begin,prec_end, Mk_rep, prec_begin, thrust::multiplies<double>());
