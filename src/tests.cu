@@ -179,6 +179,8 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   return out;
 }
 
+//Temporarily disable while fixing draw_MVNormal
+/*
 extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
@@ -202,6 +204,8 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   //make precision matrices
   fvec_d prec(smry.num_occupied * smry.V * smry.V, 0.0);
   fvec_d tau2(priors.K, 1.0);
+  void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk);
+  construct_prec(prec, data, priors, )
   construct_prec(prec.begin(), prec.end(), priors.lambda2.begin(), priors.lambda2.end(), tau2.begin(), tau2.end(),
                  smry.Mk.begin(), smry.Mk.end(), data.xtx.begin(), data.xtx.end(), smry.num_occupied, data.V);
   
@@ -256,7 +260,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
   return out;
-}
+}*/
 
 extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
   int dim = INTEGER(Rdim)[0], n = INTEGER(Rn)[0];
