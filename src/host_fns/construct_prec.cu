@@ -35,6 +35,10 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
 
 }
 
+__host__ __device__ void weighted_sum::operator()(wt_sum_el tup){
+  thrust::get<0>(tup) = thrust::get<0>(tup) * thrust::get<1>(tup) + thrust::get<2>(tup) * thrust::get<3>(tup);
+}
+
 void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &priors, chain_t &chain){
   //return xty_sums[k] * tau2[k] + mu_0 * lambda2
   realIter wt_sum_begin = weighted_sum.begin();

@@ -19,12 +19,10 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
 
 typedef thrust::tuple<realIter, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator> wt_sum_tup;
 typedef thrust::zip_iterator<wt_sum_tup> wt_sum_zip;
+typedef thrust::tuple<double &, double &, double &, double &> wt_sum_el;
 
 struct weighted_sum{
-  template<typename T>
-  __host__ __device__ void operator()(T tup){
-    thrust::get<0>(tup) = thrust::get<0>(tup) * thrust::get<1>(tup) + thrust::get<2>(tup) * thrust::get<3>(tup);
-  }
+  __host__ __device__ void operator()(wt_sum_el tup);
 };
 
 void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &priors, chain_t &chain);
