@@ -51,11 +51,13 @@ void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &prio
   realIter wt_sum_begin = weighted_sum.begin();
   realIter wt_sum_end   = weighted_sum.end();
   
-  intIter occ_begin = smry.occupied.begin();
-  intIter occ_end = smry.occupied.end();
-  SCIntIter colIter = getSCIntIter(occ_begin, occ_end, chain.V);
+  SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), chain.V);
+  if(verbose>0){
+    std::cout << "Testing colIter:\n";
+    thrust::copy(colIter, colIter + smry.num_occupied * chain.V, std::ostream_iterator<int>(std::cout, " "));
+  }
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
-  gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(wt_sum_begin, colIter);
+  gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(weighted_sum.begin(), colIter);
   thrust::copy(smry.xty_sums.begin(), smry.xty_sums.end(), clustOcc);
   if(verbose>0){
     std::cout << "xty_sums:\n";
