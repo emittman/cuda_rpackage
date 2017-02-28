@@ -513,7 +513,7 @@ extern "C" SEXP Rtest_wt_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   summary2 smry(priors.K, chain.zeta, data);
 
   fvec_d wt_sum(priors.K * chain.V);
-  construct_prior_weighted_mean(wt_sum, smry, priors, chain);
+  construct_weighted_sum(wt_sum, smry, priors, chain);
   fvec_h wt_sum_h(priors.K * chain.V);
   thrust::copy(wt_sum.begin(), wt_sum.end(), wt_sum_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, priors.K*chain.V));
