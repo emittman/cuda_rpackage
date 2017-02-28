@@ -26,7 +26,7 @@ struct modify_gamma_par {
 void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, int verbose = 0){
   //no longer should be passing summary2!
   int K = priors.K;
-  int V = chain.V;
+  int V = priors.V;
   //replace current beta with standard normal draws
   getNormal<<<K, V>>>(states, thrust::raw_pointer_cast(beta.data()));
   
@@ -44,7 +44,7 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   }
   
   //shift betas by beta_hat
-  thrust::transform(beta_hat.begin(), beta_hat.end(), beta.begin(), thrust::plus<double>());
+  thrust::transform(beta_hat.begin(), beta_hat.end(), beta.begin(), beta.begin(), thrust::plus<double>());
   
   if(verbose > 1){
     std::cout << "beta draws:\n";
