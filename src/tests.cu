@@ -506,7 +506,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   return samples_out;
 }
 
-extern "C" SEXP Rtest_wt_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
+extern "C" SEXP Rtest_weighted_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);

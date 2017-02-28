@@ -17,7 +17,7 @@ chain <- formatChain(beta, pi, tau2, zeta)
 
 priors <- formatPriors(K, rcauchy(V), rexp(V), 1, 1, 1)
 
-Cmean <- .Call("Rtest_wt_sum", data, priors, chain)
+Cmean <- .Call("Rtest_weighted_sum", data, priors, chain)
 Rmean <- rep(priors$mu_0, K) * rep(priors$lambda2, K) / rep(chain$tau2,each=V)
 
 test_that("Correct answer", {
