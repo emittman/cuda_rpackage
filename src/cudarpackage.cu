@@ -67,25 +67,18 @@ extern "C" SEXP Rchol_multiple(SEXP all, SEXP arraydim, SEXP n_array){
   return out;
 }
 
-extern "C" SEXP Rconstruct_prec(SEXP xtx, SEXP Mk, SEXP lam, SEXP tau, SEXP K, SEXP V){
-  int dim = INTEGER(V)[0];
-  int num_clusts = INTEGER(K)[0];
-  int total_size = dim * dim * num_clusts;
-  fvec_d prec(total_size);
-  double *xtx_ptr = REAL(xtx);
-  int *Mk_ptr = INTEGER(Mk);
-  double *lam_ptr = REAL(lam);
-  double *tau_ptr = REAL(tau);
+extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
+  data_t data = Rdata_wrap(Rdata);
+  priors_t priors = Rpriors_wrap(Rpriors);
+  chain_t chain = Rchain_wrap(Rchain);
   
-  fvec_d dev_xtx(xtx_ptr, xtx_ptr + dim*dim);
-  ivec_d dev_Mk(Mk_ptr, Mk_ptr + num_clusts);
-  fvec_d dev_lam(lam_ptr, lam_ptr+dim);
-  fvec_d dev_tau(tau_ptr, tau_ptr+num_clusts);
-  construct_prec(prec.begin(), prec.end(), dev_lam.begin(), dev_lam.end(), dev_tau.begin(), dev_tau.end(),
-                 dev_Mk.begin(), dev_Mk.end(), dev_xtx.begin(), dev_xtx.end(), num_clusts, dim);
-  
-  SEXP out_prec = PROTECT(allocVector(REALSXP, total_size));
-  for(int i=0; i<total_size; ++i)
+  int psize = priors.K * data.V * data.V;
+  summary2 summary(priors.K, chain.zeta, data)
+  fvec_d prec(psize);
+  construct_prec(prec, data, priors, chain, summary.Mk);
+
+  SEXP out_prec = PROTECT(allocVector(REALSXP, psize));
+  for(int i=0; i<psize; ++i)
     REAL(out_prec)[i] = prec[i];
   UNPROTECT(1);
   return out_prec;

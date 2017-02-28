@@ -24,6 +24,7 @@ struct modify_gamma_par {
 };
 
 void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, summary2 &smry, int verbose = 0){
+  //no longer should be passing summary2!
   int K = smry.K;
   int V = smry.V;
   //replace current beta with standard normal draws
@@ -208,16 +209,8 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   realIter prec_end = prec.end();
   chol_multiple(prec_begin, prec_end, data.V, priors.K);
   
-  //init betahat with lambda2/tau2 * mu0
-  construct_prior_weighted_mean(betahat, priors, chain);
-  
-  //scatter xty_sums
-  intIter occ_begin = smry.occupied.begin();
-  intIter occ_end = smry.occupied.end();
-  SCIntIter colIter = getSCIntIter(occ_begin, occ_end, data.V);
-  typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
-  gColIter betaOcc = thrust::permutation_iterator<realIter, SCIntIter>(betahat.begin(), colIter);
-  thrust::transform(smry.xty_sums.begin(), smry.xty_sums.end(), betaOcc, betaOcc, thrust::plus<double>());
+  //init betahat with tau2[k] * xty_sum[k] + lambda2 * mu0
+  construct_weighted_sum(betahat, smry, priors, chain);
   
   beta_hat(prec, betahat, priors.K, data.V);
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);

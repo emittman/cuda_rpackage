@@ -6,28 +6,26 @@
 #include "chain.h"
 #include <thrust/for_each.h>
 
-typedef thrust::tuple<gDiagonal<realIter>::iterator,gRepTimes<realIter>::iterator,gRepEach<realIter>::iterator> diag_tup;
+typedef thrust::tuple<gDiagonal<realIter>::iterator,gRepTimes<realIter>::iterator> diag_tup;
 typedef thrust::zip_iterator<diag_tup> diag_zip;
-typedef thrust::tuple<double &, double &, double &> diag_tup_el;
+typedef thrust::tuple<double &, double &> diag_tup_el;
 
 struct diagAdd{
   __host__ __device__ void operator()(diag_tup_el Tup);
 };  
 
-void construct_prec(realIter prec_begin, realIter prec_end, realIter lam_begin, realIter lam_end,
-                    realIter tau_begin, realIter tau_end, intIter Mk_begin, intIter Mk_end,
-                    realIter xtx_begin, realIter xtx_end, int K, int V);
+void void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk);
 
-typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, realIter> mean_tup;
-typedef thrust::zip_iterator<mean_tup> mean_zip;
+typedef thrust::tuple<realIter, gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator> wt_sum_tup;
+typedef thrust::zip_iterator<wt_sum_tup> wt_sum_zip;
 
-struct weighted_prior_mean{
+struct weighted_sum{
   template<typename T>
   __host__ __device__ void operator()(T tup){
-    thrust::get<3>(tup) = thrust::get<0>(tup) / thrust::get<1>(tup) * thrust::get<2>(tup);
+    thrust::get<0>(tup) = thrust::get<0>(tup) * thrust::get<1>(tup) + thrust::get<2>(tup) * thrust::get<3>(tup);
   }
 };
 
-void construct_prior_weighted_mean(fvec_d &prior_w_mean, priors_t &priors, chain_t &chain);
+void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &priors, chain_t &chain);
 
 #endif

@@ -1,36 +1,44 @@
 context("Testing construct precision")
 
-dim <- c(1,10)
+K <- 5
+G <- 3
+V <- 2
+N <- 5
 
-for(d in dim){
-  clusts <- 500
-  x <- matrix(round(rnorm(d^2)*3,  1), d, d)
-  xtx <- t(x) %*% x
+X <- matrix(rnorm(N*V), N, V)
+y <- matrix(rnorm(N*G), G, N)
+data <- formatData(y, X, transform_y = identity)
+
+lambda2 <- rlnorm(V)
+mu_0 <- rnorm(V)
+priors <- formatPriors(K, mu_0, 1/sqrt(lambda2), 1, 1, 1)
+
+tau2 <- rlnorm(K)
+zeta <- sample(0:(K-1), G, replace=T)
+beta2 <- rep(0, V*K)
+pi <- rep(1/K, K)
+chain <- formatChain(beta, pi, tau2, zeta)
+
+xtx_rep <- rep(data$xtx, times=K)
+dim(xtx_rep) <- c(V, V, K)
+
+Mk <- sapply(0:(K-1), function(k) sum(zeta == k))
+
+Rprec <- sapply(1:K, function(k){
+  submat <- xtx_rep[,,k] * Mk[k] * tau2[k]
+  if(V == 1){
+    submat <- submat + lambda2
+  } else{
+    diag(submat) <- diag(submat) + lambda2
+  }
+  submat
+})
   
-  Mk <- rpois(clusts, 3) + 1
-  lambda <- rlnorm(d)
-  tau <- rlnorm(clusts)
-  
-  prec <- rep(xtx, times=clusts)
-  len <- d*d
-  dim(prec) <- c(d, d, clusts)
-  
-  Rprec <- sapply(1:clusts, function(cl){
-    submat <- prec[,,cl] * Mk[cl]
-    if(d == 1){
-      submat <- submat + lambda/tau[cl]
-    } else{
-      diag(submat) <- diag(submat) + lambda/tau[cl]
-    }
-    submat
-  })
-  
-  dim(Rprec) <- c(d, d, clusts)
+dim(Rprec) <- c(V,V,K)
   
   
-  Cprec <- Rconstruct_prec(xtx, Mk, lambda, tau, clusts, d)
+Cprec <- Rconstruct_prec(data, priors, chain)
   
-  test_that("Correct values",{
-    expect_equal(Rprec, Cprec)
-  })
-}
+test_that("Correct values",{
+  expect_equal(Rprec, Cprec)
+})
