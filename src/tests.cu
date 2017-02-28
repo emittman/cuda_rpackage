@@ -506,21 +506,21 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   return samples_out;
 }
 
-/* Disable temporarily
-extern "C" SEXP Rtest_wt_prior_mean(SEXP Rpriors, SEXP Rchain){
+extern "C" SEXP Rtest_wt_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
+  data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
-  std::cout << "priors entered\n";
   chain_t chain = Rchain_wrap(Rchain);
-  std::cout << "chain entered\n";
-  fvec_d mean(priors.K * chain.V);
-  construct_prior_weighted_mean(mean, priors, chain);
-  fvec_h mean_h(priors.K * chain.V);
-  thrust::copy(mean.begin(), mean.end(), mean_h.begin());
+  summary2 smry(priors.K, chain.zeta, data);
+
+  fvec_d wt_sum(priors.K * chain.V);
+  construct_prior_weighted_mean(wt_sum, smry, priors, chain);
+  fvec_h wt_sum_h(priors.K * chain.V);
+  thrust::copy(wt_sum.begin(), wt_sum.end(), wt_sum_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, priors.K*chain.V));
   for(int i=0; i<priors.K*chain.V; i++){
-    REAL(out)[i] = mean_h[i];
+    REAL(out)[i] = wt_sum_h[i];
   }
   UNPROTECT(1);
   return out;
 }
-*/
+
