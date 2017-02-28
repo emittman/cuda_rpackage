@@ -513,7 +513,7 @@ extern "C" SEXP Rtest_weighted_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP R
   chain_t chain = Rchain_wrap(Rchain);
   summary2 smry(priors.K, chain.zeta, data);
 
-  fvec_d wt_sum(priors.K * chain.V, 1.1);
+  fvec_d wt_sum(priors.K * chain.V, 0.0);
   construct_weighted_sum(wt_sum, smry, priors, chain, verbose);
   fvec_h wt_sum_h(priors.K * chain.V);
   thrust::copy(wt_sum.begin(), wt_sum.end(), wt_sum_h.begin());
