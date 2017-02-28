@@ -204,7 +204,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   fvec_d betahat(priors.K * data.V, 0.0);
   
   //get cluster (inv)scales
-  construct_prec(prec, data, priors, chain, smry.Mk);
+  construct_prec(prec, data, priors, chain, smry.Mk, --verbose);
   realIter prec_begin = prec.begin();
   realIter prec_end = prec.end();
   chol_multiple(prec_begin, prec_end, data.V, priors.K);
