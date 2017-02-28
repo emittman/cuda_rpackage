@@ -35,7 +35,7 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
 
 }
 
-__host__ __device__ void weighted_sum::operator()(wt_sum_el tup){
+__host__ __device__ void weighted_sum_functor::operator()(wt_sum_el tup){
   thrust::get<0>(tup) = thrust::get<0>(tup) * thrust::get<1>(tup) + thrust::get<2>(tup) * thrust::get<3>(tup);
 }
 
@@ -66,8 +66,6 @@ void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &prio
   gRepTimes<realIter>::iterator rep_mu0 = getGRepTimesIter(mu0_begin, mu0_end, chain.V);
   
   wt_sum_zip zip = thrust::zip_iterator<wt_sum_tup>(thrust::make_tuple(wt_sum_begin, each_tau2, rep_mu0, rep_lambda2));
-  int j=12;
-  std::cout << j << std::endl;
-  weighted_sum g;
+  weighted_sum_functor g;
   thrust::for_each(zip, zip + priors.K * chain.V, g);
 }

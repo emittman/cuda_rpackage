@@ -21,7 +21,7 @@ typedef thrust::tuple<realIter, gRepEach<realIter>::iterator, gRepTimes<realIter
 typedef thrust::zip_iterator<wt_sum_tup> wt_sum_zip;
 typedef thrust::tuple<double &, double &, double &, double &> wt_sum_el;
 
-struct weighted_sum{
+struct weighted_sum_functor{
   __host__ __device__ void operator()(wt_sum_el tup);
 };
 
