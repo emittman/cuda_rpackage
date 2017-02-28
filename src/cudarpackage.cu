@@ -73,7 +73,7 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   chain_t chain = Rchain_wrap(Rchain);
   
   int psize = priors.K * data.V * data.V;
-  summary2 summary(priors.K, chain.zeta, data)
+  summary2 summary(priors.K, chain.zeta, data);
   fvec_d prec(psize);
   construct_prec(prec, data, priors, chain, summary.Mk);
 
