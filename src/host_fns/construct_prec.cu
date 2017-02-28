@@ -4,7 +4,7 @@ __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup);
   }
 
-void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk){
+void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk, int verbose = 0){
   int K = priors.K, V = data.V;
   if(prec.size() < K*V*V) std::cout <<"DIMENSION MISMATCH!\n";
 
@@ -24,8 +24,15 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
   gRepEach<intIter>::iterator Mk_rep = getGRepEachIter(Mk_begin, Mk_end, V*V, 1);
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
   transform(prec_begin,prec_end, Mk_rep, prec_begin, thrust::multiplies<double>());
+  if(verbose>0){
+    std::cout << "xty_sums * Mk" << std::endl;
+    printVec(prec, V, K);
+  }
   transform(prec_begin, prec_end, tau2_rep, prec_begin, thrust::multiplies<double>());
-
+  if(verbose>0){
+    std::cout << "xty_sums * Mk * tau2" << std::endl;
+    printVec(prec, V, K);
+  }
   //modify diagonal; increment by prior prec
   diagAdd f;
   gDiagonal<realIter>::iterator prec_diag = getGDiagIter(prec_begin, prec_end, V);

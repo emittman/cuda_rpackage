@@ -210,7 +210,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   chol_multiple(prec_begin, prec_end, data.V, priors.K);
   
   //init betahat with tau2[k] * xty_sum[k] + lambda2 * mu0
-  construct_weighted_sum(betahat, smry, priors, chain);
+  construct_weighted_sum(betahat, smry, priors, chain, --verbose);
   
   beta_hat(prec, betahat, priors.K, data.V);
   draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);

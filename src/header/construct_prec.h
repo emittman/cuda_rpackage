@@ -25,6 +25,6 @@ struct weighted_sum_functor{
   __host__ __device__ void operator()(wt_sum_el tup);
 };
 
-void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &priors, chain_t &chain);
+void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &priors, chain_t &chain, int verbose);
 
 #endif

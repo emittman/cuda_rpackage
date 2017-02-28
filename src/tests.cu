@@ -506,14 +506,15 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   return samples_out;
 }
 
-extern "C" SEXP Rtest_weighted_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
+extern "C" SEXP Rtest_weighted_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rverbose){
+  int verbose = INTEGER(Rverbose)[0];
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
   summary2 smry(priors.K, chain.zeta, data);
 
   fvec_d wt_sum(priors.K * chain.V);
-  construct_weighted_sum(wt_sum, smry, priors, chain);
+  construct_weighted_sum(wt_sum, smry, priors, chain, verbose);
   fvec_h wt_sum_h(priors.K * chain.V);
   thrust::copy(wt_sum.begin(), wt_sum.end(), wt_sum_h.begin());
   SEXP out = PROTECT(allocVector(REALSXP, priors.K*chain.V));
