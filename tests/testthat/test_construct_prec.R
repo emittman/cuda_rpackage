@@ -37,7 +37,7 @@ Rprec <- sapply(1:K, function(k){
 dim(Rprec) <- c(V,V,K)
   
   
-Cprec <- Rconstruct_prec(data, priors, chain)
+Cprec <- Rconstruct_prec(data, priors, chain, as.integer(1))
   
 test_that("Correct values",{
   expect_equal(Rprec, Cprec)

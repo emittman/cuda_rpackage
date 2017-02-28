@@ -1,7 +1,7 @@
 context("Construct weighted sum")
 G <- as.integer(10)
-K <- as.integer(500)
-V <- as.integer(5)
+K <- as.integer(5)
+V <- as.integer(2)
 N <- as.integer(10)
 
 y <- matrix(rnorm(G*N), G, N)
@@ -17,10 +17,19 @@ chain <- formatChain(beta, pi, tau2, zeta)
 
 priors <- formatPriors(K, rcauchy(V), rexp(V), 1, 1, 1)
 
-Cmean <- .Call("Rtest_weighted_sum", data, priors, chain)
-Rmean <- rep(priors$mu_0, K) * rep(priors$lambda2, K) / rep(chain$tau2,each=V)
+Csum <- .Call("Rtest_weighted_sum", data, priors, chain, verbose=as.integer(1))
+dim(Csum) <- c(V, K)
+
+xty_sums <- sapply(1:K, function(k){
+  submat = data$xty[,which(zeta+1 == k)]
+  if(length(submat)>V) return(rowSums(submat))
+  if(length(submat)>0) return(submat)
+  else return(rep(0, V))
+})
+
+Rsum <- xty_sums * rep(chain$tau2, each=V) + rep(priors$mu_0, K) * rep(priors$lambda2, K)
 
 test_that("Correct answer", {
-  expect_equal(Cmean, Rmean)
+  expect_equal(Csum, Rsum)
 })
 
