@@ -1,7 +1,7 @@
 context("Testing construct precision")
 
 K <- 5
-G <- 3
+G <- 10
 V <- 2
 N <- 5
 
@@ -15,7 +15,7 @@ priors <- formatPriors(K, mu_0, 1/sqrt(lambda2), 1, 1, 1)
 
 tau2 <- rlnorm(K)
 zeta <- sample(0:(K-1), G, replace=T)
-beta2 <- rep(0, V*K)
+beta <- rep(0, V*K)
 pi <- rep(1/K, K)
 chain <- formatChain(beta, pi, tau2, zeta)
 
