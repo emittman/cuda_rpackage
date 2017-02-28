@@ -60,6 +60,8 @@ void construct_weighted_sum(fvec_d &weighted_sum, summary2 &smry, priors_t &prio
   realIter xty_sums_end   = smry.xty_sums.end();
   thrust::copy(xty_sums_begin, xty_sums_end, clustOcc);
   if(verbose>0){
+    std::cout << "xty_sums:\n";
+    printVec(smry.xty_sums, chain.V, smry.num_occupied);
     std::cout << "xty_sums mapped to clusters:\n";
     printVec(weighted_sum, chain.V, priors.K);
   }
