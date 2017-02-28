@@ -50,17 +50,15 @@ void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K, int V){
   //printVec(beta_hat, V, K);
 }
 
-void scale_chol_inv(fvec_d &chol_prec, fvec_d &x, ivec_d &idx, int len_idx, int dim){
-  typedef thrust::tuple<gSFRIter<realIter>::iterator, strideIter> scl_sel_x_tup;
-  typedef thrust::zip_iterator<scl_sel_x_tup> scl_sel_x_zip;
+void scale_chol_inv(fvec_d &chol_prec, fvec_d &z, int n, int dim){
+  typedef thrust::tuple<strideIter, strideIter> scl_z_tup;
+  typedef thrust::zip_iterator<scl_z_tup> scl_z_zip;
   //need access to first elems of chols and occ. betas
-  gSFRIter<realIter>::iterator sel_x_first = getGSFRIter(x.begin(), x.end(), idx, dim);
-  rowIter strides_idx = getRowIter(dim*dim, 0);
-  strideIter L_first = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), strides_idx);
-  scl_sel_x_tup scale_tup = thrust::make_tuple(sel_x_first, L_first);
-  scl_sel_x_zip scale_zip = thrust::zip_iterator<scl_sel_x_tup>(scale_tup);
+  rowIter strides_z = getRowIter(dim, 0);
+  rowIter strides_L = getRowIter(dim*dim, 0);
+  strideIter z_first = thrust::permutation_iterator<realIter, rowIter>(z.begin(), strides_z);
+  strideIter L_first = thrust::permutation_iterator<realIter, rowIter>(chol_prec.begin(), strides_L);
+  scl_z_zip scale_zip = thrust::zip_iterator<scl_z_tup>(thrust::make_tuple(z_first, L_first));
   left_mult_chol_inv f(dim);
-  
-  //scale x[idx]
-  thrust::for_each(scale_zip, scale_zip + len_idx, f);
+  thrust::for_each(scale_zip, scale_zip + n, f);
 }

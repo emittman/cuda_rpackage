@@ -8,6 +8,6 @@
 #include "thrust/for_each.h"
 
 void beta_hat(fvec_d &chol_prec, fvec_d &beta_hat, int K_occ, int V);
-void scale_chol_inv(fvec_d &chol_prec, fvec_d &x, ivec_d &idx, int len_idx, int dim);
+void scale_chol_inv(fvec_d &chol_prec, fvec_d &z, int n, int dim);
 
 #endif

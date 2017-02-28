@@ -23,10 +23,10 @@ struct modify_gamma_par {
   }
 };
 
-void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, summary2 &smry, int verbose = 0){
+void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, int verbose = 0){
   //no longer should be passing summary2!
-  int K = smry.K;
-  int V = smry.V;
+  int K = priors.K;
+  int V = chain.V;
   //replace current beta with standard normal draws
   getNormal<<<K, V>>>(states, thrust::raw_pointer_cast(beta.data()));
   
@@ -36,54 +36,18 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   }
   
   //scale occupied betas by t(chol_prec)^-1
-  scale_chol_inv(chol_prec, beta, smry.occupied, smry.num_occupied, V);
+  scale_chol_inv(chol_prec, beta, K, V);
 
   if(verbose > 1){
     std::cout << "scaled draws:\n";
     printVec(beta, V, K);
   }
-  //typedef: iterate along select columns of matrix of doubles
-  typedef thrust::permutation_iterator<realIter, SCIntIter> gSCIter;
   
-  //need access to occupied betas
-  SCIntIter occ_idx = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V);
-  gSCIter betaOcc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), occ_idx);
-  
-  //shift occupied betas by beta_hat
-  thrust::transform(beta_hat.begin(), beta_hat.end(), betaOcc, betaOcc, thrust::plus<double>());
+  //shift betas by beta_hat
+  thrust::transform(beta_hat.begin(), beta_hat.end(), beta.begin(), thrust::plus<double>());
   
   if(verbose > 1){
-    std::cout << "occupied draws:\n";
-    printVec(beta, V, K);
-  }
-  
-  //now, access to unoccupied betas
-  SCIntIter unocc_idx = getSCIntIter(smry.unoccupied.begin(), smry.unoccupied.end(), V);
-  gSCIter betaUnocc = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), unocc_idx);
-  
-  //repeat prior var. and mean
-  gRepTimes<realIter>::iterator prior_vars = getGRepTimesIter(priors.lambda2.begin(), priors.lambda2.end(), V);
-  gRepTimes<realIter>::iterator prior_mean = getGRepTimesIter(priors.mu0.begin(), priors.mu0.end(), V);
-  
-  typedef thrust::tuple<gSCIter, gRepTimes<realIter>::iterator> linTransSomeBeta_tup;
-  typedef thrust::zip_iterator<linTransSomeBeta_tup> linTransSomeBeta_zip;
-  
-  int num_unoccupied = K - smry.num_occupied;
-  
-  //scale by prior sd
-  linTransSomeBeta_tup scale_tup2 = thrust::tuple<gSCIter, gRepTimes<realIter>::iterator>(betaUnocc, prior_vars);
-  linTransSomeBeta_zip scale_zip2 = thrust::zip_iterator<linTransSomeBeta_tup>(scale_tup2);
-  mult_scalar_by_sqrt f2;
-  thrust::for_each(scale_zip2, scale_zip2 + num_unoccupied*V, f2);
-  
-  if(verbose > 1){
-    std::cout << "unoccupied are scaled now:\n";
-    printVec(beta, V, K);
-  }
-  //shift by prior mean
-  thrust::transform(prior_mean, prior_mean + num_unoccupied*V, betaUnocc, betaUnocc, thrust::plus<double>());
-  if(verbose > 1){
-    std::cout << "and shifted (final draws):\n";
+    std::cout << "beta draws:\n";
     printVec(beta, V, K);
   }
 }
@@ -213,7 +177,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   construct_weighted_sum(betahat, smry, priors, chain, --verbose);
   
   beta_hat(prec, betahat, priors.K, data.V);
-  draw_MVNormal(states, betahat, prec, chain.beta, priors, smry, --verbose);
+  draw_MVNormal(states, betahat, prec, chain.beta, priors, --verbose);
 }
 
 
