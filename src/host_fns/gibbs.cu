@@ -55,7 +55,7 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
 void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &smry, int verbose=0){
   fvec_d sse(smry.num_occupied);
   int K = chain.K;
-  smry.sumSqErr(sse, chain.beta, data.xtx);
+  smry.sumSqErr(sse, chain.beta, data.xtx, --verbose);
   if(verbose > 1){
     std::cout << "sse:\n";
     printVec(sse, smry.num_occupied, 1);

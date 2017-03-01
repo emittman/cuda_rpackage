@@ -25,13 +25,13 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
   transform(prec_begin,prec_end, Mk_rep, prec_begin, thrust::multiplies<double>());
   if(verbose>0){
-    std::cout << "xty_sums * Mk" << std::endl;
-    printVec(prec, V, K);
+    std::cout << "xtx_sums * Mk" << std::endl;
+    printVec(prec, V, K*V);
   }
   transform(prec_begin, prec_end, tau2_rep, prec_begin, thrust::multiplies<double>());
   if(verbose>0){
-    std::cout << "xty_sums * Mk * tau2" << std::endl;
-    printVec(prec, V, K);
+    std::cout << "xtx_sums * Mk * tau2" << std::endl;
+    printVec(prec, V, K*V);
   }
   //modify diagonal; increment by prior prec
   diagAdd f;

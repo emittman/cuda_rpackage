@@ -70,28 +70,41 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
 typedef thrust::tuple<realIter,realIter,realIter> tup3;
 typedef thrust::zip_iterator<tup3> zip3;
 
-void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx){
-  //std::cout << "xtx:\n";
-  //printVec(xtx, V, V);
-  //std::cout << "beta:\n";
-  //printVec(beta, V, K);
+void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx, int verbose=0){
+  if(verbose>0){
+    std::cout << "xtx:\n";
+    printVec(xtx, V, V);
+    std::cout << "beta:\n";
+    printVec(beta, V, K);
+  }
   quad_form_multi(xtx, beta, sse, num_occupied, V);
   //M_k occupied
   typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
   IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
-  thrust::transform(sse.begin(), sse.end(), Mk_iter, sse.begin(), fi_multiply());
-  //std::cout << "\nbxxb\n";
-  //printVec(sse, num_occupied, 1);
+  thrust::transform(sse.begin(), sse.end(), Mk_iter, sse.begin(), thrust::multiplies<double());
+  if(verbose>0){
+    std::cout << "\nbxxb\n";
+    printVec(sse, num_occupied, 1);
+  }
+  
   fvec_d ytxb(num_occupied);
   multi_dot_prod(beta, xty_sums, ytxb, V, num_occupied);
-  //std::cout << "\nytxb:\n";
-  //printVec(ytxb, num_occupied, 1);
+  if(verbose>0){
+    std::cout << "\nytxb:\n";
+    printVec(ytxb, num_occupied, 1);
+  }
   thrust::transform(ytxb.begin(), ytxb.end(), ytxb.begin(), -2.0 * thrust::placeholders::_1);
-  //std::cout << "\nytxb * -2:\n";
-  //printVec(ytxb, num_occupied, 1);  
+  if(verbose>0){
+    std::cout << "\nytxb * -2:\n";
+    printVec(ytxb, num_occupied, 1);
+  }
   tup3 my_tuple = thrust::make_tuple(sse.begin(), ytxb.begin(), yty_sums.begin());
   zip3 my_zip = thrust::make_zip_iterator(my_tuple);
   thrust::for_each(my_zip, my_zip + num_occupied, add3());
-  //std::cout << "3 added:\n";
-  //printVec(sse, num_occupied, 1);
+  if(verbose>0){
+    std::cout << "yty_sums:\n";
+    printVec(yty_sums, num_occupied, 1);
+    std::cout << "3 added:\n";
+    printVec(sse, num_occupied, 1);
+  }
 }

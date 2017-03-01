@@ -295,7 +295,7 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   //printVec(zeta_d, data.G, 1);
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied*data.V);
   fvec_d sse_d(smry.num_occupied);
-  smry.sumSqErr(sse_d, beta, data.xtx);
+  smry.sumSqErr(sse_d, beta, data.xtx, 0);
   fvec_h sse_h(smry.num_occupied);
   thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
   //std::cout << "sse_d:\n";
