@@ -261,6 +261,12 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   boost::progress_display show_progress(n_iter);
   
   for(int i=0; i<n_iter; i++){
+    draw_zeta(devStates, data, chain, priors, verbose-1);
+    if(verbose > 1){
+      std::cout << "zeta:\n";
+      printVec(chain.zeta, data.G, 1);
+    }
+  
     //Gibbs steps
     summary2 summary(chain.K, chain.zeta, data);
     if(verbose > 1){
@@ -270,12 +276,6 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
     printVec(summary.occupied, summary.num_occupied, 1);
     std::cout << "unoccupied:\n";
     printVec(summary.unoccupied, priors.K - summary.num_occupied, 1);
-    }
-    
-    draw_zeta(devStates, data, chain, priors, verbose-1);
-    if(verbose > 1){
-      std::cout << "zeta:\n";
-      printVec(chain.zeta, data.G, 1);
     }
     
     draw_beta(devStates, data, chain, priors, summary, verbose-1);
