@@ -67,18 +67,23 @@ struct chain_t{
   
   
 struct samples_t{
-  int n_save;
-  int step;
+  int n_save_g;
+  int n_save_P;
+  int step_g;
+  int step_P
   int G_save;
+  int K;
   int V;
   ivec_d save_idx;
   fvec_h save_beta;
   fvec_h save_tau2;
-  fvec_h save_pi;
+  fvec_h save_P;
+  ivec_h save_max_id;
+  ivec_h save_num_occupied;
 
-  samples_t(int _n_save, int _G_save, int _V, int *idx);
-  void write_samples(chain_t &chain);
-  
+  samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx);
+  void write_g_samples(chain_t &chain, summary2 &smry);
+  void write_P_samples(chain_t &chain);
 };
 
 struct mcmc_t{

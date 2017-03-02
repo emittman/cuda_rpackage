@@ -11,26 +11,54 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N)
     transpose(xty.begin(), xty.end(), V, G, ytx.begin());
 }
 
-samples_t::samples_t(int _n_save, int _G_save, int _V, int *idx):
-    n_save(_n_save), step(0), G_save(_G_save), V(_V),
-    save_idx(idx, idx + _G_save), save_beta(_n_save*_G_save*V), save_tau2(_n_save*_G_save), save_pi(_n_save*_G_save){}
+samples_t::samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx):
+    n_save_g(_n_save_g), n_save_P(_n_save_P), step_g(0), step_P(0), G_save(_G_save), K(_K), V(_V),
+    save_idx(idx, idx + _G_save), save_beta(_n_save_g*_G_save*_V), save_tau2(_n_save_g*_G_save),
+    save_P(_n_save_P*_K*(_V+2), save_max_id(_n_save_g), save_num_occupied(_n_save_g)){}
 
-void samples_t::write_samples(chain_t &chain){
-
-  thrust::permutation_iterator<intIter, intIter> map_save_idx = thrust::permutation_iterator<intIter, intIter>(chain.zeta.begin(), save_idx.begin());
-  ivec_d tmpVec(G_save);
-  thrust::copy(map_save_idx, map_save_idx + G_save, tmpVec.begin());
-  SCIntIter beta_cpy = getSCIntIter(tmpVec.begin(), tmpVec.end(), chain.V);
-  if(step < n_save){
+void samples_t::write_g_samples(chain_t &chain, summary2 &smry){
+  if(step_g < n_save_g){
+    /* scatter cluster parameters by zeta for select genes */
+    //get current map, save in tmpVec
+    thrust::permutation_iterator<intIter, intIter> map_save_idx = thrust::permutation_iterator<intIter, intIter>(chain.zeta.begin(), save_idx.begin());
+    ivec_d tmpVec(G_save);
+    thrust::copy(map_save_idx, map_save_idx + G_save, tmpVec.begin());
+    
+    //copy betas (by column)
+    SCIntIter beta_cpy = getSCIntIter(tmpVec.begin(), tmpVec.end(), chain.V);
     thrust::permutation_iterator<realIter, SCIntIter> betaI = thrust::permutation_iterator<realIter, SCIntIter>(chain.beta.begin(), beta_cpy);
-    thrust::copy(betaI, betaI + G_save*V, save_beta.begin() + G_save*V*step);
+    thrust::copy(betaI, betaI + G_save*V, save_beta.begin() + G_save*V*step_g);
+    
+    //copy tau2s
     thrust::permutation_iterator<realIter, intIter> tau2I = thrust::permutation_iterator<realIter, intIter>(chain.tau2.begin(), tmpVec.begin());
-    thrust::copy(tau2I, tau2I + G_save, save_tau2.begin() + G_save*step);
-    thrust::permutation_iterator<realIter, intIter> piI = thrust::permutation_iterator<realIter, intIter>(chain.pi.begin(), tmpVec.begin());
-    thrust::copy(piI, piI + G_save, save_pi.begin() + G_save*step);
-    step += 1;
+    thrust::copy(tau2I, tau2I + G_save, save_tau2.begin() + G_save*step_g);
+    
+    //save max_id
+    thrust::copy(smry.occupied.end()-1, smry.occupied.end(), save_max_id.begin() + step_g);
+    
+    //save num_occupied
+    save_num_occupied[step_g] = smry.num_occupied;
+    
+    step_g += 1;
   }
-  else std::cout << "step >= n_save!";
+  else std::cout << "step_g >= n_save_g!";
+}
+
+void samples::write_P_samples(chain_t &chain){
+  if(step_P < n_save_P){
+    // (number of clusters) * (dimension of beta[k] + dimension of tau2[k] + dimension of pi[k])
+    int iter_size = K*(V+2);
+    // copy clusters to save_P
+    thrust::copy(chain.pi.begin(), chain.pi.end(),
+                 save_P.begin() + iter_size * step_P,
+                 save_P.begin() + iter_size * step_P + K);
+    thrust::copy(chain.beta.begin(), chain.beta.end(),
+                 save_P.begin() + iter_size * step_P + K,
+                 save_P.begin() + iter_size * step_P + K*(V+1));
+    thrust::copy(chain.tau2.begin(), chain.tau2.end(),
+                 save_P.begin() + iter_size * step_P + K*(V+1),
+                 save_P.begin() + iter_size * step_P + K*(V+2));
+  } else std::cout << "step_P >= n_save_P!";
 }
 
 void chain_t::update_probabilities(int step){

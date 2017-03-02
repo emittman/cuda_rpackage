@@ -238,16 +238,23 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
   
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], thin = INTEGER(Rthin)[0],
+  int n_save_P = INTEGER(Rn_iter_P)[0];
   G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  int n_save = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
-  samples_t samples(n_save, G_save, data.V, INTEGER(Ridx_save));
-  
+  int n_save_g = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
+  /* Set thin_P to ensure at least n_save_P draws are saved*/
+  int thin_P = n_iter - n_save_P; //in case n_save_P = 1, last iteration is saved
+  if(n_save_P > 1){
+    //if n_save_P is 2 or greater, thin_P is sup(x : x * n_save_P < n_iter)
+    thin_P = n_iter/(n_save_P - 1) + (n_iter % (n_save_P - 1) == 0 ? -1 : 0);
+  }
+  samples_t samples(n_save_g, n_save_P, G_save, priors.K, data.V, INTEGER(Ridx_save));
+
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
   
@@ -261,12 +268,6 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   boost::progress_display show_progress(n_iter);
   
   for(int i=0; i<n_iter; i++){
-    draw_zeta(devStates, data, chain, priors, verbose-1);
-    if(verbose > 1){
-      std::cout << "zeta:\n";
-      printVec(chain.zeta, data.G, 1);
-    }
-  
     //Gibbs steps
     summary2 summary(chain.K, chain.zeta, data);
     if(verbose > 1){
@@ -296,16 +297,31 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
       printVec(chain.pi, priors.K, 1);
     }
     
-    if(i % thin == 0){
-      samples.write_samples(chain);
+    draw_zeta(devStates, data, chain, priors, verbose-1);
+    if(verbose > 1){
+      std::cout << "zeta:\n";
+      printVec(chain.zeta, data.G, 1);
     }
+    
+    if(i % thin == 0){
+      samples.write_g_samples(chain, summary);
+    }
+    
+    if(i % thin_P == 0 & samples.step_P < n_save_P){
+      samples.write_P_samples(chain);
+    }
+    
     chain.update_means(i+1);
     chain.update_probabilities(i+1);
     ++show_progress;
   }
   
   CUDA_CALL(cudaFree(devStates));
-  SEXP samples_out = Csamples_wrap(samples);
-  UNPROTECT(4);
-  return samples_out;
+  SEXP samples_out = Csamples_wrap(samples);          //PROTECT(6)
+  SEXP chain_out   = Cchain_wrap(chain);              //PROTECT(4)
+  SEXP out         = PROTECT(allocVector(VECSXP, 2)); //PROTECT(1)
+  SET_VECTOR_ELT(out, 0, samples_out);
+  SET_VECTOR_ELT(out, 1, chain_out)
+  UNPROTECT(11);                                      //6 + 4 + 1
+  return out;
 }

@@ -40,17 +40,36 @@ chain_t Rchain_wrap(SEXP Rchain){
   return chain;
 }
 
-SEXP Csamples_wrap(samples_t samples){
-  SEXP samples_out = PROTECT(allocVector(VECSXP, 3));
-  SEXP out_beta = PROTECT(allocVector(REALSXP, samples.G_save * samples.V * samples.n_save));
-  SEXP out_tau2 = PROTECT(allocVector(REALSXP, samples.G_save * samples.n_save));
-  SEXP out_pi = PROTECT(allocVector(REALSXP, samples.G_save * samples.n_save));
+SEXP Csamples_wrap(samples_t &samples){
+  SEXP samples_out      = PROTECT(allocVector(VECSXP, 5));
+  SEXP out_beta         = PROTECT(allocVector(REALSXP, samples.save_beta.size()));
+  SEXP out_tau2         = PROTECT(allocVector(REALSXP, samples.save_tau2.size()));
+  SEXP out_P            = PROTECT(allocVector(REALSXP, samples.save_P.size()));
+  SEXP out_max_id       = PROTECT(allocVector(INTSXP, samples.save_max_id.size()));
+  SEXP out_num_occupied = PROTECT(allocVector(INTSXP, samples.save_num_occupied.size()));
   thrust::copy(samples.save_beta.begin(), samples.save_beta.end(), REAL(out_beta));
   thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(out_tau2));
-  thrust::copy(samples.save_pi.begin(), samples.save_pi.end(), REAL(out_pi));
+  thrust::copy(samples.save_P.begin(), samples.save_P.end(), REAL(out_P));
+  thrust::copy(samples.save_max_id.begin(), samples.save_max_id.end(), INTEGER(out_max_id));
+  thrust::copy(samples.save_num_occupied.begin(), samples.save_num_occupied.end(), INTEGER(out_num_occupied));
   SET_VECTOR_ELT(samples_out, 0, out_beta);
   SET_VECTOR_ELT(samples_out, 1, out_tau2);
-  SET_VECTOR_ELT(samples_out, 2, out_pi);
-  
+  SET_VECTOR_ELT(samples_out, 2, out_P);
+  SET_VECTOR_ELT(samples_out, 3, out_max_id);
+  SET_VECTOR_ELT(samples_out, 4, out_num_occupied);
   return samples_out;
+}
+
+SEXP Cchain_wrap(chain_t &chain){
+  SEXP chain_out       = PROTECT(allocVector(VECSXP, 3));
+  SEXP out_probs       = PROTECT(allocVector(REALSXP, chain.probs.size()));
+  SEXP out_means       = PROTECT(allocVector(REALSXP, chain.means.size()));
+  SEXP out_meansquares = PROTECT(allocVector(REALSXP, chain.meansquares.size()));
+  thrust::copy(chain.probs.begin(), chain.probs.end(), REAL(out_probs));
+  thrust::copy(chain.means.begin(), chain.means.end(), REAL(out_means));
+  thrust::copy(chain.meansquare.begin(), chain.meansquares.end(), REAL(out_meansquares));
+  SET_VECTOR_ELT(samples_out, 0, out_probs);
+  SET_VECTOR_ELT(samples_out, 1, out_means);
+  SET_VECTOR_ELT(samples_out, 2, out_meansquares);
+  return chain_out;
 }
