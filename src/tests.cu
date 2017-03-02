@@ -438,9 +438,10 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
 extern "C" SEXP Rtest_write_samples(SEXP Rchain, SEXP Ridx, SEXP Rn_iter){
   chain_t chain = Rchain_wrap(Rchain);
   int *idx = INTEGER(Ridx), n_iter = INTEGER(Rn_iter)[0], G_out = length(Ridx);
-  samples_t samples = samples_t(n_iter, G_out, chain.V, idx);
-  
+  samples_t samples = samples_t(n_iter, 0, G_out, chain.K, chain.V, idx);
+
   for(int i=0; i<n_iter; i++){
+  //need to pass data to get summaries
     samples.write_samples(chain);
     std::cout << "Completed step " << samples.step <<"\n";
   }
