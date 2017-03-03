@@ -128,9 +128,10 @@ Rdevice_mmultiply = function(A, B){
 #' @param n_iter int
 #' @param idx_save int vector, which genes to save (0-indexed)
 #' @param thin int
+#' @param n_save_P int
 #' @param C numeric matrix, contrasts
 #' @param verbose int, higher verbosity -> more printing
-mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, verbose=0){
+mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(is.null(chain)){
@@ -147,16 +148,29 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, C = NULL, v
   n_iter <- as.integer(n_iter)
   thin <- as.integer(thin)
   verbose <- as.integer(verbose)
-  out <- .Call("Rrun_mcmc", data, priors, chain, n_iter, as.integer(idx_save),
+  out <- .Call("Rrun_mcmc", data, priors, chain, n_iter, n_save_P, as.integer(idx_save),
                thin, seed, verbose)
   
-  names(out) <- c("beta", "tau2", "pi")
-  dim(out[['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
-  dimnames(out[['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
-  out[['beta']] <- aperm(out[['beta']], c(1,3,2))
-  dim(out[['tau2']]) <- c(length(idx_save), ceiling(n_iter/ thin))
+  names(out[[1]]) <- c("beta", "tau2", "P", "max_id", "num_occupied")
+  dim(out[[1]][['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
+  dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
+  out[[1]][['beta']] <- aperm(out[[1]][['beta']], c(1,3,2))
+  dim(out[[1]][['tau2']]) <- c(length(idx_save), ceiling(n_iter/ thin))
   dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
-  dim(out[['pi']]) <- c(length(idx_save), ceiling(n_iter/ thin))
-  dimnames(out[['pi']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
+  dim(out[[1]][['P']]) <- c(priors$K, data$V+2, n_save_P)
+  dimnames(out[[1]][['P']]) <- list(k=1:priors$K,
+                                par = c("pi", sapply(1:data$V, function(v){
+                                    paste(c("beta[",v,"]"), collapse="")
+                                  }), "tau2"),
+                                iter=1:n_save_P)
+  names(out[[1]][['max_id']]) <- as.character(1:n_save_P)
+  names(out[[1]][['num_occupied']]) <- as.character(1:n_save_P)
+  names(out[[2]]) <- c("probs","means","meansquares")
+  dim(out[[2]][['probs']]) <- data$G
+  dimnames(out[[2]][['probs']]) <- list(g = 1:data$G) 
+  dim(out[[2]][['means']]) <- data$G
+  dimnames(out[[2]][['means']]) <- list(g = 1:data$G)
+  dim(out[[2]][['meansquares']]) <- data$G
+  dimnames(out[[2]][['meansquares']]) <- list(g = 1:data$G)
   out
 }
