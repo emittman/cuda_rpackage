@@ -68,8 +68,8 @@ SEXP Cchain_wrap(chain_t &chain){
   thrust::copy(chain.probs.begin(), chain.probs.end(), REAL(out_probs));
   thrust::copy(chain.means.begin(), chain.means.end(), REAL(out_means));
   thrust::copy(chain.meansquares.begin(), chain.meansquares.end(), REAL(out_meansquares));
-  SET_VECTOR_ELT(samples_out, 0, out_probs);
-  SET_VECTOR_ELT(samples_out, 1, out_means);
-  SET_VECTOR_ELT(samples_out, 2, out_meansquares);
+  SET_VECTOR_ELT(chain_out, 0, out_probs);
+  SET_VECTOR_ELT(chain_out, 1, out_means);
+  SET_VECTOR_ELT(chain_out, 2, out_meansquares);
   return chain_out;
 }
