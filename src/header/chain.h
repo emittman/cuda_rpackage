@@ -4,6 +4,7 @@
 #include "iter_getter.h"
 #include "transpose.h"
 #include "printing.h"
+#include "summary2.h"
 
 struct data_t{
   
@@ -70,7 +71,7 @@ struct samples_t{
   int n_save_g;
   int n_save_P;
   int step_g;
-  int step_P
+  int step_P;
   int G_save;
   int K;
   int V;

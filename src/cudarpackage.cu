@@ -244,8 +244,8 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], thin = INTEGER(Rthin)[0],
-  int n_save_P = INTEGER(Rn_iter_P)[0];
-  G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
+  int n_save_P = INTEGER(Rn_save_P)[0];
+  int G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
   int n_save_g = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
   /* Set thin_P to ensure at least n_save_P draws are saved*/
   int thin_P = n_iter - n_save_P; //in case n_save_P = 1, last iteration is saved
@@ -321,7 +321,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   SEXP chain_out   = Cchain_wrap(chain);              //PROTECT(4)
   SEXP out         = PROTECT(allocVector(VECSXP, 2)); //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
-  SET_VECTOR_ELT(out, 1, chain_out)
+  SET_VECTOR_ELT(out, 1, chain_out);
   UNPROTECT(11);                                      //6 + 4 + 1
   return out;
 }
