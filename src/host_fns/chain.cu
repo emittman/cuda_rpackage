@@ -44,7 +44,7 @@ void samples_t::write_g_samples(chain_t &chain, summary2 &smry){
   else std::cout << "step_g >= n_save_g!";
 }
 
-void samples::write_P_samples(chain_t &chain){
+void samples_t::write_P_samples(chain_t &chain){
   if(step_P < n_save_P){
     // (number of clusters) * (dimension of beta[k] + dimension of tau2[k] + dimension of pi[k])
     int iter_size = K*(V+2);
