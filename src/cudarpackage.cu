@@ -15,11 +15,11 @@
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
-#include <boost/progress.hpp>
 // This prevents the replacement of "beta" by Rmath.h
 #ifdef beta
 #undef beta
 #endif
+#include <boost/progress.hpp>
 
 extern "C" SEXP RgetDeviceCount(){
   int count = 0;
@@ -318,10 +318,10 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
   
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples);          //PROTECT(6)
-  //SEXP chain_out   = Cchain_wrap(chain);              //PROTECT(4)
-  //SEXP out         = PROTECT(allocVector(VECSXP, 2)); //PROTECT(1)
-  //SET_VECTOR_ELT(out, 0, samples_out);
-  //SET_VECTOR_ELT(out, 1, chain_out);
-  UNPROTECT(6);                                      //6 + 4 + 1
+  SEXP chain_out   = Cchain_wrap(chain);              //PROTECT(4)
+  SEXP out         = PROTECT(allocVector(VECSXP, 2)); //PROTECT(1)
+  SET_VECTOR_ELT(out, 0, samples_out);
+  SET_VECTOR_ELT(out, 1, chain_out);
+  UNPROTECT(11);                                      //6 + 4 + 1
   return out;
 }
