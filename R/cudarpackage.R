@@ -134,6 +134,7 @@ Rdevice_mmultiply = function(A, B){
 mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
+  if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
     beta <- rnorm(priors$K*data$V, rep(priors$mu_0, priors$K), rep(1/sqrt(priors$lambda2), priors$K))
     tau2 <- rgamma(priors$K, priors$a, priors$b)
@@ -146,6 +147,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C
   if(!(max(idx_save) < data$G)) stop("idx_save should use 0-indexing")
   seed <- as.integer(sample(1e6, 1))
   n_iter <- as.integer(n_iter)
+  n_save_P <- as.integer(n_save_P)
   thin <- as.integer(thin)
   verbose <- as.integer(verbose)
   out <- .Call("Rrun_mcmc", data, priors, chain, n_iter, n_save_P, as.integer(idx_save),
