@@ -170,9 +170,9 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C
   names(out[[2]]) <- c("probs","means","meansquares")
   dim(out[[2]][['probs']]) <- data$G
   dimnames(out[[2]][['probs']]) <- list(g = 1:data$G) 
-  dim(out[[2]][['means']]) <- data$G
-  dimnames(out[[2]][['means']]) <- list(g = 1:data$G)
-  dim(out[[2]][['meansquares']]) <- data$G
-  dimnames(out[[2]][['meansquares']]) <- list(g = 1:data$G)
+  dim(out[[2]][['means']]) <- c(data$V, data$G)
+  dimnames(out[[2]][['means']]) <- list(v = 1:data$V, g = 1:data$G)
+  dim(out[[2]][['meansquares']]) <- c(data$V, data$G)
+  dimnames(out[[2]][['meansquares']]) <- list(v = 1:data$V, g = 1:data$G)
   out
 }
