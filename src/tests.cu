@@ -470,7 +470,7 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   for(int i=0; i<n_iter; i++){
     //Gibbs steps
     draw_beta(devStates, data, chain, priors, summary, 0);
-    samples.write_g_samples(chain);
+    samples.write_g_samples(chain, summary);
   }
   
   CUDA_CALL(cudaFree(devStates));
@@ -498,7 +498,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
     draw_tau2(devStates, chain, priors, data, summary, 0);
     std::cout << "tau2:\n";
     printVec(chain.tau2, priors.K, 1);
-    samples.write_g_samples(chain);
+    samples.write_g_samples(chain, summary);
     std::cout << "step " << samples.step_g << ":\n";
     printVec(samples.save_tau2, chain.G, n_iter);
   }
