@@ -505,7 +505,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples);
-  UNPROTECT(4);
+  UNPROTECT(6);
   return samples_out;
 }
 
