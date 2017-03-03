@@ -158,7 +158,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C
   dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
   out[[1]][['beta']] <- aperm(out[[1]][['beta']], c(1,3,2))
   dim(out[[1]][['tau2']]) <- c(length(idx_save), ceiling(n_iter/ thin))
-  dimnames(out[['tau2']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
+  dimnames(out[[1]][['tau2']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
   dim(out[[1]][['P']]) <- c(priors$K, data$V+2, n_save_P)
   dimnames(out[[1]][['P']]) <- list(k=1:priors$K,
                                 par = c("pi", sapply(1:data$V, function(v){
