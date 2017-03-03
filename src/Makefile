@@ -60,7 +60,7 @@ host_fns/summary2.o: host_fns/summary2.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) $(LIBS)
 
 host_fns/chain.o: host_fns/chain.cu
-	nvcc -c $(NVCC_FLAGS) $< -o $@
+	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC)
 
 host_fns/construct_prec.o: host_fns/construct_prec.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC)
