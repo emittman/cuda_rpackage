@@ -3,7 +3,7 @@
 #include "../header/transpose.h"
 #include "../header/cluster_probability.h"
 #include "../header/running_mean.h"
-
+#include "../header/summary2.h"
 
 data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N): 
     yty(_yty, _yty + _G), xty(_xty, _xty + _G*_V), xtx(_xtx, _xtx + _V*_V), G(_G), V(_V), N(_N) {

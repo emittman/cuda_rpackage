@@ -4,7 +4,9 @@
 #include "iter_getter.h"
 #include "transpose.h"
 #include "printing.h"
-#include "summary2.h"
+
+//forward declaration
+struct summary2;
 
 struct data_t{
   
