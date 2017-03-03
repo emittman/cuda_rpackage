@@ -434,7 +434,7 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   UNPROTECT(4);
   return out;
 }
-
+/*
 extern "C" SEXP Rtest_write_samples(SEXP Rchain, SEXP Ridx, SEXP Rn_iter){
   chain_t chain = Rchain_wrap(Rchain);
   int *idx = INTEGER(Ridx), n_iter = INTEGER(Rn_iter)[0], G_out = length(Ridx);
@@ -452,7 +452,7 @@ extern "C" SEXP Rtest_write_samples(SEXP Rchain, SEXP Ridx, SEXP Rn_iter){
   UNPROTECT(4);
   return out;
 }
-
+*/
 extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_iter, SEXP Ridx_save, SEXP Rseed){
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
