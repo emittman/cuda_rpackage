@@ -55,6 +55,7 @@ void samples_t::write_P_samples(chain_t &chain){
                  save_P.begin() + iter_size * step_P + K);
     thrust::copy(chain.tau2.begin(), chain.tau2.end(),
                  save_P.begin() + iter_size * step_P + K*(V+1));
+    step_P = step_P + 1;
   } else std::cout << "step_P >= n_save_P!";
 }
 
