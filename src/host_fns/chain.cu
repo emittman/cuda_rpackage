@@ -51,7 +51,7 @@ void samples_t::write_P_samples(chain_t &chain){
     // copy clusters to save_P
     thrust::host_vector<double>::iterator save_P_iter = save_P.begin() + iter_size * step_P;
     thrust::copy(chain.pi.begin(), chain.pi.end(), save_P_iter);
-    transpose<realIter, thrust::host_vector<double::iterator> >(chain.beta.begin(), chain.beta.end(), chain.V, chain.K, save_P_iter + K);
+    transpose<realIter, thrust::host_vector<double>::iterator>(chain.beta.begin(), chain.beta.end(), chain.V, chain.K, save_P_iter + K);
     thrust::copy(chain.tau2.begin(), chain.tau2.end(), save_P_iter + K*(V+1));
     step_P = step_P + 1;
   } else std::cout << "step_P >= n_save_P!";
