@@ -45,6 +45,7 @@ struct chain_t{
   int G;
   int V;
   int K;
+  int n_hyp;
   int P;
   //parameters
   fvec_d beta;
@@ -52,22 +53,25 @@ struct chain_t{
   fvec_d tau2;
   ivec_d zeta;
   //contrasts
+  ivec_d C_rowid;
   fvec_d C;
   //summaries
   fvec_d probs;
   fvec_d means;
   fvec_d meansquares;
   
-  chain_t(int _G, int _V, int _K, int _P, double *_beta, double *_pi, double *_tau2,
+  chain_t(int _G, int _V, int _K, int _n_hyp, int *_C_rowid, int _P, double *_beta, double *_pi, double *_tau2,
           int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares):
-    G(_G), V(_V), K(_K), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
-    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _G),
+    G(_G), V(_V), K(_K), n_hyp(_n_hyp), C_rowid(_C_rowid, _C_rowid + _P), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
+    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
     means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V){}
   
   void update_means(int step);
   void update_probabilities(int step);
 };
-  
+
+//      chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, C, probs, means, meansquares);
+ 
   
 struct samples_t{
   int n_save_g;

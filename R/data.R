@@ -62,7 +62,7 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
 #' @param pi K array in $(0, 1)$
 #' @param tau2 K array in $(0, ...)$
 #' @param zeta G array in $\{0,...,K-1\}$
-#' @param C P*V array of linear combinations
+#' @param C list of matrices with ncol = V
 #' @param probs G array of probabilities
 #' @param means G*V array
 #' @param meansquares G*V array
@@ -72,21 +72,31 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
   
-  if(max(zeta)>K-1) stop("C uses zero indexing!")
+  if(max(zeta)>K-1) stop("C uses zero indexing")
   
   if(!is.null(C)){
-    P = as.integer(length(C)/V)
+    if(!is.list(C)){
+      C <- list(C)
+    }
+    if(!all(sapply(C, is.matrix)))                stop("C must be a matrix or a list of matrices")
+    if(!all(sapply(C, function(h) ncol(h) == V))) stop("All elements of C must have same number of columns")
+    n_hyp <- length(C)
+    C_rowid <- as.integer(rep(1:n_hyp, sapply(C, nrow)) - 1)
+    Cmat <- do.call(rbind, C)
+    P <- nrow(Cmat)
   } else {
-    P = as.integer(V)
-    C = diag(V)
+    n_hyp <- as.integer(1)
+    C_rowid <- as.integer(rep(0, V))
+    Cmat <- diag(V)
+    P <- V
   }
   if(!is.null(probs)){
-    if(length(probs) != G) stop("probs doesn't match C and/or G!")
+    if(length(probs) != n_hyp*G) stop("probs doesn't match C and/or G")
   } else {
-    probs = rep(0, G)
+    probs = rep(0, n_hyp*G)
   }
   if(!is.null(means)){
-    if(length(means) != V*G) stop("means is wrong dimension!")
+    if(length(means) != V*G) stop("means is wrong dimension")
   } else{
     means = rep(0, V*G)
   }
@@ -95,7 +105,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   } else{
     meansquares = rep(0, V*G)
   }
-  list(G = G, V = V, K = K, P = P, beta = as.numeric(beta), pi = as.numeric(pi), tau2 = as.numeric(tau2),
-       zeta = as.integer(zeta), C = t(C), probs = probs, means = means, meansquares = meansquares)
+  list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(pi), tau2 = as.numeric(tau2),
+       zeta = as.integer(zeta), C = t(Cmat), probs = probs, means = means, meansquares = meansquares)
 }
 

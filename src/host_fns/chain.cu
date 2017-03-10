@@ -58,23 +58,24 @@ void samples_t::write_P_samples(chain_t &chain){
 }
 
 void chain_t::update_probabilities(int step){
-  /* multiply C %*% beta, eval if > 0, resultK = (min(Col) == 1)[all true]*/
+  /* grid = C %*% beta, Igrid = I(grid>0), resultK = reduce_by_key(P_rowid(column), Igrid, minimum)*/
   fvec_d grid(P*K);
   ivec_d Igrid(P*K);
-  fvec_d resultK(K);
+  fvec_d resultK(n_hyp*K);
   
   big_matrix_multiply(C, beta, grid, V, P, V, K);
   
   thrust::transform(grid.begin(), grid.end(), Igrid.begin(), thrust::placeholders::_1 > 0);
   
-  repEachIter colIt = getRepEachIter(P, 1);
-  thrust::reduce_by_key(colIt, colIt + P*K, Igrid.begin(), thrust::make_discard_iterator(), resultK.begin(), thrust::equal_to<int>(), thrust::minimum<int>());
+  RSIntIter group_by_hyp = getRSIntIter(C_rowid.begin(), C_rowid.end(), n_hyp);
+  thrust::reduce_by_key(group_by_hyp, group_by_hyp + P*K, Igrid.begin(), thrust::make_discard_iterator(), resultK.begin(), thrust::equal_to<int>(), thrust::minimum<int>());
   
   /* map by zeta*/
-  fvec_d resultG(G);
-  thrust::permutation_iterator<realIter, intIter> map_result = thrust::permutation_iterator<realIter, intIter>(resultK.begin(), zeta.begin());
-  thrust::copy(map_result, map_result+G, resultG.begin());
-  update_running_means(probs, resultG, G, step, 1);
+  fvec_d resultG(n_hyp*G);
+  SCIntIter kcols_to_gcols = getSCIntIter(zeta.begin(), zeta.end(), n_hyp);
+  thrust::permutation_iterator<realIter, SCIntIter> map_result = thrust::permutation_iterator<realIter, SCIntIter>(resultK.begin(), kcols_to_gcols);
+  thrust::copy(map_result, map_result + n_hyp*G, resultG.begin());
+  update_running_means(probs, resultG, n_hyp*G, step, 1);
 }
 
 void chain_t::update_means(int step){

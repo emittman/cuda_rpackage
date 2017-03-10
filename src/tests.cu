@@ -412,7 +412,7 @@ extern "C" SEXP Rtest_running_mean(SEXP Rmean, SEXP Rnew, SEXP Rpow, SEXP Rstep)
 extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   int step = INTEGER(Rstep)[0];
   chain_t chain = Rchain_wrap(Rchain);
-  int G = chain.G, V = chain.V;
+  int G = chain.G, V = chain.V, n_hyp = chain.n_hyp;
   
   chain.update_means(step);
   chain.update_probabilities(step);
@@ -421,7 +421,7 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
   SEXP means = PROTECT(allocVector(REALSXP, G*V));
   SEXP meansquares = PROTECT(allocVector(REALSXP, G*V));
   SEXP probs = PROTECT(allocVector(REALSXP, G));
-  for(int i=0; i<G; i++){
+  for(int i=0; i<n_hyp*G; i++){
     REAL(probs)[i] = chain.probs[i];
   }
   for(int i=0; i<G*V; i++){
