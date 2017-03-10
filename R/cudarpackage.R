@@ -169,7 +169,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C
   names(out[[1]][['num_occupied']]) <- as.character(1:n_save_P)
   names(out[[2]]) <- c("probs","means","meansquares")
   dim(out[[2]][['probs']]) <- c(chain$n_hyp, data$G)
-  dimnames(out[[2]][['probs']]) <- list(hyp = 1:chain$n_hype, g = 1:data$G) 
+  dimnames(out[[2]][['probs']]) <- list(hyp = 1:chain$n_hyp, g = 1:data$G) 
   dim(out[[2]][['means']]) <- c(data$V, data$G)
   dimnames(out[[2]][['means']]) <- list(v = 1:data$V, g = 1:data$G)
   dim(out[[2]][['meansquares']]) <- c(data$V, data$G)
