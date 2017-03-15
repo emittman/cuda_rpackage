@@ -136,7 +136,7 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
-    chain <- initChain(priors, data$G)
+    chain <- initChain(priors, data$G, C)
   }
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < data$G)) stop("idx_save should use 0-indexing")
