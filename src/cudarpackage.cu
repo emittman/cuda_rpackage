@@ -243,7 +243,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain,
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
-  int methodPi = INTEGER(RmethodPi)[0];
+  int methodPi = INTEGER(RmethodPi)[0],
       n_iter   = INTEGER(Rn_iter)[0],
       thin     = INTEGER(Rthin)[0],
       n_save_P = INTEGER(Rn_save_P)[0];
