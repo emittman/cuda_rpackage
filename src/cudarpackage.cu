@@ -238,13 +238,15 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
   
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
-  int n_iter = INTEGER(Rn_iter)[0], thin = INTEGER(Rthin)[0];
-  int n_save_P = INTEGER(Rn_save_P)[0];
+  int methodPi = INTEGER(RmethodPi)[0];
+      n_iter   = INTEGER(Rn_iter)[0],
+      thin     = INTEGER(Rthin)[0],
+      n_save_P = INTEGER(Rn_save_P)[0];
   int G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
   int n_save_g = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
   /* Set thin_P to ensure at least n_save_P draws are saved*/
@@ -290,8 +292,11 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rn_iter, S
       std::cout << "tau2:\n";
       printVec(chain.tau2, priors.K, 1);
     }
-
-    draw_pi(devStates, chain, priors, summary, verbose-1);
+    if(methodPi == 0){
+      draw_pi(devStates, chain, priors, summary, verbose-1);
+    } else if(methodPi == 1) {
+      draw_pi_SD(devStates, chain, priors, summary, verbose-1);
+    }
     if(verbose > 1) {
       std::cout << "pi:\n";
       printVec(chain.pi, priors.K, 1);

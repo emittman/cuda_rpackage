@@ -123,7 +123,10 @@ Rdevice_mmultiply = function(A, B){
 #' @description Sample from posterior of DPMM
 #' @export
 #' @param data list, use formatData
-#' @param prior list, use formatPrior
+#' @param priors list, use formatPrior
+#' @param weightMethod Specifies the model for the weights of the
+#' unknown mixture. The default is "stickBreaking" and the other option
+#' is "symmDirichlet"
 #' @param chain list, use formatChain
 #' @param n_iter int
 #' @param idx_save int vector, which genes to save (0-indexed)
@@ -131,7 +134,7 @@ Rdevice_mmultiply = function(A, B){
 #' @param n_save_P int
 #' @param C numeric matrix, contrasts
 #' @param verbose int, higher verbosity -> more printing
-mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, verbose=0){
+mcmc <- function(data, priors, weightMethod = "stickBreaking", chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
@@ -140,12 +143,17 @@ mcmc <- function(data, priors, chain = NULL, n_iter, idx_save, thin, n_save_P, C
   }
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < data$G)) stop("idx_save should use 0-indexing")
+  methodPi <- switch(weightMethod,
+                     "stickBreaking" = as.integer(0),
+                     "symmDirichlet" = as.integer(1))
   seed <- as.integer(sample(1e6, 1))
   n_iter <- as.integer(n_iter)
   n_save_P <- as.integer(n_save_P)
   thin <- as.integer(thin)
   verbose <- as.integer(verbose)
-  out <- .Call("Rrun_mcmc", data, priors, chain, n_iter, n_save_P, as.integer(idx_save),
+  
+  
+  out <- .Call("Rrun_mcmc", data, priors, methodPi, chain, n_iter, n_save_P, as.integer(idx_save),
                thin, seed, verbose)
   
   names(out[[1]]) <- c("beta", "tau2", "P", "max_id", "num_occupied")

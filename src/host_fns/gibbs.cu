@@ -180,4 +180,15 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   draw_MVNormal(states, betahat, prec, chain.beta, priors, --verbose);
 }
 
+void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary, int verbose = 0){
+  int K = priors.K;
+  fvec_d a(K);
+  fvec_d b(K, 1.0);
+  double *a_ptr = thrust::raw_pointer_cast(a.data());
+  double *b_ptr = thrust::raw_pointer_cast(b.data());
+  double *raw_ptr = thrust::raw_pointer_cast(chain.pi.data());
+  getGamma<<<K, 1>>>(states, a_ptr, b_ptr, raw_ptr);
+  double sum = thrust::reduce(chain.pi.begin(), chain.pi.end());
+  thrust::transform(chain.pi.begin(), chain.pi.end(), chain.pi.begin(), thrust::placeholders::_1 / sum);
+}
 
