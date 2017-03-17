@@ -198,6 +198,13 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
     printVec(chain.pi, K, 1);
   }
   double sum = thrust::reduce(chain.pi.begin(), chain.pi.end());
+  if(verbose > 0){
+    std::cout << "normalization constant: " << sum << std::endl;
+  }
   thrust::transform(chain.pi.begin(), chain.pi.end(), chain.pi.begin(), thrust::placeholders::_1 / sum);
+  if(verbose > 0){
+    std::cout << "Pi after normalization: \n";
+    printVec(chain.pi, K, 1);
+  }
 }
 
