@@ -24,6 +24,6 @@ priors <- formatPriors(K, c(0,0), c(1,1), 1, 0.1, .3)
 
 print(zeta)
 print(table(zeta))
-.Call("Rtest_draw_pi", seed, chain, priors, data)
+.Call("Rtest_draw_pi", seed, chain, priors, data, as.integer(1))
 #extern "C" SEXP Rtest_draw_beta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
   
