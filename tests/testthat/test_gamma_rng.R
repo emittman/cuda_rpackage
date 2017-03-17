@@ -4,11 +4,11 @@ n <- 1e3
 
 n_reps <- 100
 
-values <- 5
+values <- 10
 
 for(i in 1:values) {
   
-  a <- abs(rcauchy(1))
+  a <- ifelse(i %% 2 == 0, runif(1), abs(rcauchy(1)) + 1)
   b <- abs(rcauchy(1))
   
   mu <- a/b
