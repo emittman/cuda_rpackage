@@ -18,7 +18,9 @@ Rignore/poster-jsm2014/poster.pdf
 Rignore/slides/slides.pdf
 .Rproj.user
 *.Rproj
-src/host_functions/*.o
-src/host_functions/*~
+src/host_fns/*.o
+src/host_fns/*~
 src/dev_link/*.o
 src/dev_link/*.a
+src/*.o
+src/*.so
