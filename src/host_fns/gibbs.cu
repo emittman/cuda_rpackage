@@ -184,10 +184,19 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
   int K = priors.K;
   fvec_d a(K);
   fvec_d b(K, 1.0);
+  thrust::constant_iterator<double> adk = thrust::constant_iterator<double>(priors.alpha/K);
+  thrust::transform(adk, adk+K, summary.Mk.begin(), a.begin(), thrust::plus<double>());
+  if(verbose > 0){
+    printVector(a, K);
+  }
   double *a_ptr = thrust::raw_pointer_cast(a.data());
   double *b_ptr = thrust::raw_pointer_cast(b.data());
   double *raw_ptr = thrust::raw_pointer_cast(chain.pi.data());
   getGamma<<<K, 1>>>(states, a_ptr, b_ptr, raw_ptr);
+  if(verbose > 0){
+    std::cout << "Pi before normalization:\n";
+    printVector(chain.pi, K);
+  }
   double sum = thrust::reduce(chain.pi.begin(), chain.pi.end());
   thrust::transform(chain.pi.begin(), chain.pi.end(), chain.pi.begin(), thrust::placeholders::_1 / sum);
 }
