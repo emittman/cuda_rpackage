@@ -239,7 +239,6 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
 }
 
 extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
-  
   data_t data = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
   chain_t chain = Rchain_wrap(Rchain);
@@ -259,6 +258,13 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain,
 
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
+  
+  std::cout << "Model for pi: ";
+  if(methodPi==0){
+   std::cout << "Truncated stick-breaking process" << std::endl;
+  } else if(methodPi==1){
+   std::cout << "Symmetric Dirichlet distribution" << std::endl;
+  }
   
   //instantiate RNGs
   curandState *devStates;
