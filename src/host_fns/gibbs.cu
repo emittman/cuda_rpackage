@@ -152,7 +152,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
 void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, int verbose=0){
   fvec_d grid(data.G*priors.K);
   cluster_weights(grid, data, chain);
-  if(verbose > 1){
+  if(verbose > 2){
     std::cout << "grid:\n";
     printVec(grid, priors.K, data.G);
   }
@@ -197,11 +197,19 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
     std::cout << "Pi before normalization:\n";
     printVec(chain.pi, K, 1);
   }
-  double sum = thrust::reduce(chain.pi.begin(), chain.pi.end());
+  realIter pi_begin = chain.pi.begin();
+  realIter pi_end = chain.pi.end();
+  logarithmic log_fnc;
+  thrust::transform(pi_begin, pi_end, pi_begin, log_fnc;
+  
+  log_sum_exp lse_fnc;
+  double log_sum = thrust::reduce(pi_begin+1, pi_end, *pi_begin, lse_fnc);
   if(verbose > 0){
-    std::cout << "normalization constant: " << sum << std::endl;
+    std::cout << "normalization constant: " << exp(log_sum) << std::endl;
   }
-  thrust::transform(chain.pi.begin(), chain.pi.end(), chain.pi.begin(), thrust::placeholders::_1 / sum);
+  thrust::transform(pi_begin, pi_end, pi_begin, thrust::placeholders::_1 - log_sum);
+  exponential exp_fnc;
+  thrust::transform(pi_begin, pi_end, pi_begin, exp_fnc);
   if(verbose > 0){
     std::cout << "Pi after normalization: \n";
     printVec(chain.pi, K, 1);
