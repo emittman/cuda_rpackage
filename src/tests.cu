@@ -346,22 +346,28 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
 //  return out;
 //}
 
-extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
+extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata, SEXP RmethodPi){
   int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
   summary2 smry(chain.K, chain.zeta, data);
+  int methodPi = INTEGER(RmethodPi)[0];
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
   setup_kernel<<<priors.K, 1>>>(seed, devStates);
 
-  draw_pi(devStates, chain, priors, smry, 0);
+  if(methodPi == 0){
+    draw_pi(devStates, chain, priors, smry, 2);
+  } else if(methodPi == 1) {
+    draw_pi_SD(devStates, chain, priors, smry, 2);
+  }
   
-  SEXP out = PROTECT(allocVector(REALSXP, 1));
-  REAL(out)[0] = 0;
-  
+  SEXP out = PROTECT(allocVector(REALSXP, chain.K));
+  for(int i=0; i<chain.K; ++i){
+    REAL(out)[i] = chain.pi[i];
+  }
   //clean up
   CUDA_CALL(cudaFree(devStates));
   UNPROTECT(1);
