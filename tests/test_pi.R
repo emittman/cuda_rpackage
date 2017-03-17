@@ -1,14 +1,14 @@
 set.seed(13117)
 
 K <- as.integer(4)
-G <- as.integer(10)
+G <- as.integer(1000)
 V <- as.integer(2)
 
 seed <- as.integer(sample(1e4, 1))
 
 n_per_v <- 5
 
-zeta <- sample(0:(K-1), G, replace=T)
+zeta <- sample(0:(K-1), G, prob = c(.1,.5, .1,.3), replace=T)
 
 X <- kronecker(diag(V), rep(1, n_per_v))
 
@@ -22,7 +22,7 @@ chain <- formatChain(beta, rep(1/K, K), rep(1.2, K), as.integer(zeta))
 
 priors <- formatPriors(K, c(0,0), c(1,1), 1, 0.1, .3)
 
-print(zeta)
+#print(zeta)
 print(table(zeta))
 .Call("Rtest_draw_pi", seed, chain, priors, data, as.integer(1))
 #extern "C" SEXP Rtest_draw_beta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){

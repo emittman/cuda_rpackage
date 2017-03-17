@@ -17,7 +17,7 @@ chain <- formatChain(beta, pi, tau2, zeta)
 
 priors <- formatPriors(K, rcauchy(V), rexp(V), 1, 1, 1)
 
-Csum <- .Call("Rtest_weighted_sum", data, priors, chain, verbose=as.integer(1))
+Csum <- .Call("Rtest_weighted_sum", data, priors, chain, verbose=as.integer(0))
 dim(Csum) <- c(V, K)
 
 xty_sums <- sapply(1:K, function(k){
