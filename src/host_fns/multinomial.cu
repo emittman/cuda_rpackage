@@ -17,20 +17,6 @@ void normalize_wts(fvec_d &big_grid, int K, int G){
 }
 
 
-struct exponential{
-
-  __host__ __device__ double operator()(const double &x){
-    return exp(x);
-  }
-
-};
-
-struct logorithmic{
-  __host__ __device__ double operator()(const double &x){
-    return log(x);
-  }
-};
-
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
   normalize_wts(probs, K, G);
   fvec_d u(G);

@@ -4,6 +4,19 @@
 #include "curand_kernel.h"
 #include "iter_getter.h"
 
+struct exponential{
+  
+  __host__ __device__ double operator()(const double &x){
+    return exp(x);
+  }
+  
+};
+
+struct logorithmic{
+  __host__ __device__ double operator()(const double &x){
+    return log(x);
+  }
+};
 
 struct log_sum_exp{
   __host__ __device__ double operator()(double &x, double &y);

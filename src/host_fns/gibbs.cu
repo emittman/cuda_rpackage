@@ -199,11 +199,12 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
   }
   realIter pi_begin = chain.pi.begin();
   realIter pi_end = chain.pi.end();
-  logarithmic log_fnc;
-  thrust::transform(pi_begin, pi_end, pi_begin, log_fnc;
+  logorithmic log_fnc;
+  thrust::transform(pi_begin, pi_end, pi_begin, log_fnc);
   
   log_sum_exp lse_fnc;
-  double log_sum = thrust::reduce(pi_begin+1, pi_end, *pi_begin, lse_fnc);
+  double init = chain.pi[0];
+  double log_sum = thrust::reduce(pi_begin+1, pi_end, init, lse_fnc);
   if(verbose > 0){
     std::cout << "normalization constant: " << exp(log_sum) << std::endl;
   }
