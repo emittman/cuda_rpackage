@@ -192,15 +192,13 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
   double *a_ptr = thrust::raw_pointer_cast(a.data());
   double *b_ptr = thrust::raw_pointer_cast(b.data());
   double *raw_ptr = thrust::raw_pointer_cast(chain.pi.data());
-  getGamma<<<K, 1>>>(states, a_ptr, b_ptr, raw_ptr);
+  getGamma<<<K, 1>>>(states, a_ptr, b_ptr, raw_ptr, true);
   if(verbose > 0){
-    std::cout << "Pi before normalization:\n";
+    std::cout << "log pi before normalization:\n";
     printVec(chain.pi, K, 1);
   }
   realIter pi_begin = chain.pi.begin();
   realIter pi_end = chain.pi.end();
-  logorithmic log_fnc;
-  thrust::transform(pi_begin, pi_end, pi_begin, log_fnc);
   
   log_sum_exp lse_fnc;
   double init = chain.pi[0];

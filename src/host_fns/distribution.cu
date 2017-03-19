@@ -1,6 +1,6 @@
 #include "../header/distribution.h"
 
-__device__ double rgamma(curandState *state, double a, double b){
+__device__ double rgamma(curandState *state, double a, double b, bool logscale = false){
   //case a >= 1
   double d = a - 1.0 / 3;
   double Y, U, v;
@@ -20,17 +20,19 @@ __device__ double rgamma(curandState *state, double a, double b){
     // Accept proposed Gamma random variable under following condition,
     // otherise repeat the loop
     if(log(U) < 0.5 * pow(Y,2) + d * (1 - v + log(v)) ){
-      return d * v / b;
+      if(logscale) return log(d) + log(V) - log(b);
+      else return d * v / b;
     }
   }
 }
 
-__device__ double rgamma2(curandState *state, double a, double b){
+__device__ double rgamma2(curandState *state, double a, double b, bool logscale = false){
   //case a < 1
   double u, x;
-  u = pow(curand_uniform(state), (float)(1/a));
-  x = rgamma(state, a + 1, b);
-  return(u*x);
+  u = 1/a * log(curand_uniform(state));
+  x = rgamma(state, a + 1, b, true);
+  if(logscale) return u + x;
+  else return exp(u + x);
 }
 
 __device__ double rbeta(curandState *state,  double a, double b){
@@ -51,14 +53,14 @@ __global__ void setup_kernel(int seed, curandState *states) {
     curand_init(seed, id, 0, &states[id]);
 }
 
-__global__ void getGamma(curandState *states, double *a, double *b, double *result){
+__global__ void getGamma(curandState *states, double *a, double *b, double *result, bool logscale = false){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
   if(a[id]>=1){
-    result[id] = rgamma(&(states[id]), a[id], b[id]);
+    result[id] = rgamma(&(states[id]), a[id], b[id], logscale);
   } else {
-    result[id] = rgamma2(&(states[id]), a[id], b[id]);
+    result[id] = rgamma2(&(states[id]), a[id], b[id], logscale);
   }
 }
 
