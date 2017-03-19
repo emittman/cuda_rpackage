@@ -19,7 +19,10 @@ struct logorithmic{
 };
 
 struct log_sum_exp{
-  __host__ __device__ double operator()(double &x, double &y);
+  __host__ __device__ double operator()(double &x, double &y){
+    double M = max(x, y);
+    return log(exp(y-M) + exp(x-M)) + M;
+  }
 };
 
 void normalize_wts(fvec_d &big_grid, int K, int G);
