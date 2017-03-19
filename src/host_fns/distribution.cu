@@ -20,7 +20,7 @@ __device__ double rgamma(curandState *state, double a, double b, bool logscale =
     // Accept proposed Gamma random variable under following condition,
     // otherise repeat the loop
     if(log(U) < 0.5 * pow(Y,2) + d * (1 - v + log(v)) ){
-      if(logscale) return log(d) + log(V) - log(b);
+      if(logscale) return log(d) + log(v) - log(b);
       else return d * v / b;
     }
   }
@@ -43,7 +43,7 @@ __device__ double rbeta(curandState *state,  double a, double b){
   } else{
     x = rgamma(state, a, 1.0, false);
   }
-  if(v<1){
+  if(a<1){
     y = rgamma2(state, b, 1.0, false);
   } else{
     y = rgamma(state, b, 1.0, false);
