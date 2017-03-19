@@ -38,10 +38,16 @@ __device__ double rgamma2(curandState *state, double a, double b, bool logscale 
 __device__ double rbeta(curandState *state,  double a, double b){
   
   double x,y;
-
-  x = rgamma(state, a, 1.0);
-  y = rgamma(state, b, 1.0);
-  
+  if(a<1){
+    x = rgamma2(state, a, 1.0, false);
+  } else{
+    x = rgamma(state, a, 1.0, false);
+  }
+  if(v<1){
+    y = rgamma2(state, b, 1.0, false);
+  } else{
+    y = rgamma(state, b, 1.0, false);
+  }
   return x/(x+y);
 }
 

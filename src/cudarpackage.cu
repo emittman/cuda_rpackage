@@ -108,7 +108,7 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
   setup_kernel<<<n,1>>>(seed, devStates);
   
   //sample from Gamma(a, b)
-  getGamma<<<n,1>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr);
+  getGamma<<<n,1>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr, false);
   
   //copy to host
   thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
