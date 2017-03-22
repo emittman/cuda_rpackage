@@ -37,7 +37,7 @@ __device__ double rgamma2(curandState *state, double a, double b, bool logscale 
 
 __device__ double rbeta(curandState *state,  double a, double b, bool logscale = false){
   
-  double x,y,m;
+  double x,y,m,out;
   if(a<1){
     x = rgamma2(state, a, 1.0, true);
   } else{
@@ -50,11 +50,12 @@ __device__ double rbeta(curandState *state,  double a, double b, bool logscale =
   }
   m = max(x,y);
   if(logscale){
-    return x - log(exp(x-m)+exp(y-m));
+    out = x - log(exp(x-m)+exp(y-m));
   }
   if(!logscale){
-    return exp(x - log(exp(x-m)+exp(y-m)));
+    out = exp(x - log(exp(x-m)+exp(y-m)));
   }
+  return out;
 }
 
 __global__ void setup_kernel(int seed, curandState *states) {
