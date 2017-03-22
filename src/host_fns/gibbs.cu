@@ -7,7 +7,7 @@ struct log_1m_exp {
     double u = 1. - exp(x);
     if(u == 1.)
       return u-1;
-    return exp(u)
+    return exp(u);
   }
 };
 

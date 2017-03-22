@@ -53,7 +53,7 @@ __device__ double rbeta(curandState *state,  double a, double b, bool logscale =
     return x - log(exp(x-m)+exp(y-m));
   }
   if(!logscale){
-    return(exp(x - log(exp(x-m)+exp(y-m))));
+    return exp(x - log(exp(x-m)+exp(y-m)));
   }
 }
 
