@@ -168,6 +168,7 @@ mcmc <- function(data, priors, weightMethod = "stickBreaking", chain = NULL, n_i
                                     paste(c("beta[",v,"]"), collapse="")
                                   }), "tau2"),
                                 iter=1:n_save_P)
+  out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
   names(out[[1]][['max_id']]) <- as.character(1:n_iter)
   names(out[[1]][['num_occupied']]) <- as.character(1:n_iter)
   names(out[[2]]) <- c("probs","means","meansquares")

@@ -2,9 +2,12 @@
 #include <thrust/scan.h>
 #include <thrust/transform_scan.h>
 
-struct log_1m {
+struct log_1m_exp {
   __host__ __device__ double operator()(double &x){
-    return log(1-x);
+    double u = 1. - exp(x);
+    if(u == 1.)
+      return u-1;
+    return exp(u)
   }
 };
 
@@ -131,20 +134,24 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
   getBeta<<<K-1, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()),
                     thrust::raw_pointer_cast(Tk.data()),
-                    thrust::raw_pointer_cast(Vk.data()));
+                    thrust::raw_pointer_cast(Vk.data()),
+                    true);
   if(verbose > 1){
     std::cout <<"Vk:\n";
     printVec(Vk, K, 1);
   }
+  
   fvec_d Ck(K, 0.0);
-  transform_inclusive_scan(Vk.begin(), Vk.end()-1, Ck.begin()+1, log_1m(), thrust::plus<double>());
+  
+  transform_inclusive_scan(Vk.begin(), Vk.end()-1, Ck.begin()+1, log_1m_exp(), thrust::plus<double>());
+  
   if(verbose > 1){
     std::cout << "Ck:\n";
     printVec(Ck, K, 1);
   }
-  transform(Vk.begin(), Vk.end(), Ck.begin(), chain.pi.begin(), exp_log_plus());
+  transform(Vk.begin(), Vk.end(), Ck.begin(), chain.pi.begin(), thrust::plus<double>());
   if(verbose > 1){
-    std::cout << "pi:\n";
+    std::cout << "log pi:\n";
     printVec(chain.pi, K, 1);
   }
 }
@@ -207,11 +214,9 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
     std::cout << "normalization constant: " << exp(log_sum) << std::endl;
   }
   thrust::transform(pi_begin, pi_end, pi_begin, thrust::placeholders::_1 - log_sum);
-  exponential exp_fnc;
-  thrust::transform(pi_begin, pi_end, pi_begin, exp_fnc);
+  
   if(verbose > 0){
-    std::cout << "Pi after normalization: \n";
+    std::cout << "log pi after normalization: \n";
     printVec(chain.pi, K, 1);
   }
 }
-

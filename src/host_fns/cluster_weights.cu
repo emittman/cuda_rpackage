@@ -2,7 +2,7 @@
 #include "../header/iter_getter.h"
 
 __host__ __device__ void clust_prob::operator()(weight_tup_el Tup){
-    thrust::get<0>(Tup) = log(thrust::get<1>(Tup)) + n * 0.5 * log(thrust::get<2>(Tup)) + -0.5 * thrust::get<2>(Tup) * ( thrust::get<3>(Tup) - 2 * thrust::get<0>(Tup) + thrust::get<4>(Tup) );
+    thrust::get<0>(Tup) = thrust::get<1>(Tup) + n * 0.5 * log(thrust::get<2>(Tup)) + -0.5 * thrust::get<2>(Tup) * ( thrust::get<3>(Tup) - 2 * thrust::get<0>(Tup) + thrust::get<4>(Tup) );
 }
   
 void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){

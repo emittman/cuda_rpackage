@@ -106,7 +106,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   } else{
     meansquares = rep(0, V*G)
   }
-  list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid = C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(pi), tau2 = as.numeric(tau2),
+  list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid = C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(log(pi)), tau2 = as.numeric(tau2),
        zeta = as.integer(zeta), C = t(Cmat), probs = probs, means = means, meansquares = meansquares)
 }
 

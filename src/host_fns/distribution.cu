@@ -35,20 +35,26 @@ __device__ double rgamma2(curandState *state, double a, double b, bool logscale 
   else return exp(u + x);
 }
 
-__device__ double rbeta(curandState *state,  double a, double b){
+__device__ double rbeta(curandState *state,  double a, double b, bool logscale = false){
   
-  double x,y;
+  double x,y,m;
   if(a<1){
-    x = rgamma2(state, a, 1.0, false);
+    x = rgamma2(state, a, 1.0, true);
   } else{
-    x = rgamma(state, a, 1.0, false);
+    x = rgamma(state, a, 1.0, true);
   }
-  if(a<1){
-    y = rgamma2(state, b, 1.0, false);
+  if(b<1){
+    y = rgamma2(state, b, 1.0, true);
   } else{
-    y = rgamma(state, b, 1.0, false);
+    y = rgamma(state, b, 1.0, true);
   }
-  return x/(x+y);
+  m = max(x,y);
+  if(logscale){
+    return x - log(exp(x-m)+exp(y-m));
+  }
+  if(!logscale){
+    return(exp(x - log(exp(x-m)+exp(y-m))));
+  }
 }
 
 __global__ void setup_kernel(int seed, curandState *states) {
@@ -71,11 +77,11 @@ __global__ void getGamma(curandState *states, double *a, double *b, double *resu
 }
 
 
-__global__ void getBeta(curandState *states, double *a, double *b, double *result){
+__global__ void getBeta(curandState *states, double *a, double *b, double *result, bool logscale=false){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
-  result[id] = rbeta(&(states[id]), a[id], b[id]);
+  result[id] = rbeta(&(states[id]), a[id], b[id], logscale);
 }
 
 __global__ void getUniform(curandState *states, double *upper_result){

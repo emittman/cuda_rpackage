@@ -9,13 +9,13 @@ __device__ double rgamma(curandState *state, double a, double b, bool logscale);
 
 __device__ double rgamma2(curandState *state, double a, double b, bool logscale);
 
-__device__ double rbeta(curandState *state,  double a, double b);
+__device__ double rbeta(curandState *state,  double a, double b, bool logscale);
 
 __global__ void setup_kernel(int seed, curandState *states);
 
 __global__ void getGamma(curandState *states, double *a, double *b, double *result, bool logscale);
 
-__global__ void getBeta(curandState *states, double *a, double *b, double *result);
+__global__ void getBeta(curandState *states, double *a, double *b, double *result, bool logscale);
 
 __global__ void getUniform(curandState *states, double *upper_result);
                           
