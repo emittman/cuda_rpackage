@@ -50,10 +50,10 @@ __device__ double rbeta(curandState *state,  double a, double b, bool logscale =
   }
   m = max(x,y);
   if(logscale){
-    out = x - log(exp(x-m)+exp(y-m));
+    out = x - log(exp(x-m)+exp(y-m)) + m;
   }
   if(!logscale){
-    out = exp(x - log(exp(x-m)+exp(y-m)));
+    out = exp(x - log(exp(x-m)+exp(y-m)) + m);
   }
   return out;
 }
