@@ -85,11 +85,13 @@ extern "C" SEXP RgetUniform(SEXP Rseed, SEXP upperR){
   
   double *upper_d_ptr = thrust::raw_pointer_cast(upper_d.data());
     
+  int block_size=512;
+  int n_blocks = n/block_size + 1;
   //set up RNGs
-  setup_kernel<<<n,1>>>(seed, n, devStates);
+  setup_kernel<<<n_blocks,block_size>>>(seed, n, devStates);
   
   //sample from U(0, upper)
-  getUniform<<<n,1>>>(devStates, n, upper_d_ptr);
+  getUniform<<<n_blocks,block_size>>>(devStates, n, upper_d_ptr);
  
   thrust::copy(upper_d.begin(), upper_d.end(), upper.begin());
   
@@ -118,7 +120,9 @@ extern "C" SEXP Rgnl_multinomial(SEXP Rseed, SEXP probs, SEXP K, SEXP G){
   double *probs_d_ptr = thrust::raw_pointer_cast(probs_d.data());
   
   //set up RNGs
-  setup_kernel<<<g,1>>>(seed, g, devStates);
+  int block_size=512;
+  int n_blocks = g/block_size + 1;
+  setup_kernel<<<n_blocks,block_size>>>(seed, g, devStates);
   
   //get multinomial draws
   gnl_multinomial(zeta_d, probs_d, devStates, k, g);
@@ -196,8 +200,12 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   
   //instantiate RNGs
   curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
-  setup_kernel<<<priors.K, data.V>>>(seed, priors.K*data.V, devStates);
+  int V = data.V, K = data.K;
+  CUDA_CALL(cudaMalloc((void **) &devStates, V*K*sizeof(curandState)));
+  
+  int block_size=(512 / (32*V)) * (32*V);
+  int n_blocks = (K*V)/block_size + 1;
+  setup_kernel<<<n_blocks, block_size>>>(seed, priors.K*data.V, devStates);
   
   
   //make precision matrices
