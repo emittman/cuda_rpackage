@@ -17,7 +17,7 @@ samples_t::samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, 
   save_tau2(_n_save_g*_G_save), save_P(_n_save_P*_K*(_V+2)), save_max_id(_n_save_g),
   save_num_occupied(_n_save_g){
     if(!alpha_fixed){
-      save_alpha(n_save_g);
+      save_alpha.reserve(n_save_g);
     }
   }
 
