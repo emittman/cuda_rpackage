@@ -482,7 +482,7 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples);
-  UNPROTECT(6);
+  UNPROTECT(7);
   return samples_out;
 }
 
@@ -512,7 +512,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples);
-  UNPROTECT(6);
+  UNPROTECT(7);
   return samples_out;
 }
 
