@@ -61,7 +61,7 @@ __device__ double rbeta(curandState *state,  double a, double b, bool logscale =
 __global__ void setup_kernel(int seed, int n_threads, curandState *states) {
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
-  if(id<n){
+  if(id < n_threads){
   /* Each thread gets same seed, a different sequence number, no offset */
     curand_init(seed, id, 0, &states[id]);
   }
@@ -70,7 +70,7 @@ __global__ void setup_kernel(int seed, int n_threads, curandState *states) {
 __global__ void getGamma(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale = false){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
-  if(id < n){
+  if(id < n_threads){
     if(a[id]>=1){
       result[id] = rgamma(&(states[id]), a[id], b[id], logscale);
     } else {
@@ -83,20 +83,23 @@ __global__ void getGamma(curandState *states, int n_threads, double *a, double *
 __global__ void getBeta(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale=false){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
-  
-  result[id] = rbeta(&(states[id]), a[id], b[id], logscale);
+  if(id < n_threads){
+    result[id] = rbeta(&(states[id]), a[id], b[id], logscale);
+  }
 }
 
 __global__ void getUniform(curandState *states, int n_threads, double *upper_result){
 
   int id = threadIdx.x + blockIdx.x * blockDim.x;
-  
-  upper_result[id] = log(curand_uniform(&(states[id]))) + upper_result[id];
+  if(id < n_threads){
+    upper_result[id] = log(curand_uniform(&(states[id]))) + upper_result[id];
+  }
 }
 
 __global__ void getNormal(curandState *states, int n_threads, double *result)
 {
   int id = threadIdx.x + blockIdx.x * blockDim.x;
-  
-  result[id] = curand_normal(&(states[id]));
+  if(id < n_threads){
+    result[id] = curand_normal(&(states[id]));
+  }
 }
