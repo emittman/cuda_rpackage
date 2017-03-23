@@ -239,16 +239,17 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
 }
 
 extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
-  data_t data     = Rdata_wrap(Rdata);
-  priors_t priors = Rpriors_wrap(Rpriors);
-  chain_t chain   = Rchain_wrap(Rchain);
-  int methodPi    = INTEGER(RmethodPi)[0],
-      methodAlpha = INTGER(RmethodAlpha)[0],
-      n_iter      = INTEGER(Rn_iter)[0],
-      thin        = INTEGER(Rthin)[0],
-      n_save_P    = INTEGER(Rn_save_P)[0];
-  int G_save      = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  int n_save_g    = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
+  data_t data      = Rdata_wrap(Rdata);
+  priors_t priors  = Rpriors_wrap(Rpriors);
+  chain_t chain    = Rchain_wrap(Rchain);
+  int methodPi     = INTEGER(RmethodPi)[0],
+      methodAlpha  = INTEGER(RmethodAlpha)[0],
+      n_iter       = INTEGER(Rn_iter)[0],
+      thin         = INTEGER(Rthin)[0],
+      n_save_P     = INTEGER(Rn_save_P)[0];
+  int G_save       = length(Ridx_save), seed = INTEGER(Rseed)[0];
+  int n_save_g     = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
+  bool alpha_fixed = methodAlpha == 0;
   
   /* Set thin_P to ensure at least n_save_P draws are saved*/
   int thin_P = n_iter - n_save_P; //in case n_save_P = 1, last iteration is saved
@@ -258,7 +259,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     thin_P = n_iter/(n_save_P - 1) + (n_iter % (n_save_P - 1) == 0 ? -1 : 0);
   }
   
-  samples_t samples(n_save_g, n_save_P, G_save, priors.K, data.V, INTEGER(Ridx_save));
+  samples_t samples(n_save_g, n_save_P, G_save, priors.K, data.V, INTEGER(Ridx_save), alpha_fixed);
 
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
@@ -269,7 +270,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   } else if(methodPi==1){
    std::cout << "Symmetric Dirichlet distribution, ";
   }
-  if(methodAlpha==0){
+  if(alpha_fixed){
     std::cout <<"alpha fixed" << std::endl;
   } else{
     std::cout <<"varying alpha" << std::endl;
@@ -323,7 +324,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     if(methodAlpha == 2){
       draw_alpha_SD(chain, priors, verbose-1);
     }
-    if(methodAlpha > 0 & verbose > 0) {
+    if(!alpha_fixed & verbose > 0) {
       std::cout << "alpha = " << priors.alpha << std::endl;
     }
     
@@ -334,8 +335,8 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     }
     
     if(i % thin == 0){
-      if(methodAlpha > 0){
-        samples.save_alpha[samples.step] = priors.alpha;
+      if(!alpha_fixed){
+        samples.save_alpha[samples.step_g] = priors.alpha;
       }
       samples.write_g_samples(chain, summary);
     }
