@@ -31,7 +31,7 @@ times <- 3
 #   })
 # })
 
-plyr::ldply(1:times, function(i){
+for(i in 1:times){
   pi <- rbeta(K, 1, 1)
   pi <- pi/sum(pi)
   
@@ -63,4 +63,4 @@ plyr::ldply(1:times, function(i){
   test_that("Weights are correct, given bxxb and bxty", {
     expect_equal(as.numeric(Rout), Cout)
   })  
-})
+}
