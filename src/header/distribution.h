@@ -15,11 +15,11 @@ __global__ void setup_kernel(int seed, int n_threads, curandState *states);
 
 __global__ void getGamma(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale);
 
-__global__ void getBeta(curandState *states, double *a, double *b, double *result, bool logscale);
+__global__ void getBeta(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale);
 
-__global__ void getUniform(curandState *states, double *upper_result);
+__global__ void getUniform(curandState *states, int n_threads, double *upper_result);
                           
-__global__ void getNormal(curandState *states, double *result);
+__global__ void getNormal(curandState *states, int n_threads, double *result);
 
 
 #endif

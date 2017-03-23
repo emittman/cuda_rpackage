@@ -89,7 +89,7 @@ extern "C" SEXP RgetUniform(SEXP Rseed, SEXP upperR){
   setup_kernel<<<n,1>>>(seed, n, devStates);
   
   //sample from U(0, upper)
-  getUniform<<<n,1>>>(devStates, upper_d_ptr);
+  getUniform<<<n,1>>>(devStates, n, upper_d_ptr);
  
   thrust::copy(upper_d.begin(), upper_d.end(), upper.begin());
   

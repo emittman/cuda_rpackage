@@ -31,7 +31,7 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   int K = priors.K;
   int V = priors.V;
   //replace current beta with standard normal draws
-  getNormal<<<K, V>>>(states, thrust::raw_pointer_cast(beta.data()));
+  getNormal<<<K, V>>>(states, K*V, thrust::raw_pointer_cast(beta.data()));
   
   if(verbose > 1){
     std::cout << "N(0,1) draws:\n";
@@ -132,7 +132,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
     printVec(Tk, K, 1);
   }
   thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
-  getBeta<<<K-1, 1>>>(states, thrust::raw_pointer_cast(Mkp1.data()),
+  getBeta<<<K-1, 1>>>(states, K-1, thrust::raw_pointer_cast(Mkp1.data()),
                     thrust::raw_pointer_cast(Tk.data()),
                     thrust::raw_pointer_cast(Vk.data()),
                     true);

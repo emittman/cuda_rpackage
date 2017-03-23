@@ -22,7 +22,7 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   //printVec(u, G, 1);
   
   double *u_ptr = thrust::raw_pointer_cast(u.data());
-  getUniform<<<G, 1>>>(states, u_ptr);
+  getUniform<<<G, 1>>>(states, G, u_ptr);
   //std::cout << "u:sampled:\n";
   //printVec(u, G, 1);
   //std::cout << "probs...:\n";

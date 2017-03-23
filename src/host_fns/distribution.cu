@@ -80,21 +80,21 @@ __global__ void getGamma(curandState *states, int n_threads, double *a, double *
 }
 
 
-__global__ void getBeta(curandState *states, double *a, double *b, double *result, bool logscale=false){
+__global__ void getBeta(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale=false){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
   result[id] = rbeta(&(states[id]), a[id], b[id], logscale);
 }
 
-__global__ void getUniform(curandState *states, double *upper_result){
+__global__ void getUniform(curandState *states, int n_threads, double *upper_result){
 
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
   upper_result[id] = log(curand_uniform(&(states[id]))) + upper_result[id];
 }
 
-__global__ void getNormal( curandState *states, double *result)
+__global__ void getNormal(curandState *states, int n_threads, double *result)
 {
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   
