@@ -42,9 +42,9 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
 }
 
 extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors){
-  data_t data = Rdata_wrap(Rdata);
+  //data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
-  priors_t priors = Rpriors_wrap(Rpriors);
+  //priors_t priors = Rpriors_wrap(Rpriors);
   //fvec_d grid(data.G*priors.K);
   //cluster_weights(grid, data, chain);
 
