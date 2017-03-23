@@ -86,7 +86,7 @@ extern "C" SEXP RgetUniform(SEXP Rseed, SEXP upperR){
   double *upper_d_ptr = thrust::raw_pointer_cast(upper_d.data());
     
   //set up RNGs
-  setup_kernel<<<n,1>>>(seed, devStates);
+  setup_kernel<<<n,1>>>(seed, n, devStates);
   
   //sample from U(0, upper)
   getUniform<<<n,1>>>(devStates, upper_d_ptr);
@@ -118,7 +118,7 @@ extern "C" SEXP Rgnl_multinomial(SEXP Rseed, SEXP probs, SEXP K, SEXP G){
   double *probs_d_ptr = thrust::raw_pointer_cast(probs_d.data());
   
   //set up RNGs
-  setup_kernel<<<g,1>>>(seed, devStates);
+  setup_kernel<<<g,1>>>(seed, g, devStates);
   
   //get multinomial draws
   gnl_multinomial(zeta_d, probs_d, devStates, k, g);
@@ -197,7 +197,7 @@ extern"C" SEXP Rtest_MVNormal(SEXP Rseed, SEXP Rzeta, SEXP Rdata, SEXP Rpriors){
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.V*priors.K * sizeof(curandState)));
-  setup_kernel<<<priors.K, data.V>>>(seed, devStates);
+  setup_kernel<<<priors.K, data.V>>>(seed, priors.K*data.V, devStates);
   
   
   //make precision matrices
@@ -321,7 +321,7 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
 //  //instantiate RNGs
 //  curandState *devStates;
 //  CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
-//  setup_kernel<<<priors.K, 1>>>(seed, devStates);
+//  setup_kernel<<<priors.K, 1>>>(seed, priors.K, devStates);
 // 
 //  std::cout << "tau2 before:\n";
 //  printVec(chain.tau2, chain.K, 1);
@@ -355,7 +355,7 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata,
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, priors.K * sizeof(curandState)));
-  setup_kernel<<<priors.K, 1>>>(seed, devStates);
+  setup_kernel<<<priors.K, 1>>>(seed, priors.K, devStates);
 
   if(methodPi == 0){
     draw_pi(devStates, chain, priors, smry, 2);
@@ -381,7 +381,7 @@ extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdat
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * sizeof(curandState)));
-  setup_kernel<<<data.G, 1>>>(seed, devStates);
+  setup_kernel<<<data.G, 1>>>(seed, data.G, devStates);
 
   draw_zeta(devStates, data, chain, priors, 0);
   //printVec(chain.zeta, data.G, 1);
@@ -470,7 +470,7 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-  setup_kernel<<<data.G, data.V>>>(seed, devStates);
+  setup_kernel<<<data.G, data.V>>>(seed, data.G*data.V, devStates);
 
   summary2 summary = summary2(chain.K, chain.zeta, data);
   
@@ -496,7 +496,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-  setup_kernel<<<data.G, data.V>>>(seed, devStates);
+  setup_kernel<<<data.G, data.V>>>(seed, data.G*data.V, devStates);
 
   summary2 summary = summary2(chain.K, chain.zeta, data);
   

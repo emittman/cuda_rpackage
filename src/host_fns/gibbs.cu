@@ -105,7 +105,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   double *b_ptr = thrust::raw_pointer_cast(b_d.data());
   
   //generate
-  getGamma<<<K, 1>>>(states, a_ptr, b_ptr, tau2_ptr, false);
+  getGamma<<<K, 1>>>(states, K, a_ptr, b_ptr, tau2_ptr, false);
   if(verbose > 1){
     std::cout <<"tau2 immediately after getGamma:\n";
     printVec(chain.tau2, K, 1);
@@ -199,7 +199,7 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
   double *a_ptr = thrust::raw_pointer_cast(a.data());
   double *b_ptr = thrust::raw_pointer_cast(b.data());
   double *raw_ptr = thrust::raw_pointer_cast(chain.pi.data());
-  getGamma<<<K, 1>>>(states, a_ptr, b_ptr, raw_ptr, true);
+  getGamma<<<K, 1>>>(states, K, a_ptr, b_ptr, raw_ptr, true);
   if(verbose > 0){
     std::cout << "log pi before normalization:\n";
     printVec(chain.pi, K, 1);

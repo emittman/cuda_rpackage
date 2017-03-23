@@ -105,11 +105,11 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
   double *b_d_ptr = thrust::raw_pointer_cast(b_d.data());
     
   //set up RNGs
-  int n_blocks = n/512 + n % 512 > 0;
-  setup_kernel<<<n_blocks,512>>>(seed, devStates);
+  int n_blocks = n/512 + 1;
+  setup_kernel<<<n_blocks,512>>>(seed, n, devStates);
   
   //sample from Gamma(a, b)
-  getGamma<<<n_blocks,512>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr, false);
+  getGamma<<<n_blocks,512>>>(devStates, n, a_d_ptr, b_d_ptr, out_d_ptr, false);
   
   //copy to host
   thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
@@ -147,10 +147,12 @@ extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
   double *b_d_ptr = thrust::raw_pointer_cast(b_d.data());
     
   //set up RNGs
-  setup_kernel<<<n,1>>>(seed, devStates);
+  int blocksize = 512;
+  int n_blocks = n/blocksize + 1;
+  setup_kernel<<<n_blocks,blocksize>>>(seed, n, devStates);
   
   //sample from Beta(a, b)
-  getBeta<<<n,1>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr, false);
+  getBeta<<<n_blocks,blocksize>>>(devStates, n, a_d_ptr, b_d_ptr, out_d_ptr, false);
   
   //copy to host
   thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
@@ -280,7 +282,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-  setup_kernel<<<chain.G, chain.V>>>(seed, devStates);
+  setup_kernel<<<chain.G, chain.V>>>(seed, chain.G*chain.V, devStates);
   
   
   //progress bar
