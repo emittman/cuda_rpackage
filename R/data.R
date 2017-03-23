@@ -68,14 +68,14 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
 #' @param tau2 numeric vector, length K, taking positive values
 #' @param zeta integer vector, length G, with values in the range $\{0,...,K-1\}$
 #' @param C list of matrices with V columns. Each matrix represents a hypothesis which is
-#'   true, for a given cluster, iff all(C[[i]] %*% beta[,j] > 0) == TRUE
+#'   true, for a given cluster, iff \code{ all(C[[i]] %*% beta[,j] > 0) == TRUE }
 #' @param probs numeric vector, length G*length(C), representing probabilities of the hypotheses
 #'   encoded in C for all G genes in column-major order
 #' @param means numeric vector, length G*V, representing latent posterior mean for location parameter
 #'  for all G genes in column-major order
 #' @param meansquares numeric vector, length G*V 
 #' @param s_RW_alpha numeric, standard deviation for random walk Metropolis when
-#'   !alpha_fixed and weightsMethod = "symmDirichlet". Defaults to 0.
+#'   \code{!alpha_fixed} and weightsMethod = "symmDirichlet". Defaults to 0.
 
 formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, meansquares=NULL, s_RW_alpha=0){
   G = as.integer(length(zeta))
