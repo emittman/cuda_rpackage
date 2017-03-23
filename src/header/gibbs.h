@@ -12,6 +12,7 @@
 #include "construct_prec.h"
 #include "cholesky.h"
 #include <thrust/iterator/reverse_iterator.h>
+#include <R.h>
 
 void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, int verbose);
 
