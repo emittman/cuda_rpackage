@@ -240,7 +240,7 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose){
   }
   if(ppsl>0){
     double logprob, logu;
-    logprob = Rf_lgammafn(ppsl) - Rf_lgamma(prev) - K * (Rf_lgammafn(ppsl/K) - Rf_lgammafn(prev/K)) + (priors.A-1)*(log(ppsl) - log(prev)) - priors.B * (ppsl - prev);
+    logprob = Rf_lgammafn(ppsl) - Rf_lgammafn(prev) - K * (Rf_lgammafn(ppsl/K) - Rf_lgammafn(prev/K)) + (priors.A-1)*(log(ppsl) - log(prev)) - priors.B * (ppsl - prev);
     logu = log(Rf_runif(0, 1));
     if(logu < logprob){
       priors.alpha = ppsl;

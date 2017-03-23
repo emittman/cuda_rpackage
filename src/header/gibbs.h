@@ -13,6 +13,10 @@
 #include "cholesky.h"
 #include <thrust/iterator/reverse_iterator.h>
 #include <Rmath.h>
+// This prevents the replacement of "beta" by Rmath.h
+#ifdef beta
+#undef beta
+#endif
 
 void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, int verbose);
 
