@@ -60,17 +60,21 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
 }
 
 #' @title Function \code{formatChain}
-#' @description format chain state
+#' @description Produce a list to be used as 'chain' argument for mcmc()
 #' @export
-#' @param beta V*K array
-#' @param pi K array in $(0, 1)$
-#' @param tau2 K array in $(0, ...)$
-#' @param zeta G array in $\{0,...,K-1\}$
-#' @param C list of matrices with ncol = V
-#' @param probs G array of probabilities
-#' @param means G*V array
-#' @param meansquares G*V array
-#' @param s_RW_alpha
+#' @param beta numeric matrix with V rows and K columns; columns are cluster locations
+#' @param pi numeric vector, length K, taking values in $(0, 1)$
+#' @param tau2 numeric vector, length K, taking positive values
+#' @param zeta integer vector, length G, with values in the range $\{0,...,K-1\}$
+#' @param C list of matrices with V columns. Each matrix represents a hypothesis which is
+#' true, for a given cluster, iff all(C[[i]] %*% beta[,j] > 0) == TRUE
+#' @param probs numeric vector, length G*length(C), representing probabilities of the hypotheses
+#' encoded in C for all G genes in column-major order
+#' @param means numeric vector, length G*V, representing latent posterior mean for location parameter
+#' for all G genes in column-major order
+#' @param meansquares numeric vector, length G*V 
+#' @param s_RW_alpha numeric, standard deviation for random walk Metropolis when
+#' !alpha_fixed and weightsMethod = "symmDirichlet". Defaults to 0.
 
 formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, meansquares=NULL, s_RW_alpha=0){
   G = as.integer(length(zeta))
