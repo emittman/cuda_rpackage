@@ -41,7 +41,6 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @param b prior scale for error precision
 
 formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
-  K <- as.integer(K)
   if(K < 1) stop("K must be postive!")
   if(length(prior_mean) != length(prior_sd)){
     stop("Check dimensions of prior!")
@@ -50,13 +49,15 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
   if(a<=0) stop("a must be postive!")
   if(b<=0) stop("b must be postive!")
                          
-  list(K = K, V = as.integer(length(prior_mean)),
-       mu_0 = as.numeric(prior_mean),
+  list(K       = as.integer(K),
+       V       = as.integer(length(prior_mean)),
+       mu_0    = as.numeric(prior_mean),
        lambda2 = 1/as.numeric(prior_sd)^2,
-       a = as.numeric(a),
-       b = as.numeric(b),
-       A = as.numeric(A),
-       B = as.numeric(B))
+       a       = as.numeric(a),
+       b       = as.numeric(b),
+       alpha   = as.numeric(alpha),
+       A       = as.numeric(A),
+       B       = as.numeric(B))
 }
 
 #' @title Function \code{formatChain}
