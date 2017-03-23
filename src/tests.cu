@@ -467,7 +467,7 @@ extern "C" SEXP Rtest_draw_beta(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
 
-  samples_t samples(n_iter, 0, G_save, priors.K, data.V, INTEGER(Ridx_save));
+  samples_t samples(n_iter, 0, G_save, priors.K, data.V, INTEGER(Ridx_save), true);
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
@@ -493,7 +493,7 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   chain_t chain = Rchain_wrap(Rchain);
   int n_iter = INTEGER(Rn_iter)[0], G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
 
-  samples_t samples(n_iter, 0, G_save, priors.K, data.V, INTEGER(Ridx_save));
+  samples_t samples(n_iter, 0, G_save, priors.K, data.V, INTEGER(Ridx_save), true);
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
