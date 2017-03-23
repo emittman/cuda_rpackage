@@ -18,8 +18,8 @@ priors_t Rpriors_wrap(SEXP Rpriors){
          *lambda = REAL(VECTOR_ELT(Rpriors, 3)),
          a = REAL(VECTOR_ELT(Rpriors, 4))[0],
          b = REAL(VECTOR_ELT(Rpriors, 5))[0],
-         alpha = REAL(VECTOR_ELT(Rpriors, 6))[0];
-         A = REAL(VECTOR_ELT(Rpriors, 7))[0];
+         alpha = REAL(VECTOR_ELT(Rpriors, 6))[0],
+         A = REAL(VECTOR_ELT(Rpriors, 7))[0],
          B = REAL(VECTOR_ELT(Rpriors, 8))[0];
   priors_t priors(K, V, mu0, lambda, a, b, alpha, A, B);
   return priors;
@@ -40,7 +40,7 @@ chain_t Rchain_wrap(SEXP Rchain){
                *probs = REAL(VECTOR_ELT(Rchain, 11)),
                *means = REAL(VECTOR_ELT(Rchain, 12)),
          *meansquares = REAL(VECTOR_ELT(Rchain, 13)),
-           s_RW_alpha = REAL(VECTOR_ELT(Rchain, 14));
+           s_RW_alpha = REAL(VECTOR_ELT(Rchain, 14))[0];
   chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, C, probs, means, meansquares, s_RW_alpha);
   return chain;
 }
@@ -55,9 +55,8 @@ SEXP Csamples_wrap(samples_t &samples){
   SEXP out_P            = PROTECT(allocVector(REALSXP, samples.save_P.size()));
   SEXP out_max_id       = PROTECT(allocVector(INTSXP, samples.save_max_id.size()));
   SEXP out_num_occupied = PROTECT(allocVector(INTSXP, samples.save_num_occupied.size()));
-  if(!samples.alpha_fixed){
-    SEXP out_alpha      = PROTECT(allocVector(INTSXP, samples.save_alpha.size()));
-  }
+  SEXP out_alpha        = PROTECT(allocVector(INTSXP, samples.save_alpha.size()));
+
   thrust::copy(samples.save_beta.begin(), samples.save_beta.end(), REAL(out_beta));
   thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(out_tau2));
   thrust::copy(samples.save_P.begin(), samples.save_P.end(), REAL(out_P));
