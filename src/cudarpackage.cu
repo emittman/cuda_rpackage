@@ -105,10 +105,11 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
   double *b_d_ptr = thrust::raw_pointer_cast(b_d.data());
     
   //set up RNGs
-  setup_kernel<<<n,1>>>(seed, devStates);
+  int n_blocks = n/512 + n % 512 > 0;
+  setup_kernel<<<n_blocks,512>>>(seed, devStates);
   
   //sample from Gamma(a, b)
-  getGamma<<<n,1>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr, false);
+  getGamma<<<n_blocks,512>>>(devStates, a_d_ptr, b_d_ptr, out_d_ptr, false);
   
   //copy to host
   thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
