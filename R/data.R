@@ -40,7 +40,7 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @param a prior shape for error precision
 #' @param b prior scale for error precision
 
-formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
+formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
   K <- as.integer(K)
   if(K < 1) stop("K must be postive!")
   if(length(prior_mean) != length(prior_sd)){
@@ -53,7 +53,10 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
   list(K = K, V = as.integer(length(prior_mean)),
        mu_0 = as.numeric(prior_mean),
        lambda2 = 1/as.numeric(prior_sd)^2,
-       alpha = as.numeric(alpha), a = as.numeric(a), b = as.numeric(b))
+       a = as.numeric(a),
+       b = as.numeric(b),
+       A = as.numeric(A),
+       B = as.numeric(B))
 }
 
 #' @title Function \code{formatChain}
@@ -67,8 +70,9 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b){
 #' @param probs G array of probabilities
 #' @param means G*V array
 #' @param meansquares G*V array
+#' @param s_RW_alpha
 
-formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, meansquares=NULL){
+formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, meansquares=NULL, s_RW_alpha=0){
   G = as.integer(length(zeta))
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
@@ -107,7 +111,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
     meansquares = rep(0, V*G)
   }
   list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid = C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(log(pi)), tau2 = as.numeric(tau2),
-       zeta = as.integer(zeta), C = t(Cmat), probs = probs, means = means, meansquares = meansquares)
+       zeta = as.integer(zeta), C = t(Cmat), probs = probs, means = means, meansquares = meansquares, s_RW_alpha=s_RW_alpha)
 }
 
 #'@title Function \code{initChain}

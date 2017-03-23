@@ -238,22 +238,26 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
-  data_t data = Rdata_wrap(Rdata);
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
+  data_t data     = Rdata_wrap(Rdata);
   priors_t priors = Rpriors_wrap(Rpriors);
-  chain_t chain = Rchain_wrap(Rchain);
-  int methodPi = INTEGER(RmethodPi)[0],
-      n_iter   = INTEGER(Rn_iter)[0],
-      thin     = INTEGER(Rthin)[0],
-      n_save_P = INTEGER(Rn_save_P)[0];
-  int G_save = length(Ridx_save), seed = INTEGER(Rseed)[0];
-  int n_save_g = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
+  chain_t chain   = Rchain_wrap(Rchain);
+  int methodPi    = INTEGER(RmethodPi)[0],
+      methodAlpha = INTGER(RmethodAlpha)[0],
+      n_iter      = INTEGER(Rn_iter)[0],
+      thin        = INTEGER(Rthin)[0],
+      n_save_P    = INTEGER(Rn_save_P)[0];
+  int G_save      = length(Ridx_save), seed = INTEGER(Rseed)[0];
+  int n_save_g    = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
+  
   /* Set thin_P to ensure at least n_save_P draws are saved*/
   int thin_P = n_iter - n_save_P; //in case n_save_P = 1, last iteration is saved
+  
   if(n_save_P > 1){
     //if n_save_P is 2 or greater, thin_P is sup(x : x * n_save_P < n_iter)
     thin_P = n_iter/(n_save_P - 1) + (n_iter % (n_save_P - 1) == 0 ? -1 : 0);
   }
+  
   samples_t samples(n_save_g, n_save_P, G_save, priors.K, data.V, INTEGER(Ridx_save));
 
   int verbose = INTEGER(Rverbose)[0];
@@ -261,9 +265,14 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain,
   
   std::cout << "Model for pi: ";
   if(methodPi==0){
-   std::cout << "Truncated stick-breaking process" << std::endl;
+   std::cout << "Truncated stick-breaking process, ";
   } else if(methodPi==1){
-   std::cout << "Symmetric Dirichlet distribution" << std::endl;
+   std::cout << "Symmetric Dirichlet distribution, ";
+  }
+  if(methodAlpha==0){
+    std::cout <<"alpha fixed" << std::endl;
+  } else{
+    std::cout <<"varying alpha" << std::endl;
   }
   
   //instantiate RNGs
@@ -308,6 +317,16 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain,
       printVec(chain.pi, priors.K, 1);
     }
     
+    if(methodAlpha == 1){
+      draw_alpha(chain, priors, verbose-1);
+    }
+    if(methodAlpha == 2){
+      draw_alpha_SD(chain, priors, verbose-1);
+    }
+    if(methodAlpha > 0 & verbose > 0) {
+      std::cout << "alpha = " << priors.alpha << std::endl;
+    }
+    
     draw_zeta(devStates, data, chain, priors, verbose-1);
     if(verbose > 1){
       std::cout << "zeta:\n";
@@ -315,6 +334,9 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain,
     }
     
     if(i % thin == 0){
+      if(methodAlpha > 0){
+        samples.save_alpha[samples.step] = priors.alpha;
+      }
       samples.write_g_samples(chain, summary);
     }
     
@@ -328,11 +350,15 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rchain,
   }
   
   CUDA_CALL(cudaFree(devStates));
-  SEXP samples_out = Csamples_wrap(samples);          //PROTECT(6)
+  SEXP samples_out = Csamples_wrap(samples);          //PROTECT(6 or 7)
   SEXP chain_out   = Cchain_wrap(chain);              //PROTECT(4)
   SEXP out         = PROTECT(allocVector(VECSXP, 2)); //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
   SET_VECTOR_ELT(out, 1, chain_out);
-  UNPROTECT(11);                                      //6 + 4 + 1
+  if(methodAlpha>0){
+    UNPROTECT(12);                                      //7 + 4 + 1
+  } else{
+    UNPROTECT(11);                                      //6 + 4 + 1
+  }
   return out;
 }

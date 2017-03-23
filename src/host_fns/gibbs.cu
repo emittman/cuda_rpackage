@@ -220,3 +220,38 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
     printVec(chain.pi, K, 1);
   }
 }
+
+void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
+  int K = priors.K;
+  GetRNGstate();
+  priors.alpha = Rf_rgamma(priors.A + K - 1, priors.B - chain.pi[K-1]);
+  PutRNGstate();
+}
+
+void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose){
+  int K = priors.K;
+  double prev = priors.alpha;
+  
+  GetRNGstate();
+  double ppsl = Rf_rnorm(prev, chain.s_RW_alpha);
+  if(verbose > 1){
+    std::cout << "previous value for alpha: " << prev;
+    std::cout << ",\t proposal: " << ppsl;
+  }
+  if(ppsl>0){
+    double logprob, logu;
+    logprob = Rf_lgammafn(ppsl) - Rf_lgamma(prev) - K * (Rf_lgammafn(ppsl/K) - Rf_lgammafn(prev/K)) + (priors.A-1)*(log(ppsl) - log(prev)) - priors.B * (ppsl - prev);
+    logu = log(Rf_runif(0, 1));
+    if(logu < logprob){
+      priors.alpha = ppsl;
+    }
+    if(verbose > 1){
+      std::cout << ",\t acceptance prob.: " << exp(logprob) << std::endl;
+    }
+  } else{
+    if(verbose > 1){
+      std::cout << ",\t acceptance prob.: ZERO" << std::endl;
+    }
+  }
+  PutRNGstate();
+}

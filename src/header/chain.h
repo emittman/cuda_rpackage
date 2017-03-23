@@ -28,11 +28,14 @@ struct priors_t{
   int V;
   fvec_d mu0;
   fvec_d lambda2;
-  double alpha;
   double a;
   double b;
+  double alpha;
+  double A;
+  double B;
   
-  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _alpha, double _a, double _b) : K(_K), V(_V), alpha(_alpha), a(_a), b(_b){
+  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _alpha, double _A, double _B) :
+    K(_K), V(_V), a(_a), b(_b), alpha(_alpha), A(_A), B(_B){
     mu0 = fvec_d(_mu0, _mu0 + V);
     lambda2 = fvec_d(_lambda2, _lambda2 + V);
   }
@@ -59,12 +62,14 @@ struct chain_t{
   fvec_d probs;
   fvec_d means;
   fvec_d meansquares;
+  //tuning parameter
+  double s_RW_alpha;
   
   chain_t(int _G, int _V, int _K, int _n_hyp, int *_C_rowid, int _P, double *_beta, double *_pi, double *_tau2,
-          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares):
+          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares, double _s_RW_alpha):
     G(_G), V(_V), K(_K), n_hyp(_n_hyp), C_rowid(_C_rowid, _C_rowid + _P), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
     tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
-    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V){}
+    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), s_RW_alpha(_s_RW_alpha){}
   
   void update_means(int step);
   void update_probabilities(int step);
@@ -81,14 +86,16 @@ struct samples_t{
   int G_save;
   int K;
   int V;
+  bool alpha_fixed;
   ivec_d save_idx;
   fvec_h save_beta;
   fvec_h save_tau2;
   fvec_h save_P;
   ivec_h save_max_id;
   ivec_h save_num_occupied;
+  thrust::host_vector<double> save_alpha;
 
-  samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx);
+  samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx, bool _alpha_fixed);
   void write_g_samples(chain_t &chain, summary2 &smry);
   void write_P_samples(chain_t &chain);
 };

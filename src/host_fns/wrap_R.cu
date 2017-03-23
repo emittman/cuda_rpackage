@@ -16,10 +16,12 @@ priors_t Rpriors_wrap(SEXP Rpriors){
       V = INTEGER(VECTOR_ELT(Rpriors, 1))[0];
   double *mu0 = REAL(VECTOR_ELT(Rpriors, 2)),
          *lambda = REAL(VECTOR_ELT(Rpriors, 3)),
-         alpha = REAL(VECTOR_ELT(Rpriors, 4))[0],
-         a = REAL(VECTOR_ELT(Rpriors, 5))[0],
-         b = REAL(VECTOR_ELT(Rpriors, 6))[0];
-  priors_t priors(K, V, mu0, lambda, alpha, a, b);
+         a = REAL(VECTOR_ELT(Rpriors, 4))[0],
+         b = REAL(VECTOR_ELT(Rpriors, 5))[0],
+         alpha = REAL(VECTOR_ELT(Rpriors, 6))[0];
+         A = REAL(VECTOR_ELT(Rpriors, 7))[0];
+         B = REAL(VECTOR_ELT(Rpriors, 8))[0];
+  priors_t priors(K, V, mu0, lambda, a, b, alpha, A, B);
   return priors;
 }
 
@@ -37,29 +39,41 @@ chain_t Rchain_wrap(SEXP Rchain){
   double           *C = REAL(VECTOR_ELT(Rchain, 10)),
                *probs = REAL(VECTOR_ELT(Rchain, 11)),
                *means = REAL(VECTOR_ELT(Rchain, 12)),
-         *meansquares = REAL(VECTOR_ELT(Rchain, 13));
-  chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, C, probs, means, meansquares);
+         *meansquares = REAL(VECTOR_ELT(Rchain, 13)),
+           s_RW_alpha = REAL(VECTOR_ELT(Rchain, 14));
+  chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, C, probs, means, meansquares, s_RW_alpha);
   return chain;
 }
 
 
 SEXP Csamples_wrap(samples_t &samples){
-  SEXP samples_out      = PROTECT(allocVector(VECSXP, 5));
+  int size = 5;
+  if(!samples.alpha_fixed) ++size;
+  SEXP samples_out      = PROTECT(allocVector(VECSXP, size));
   SEXP out_beta         = PROTECT(allocVector(REALSXP, samples.save_beta.size()));
   SEXP out_tau2         = PROTECT(allocVector(REALSXP, samples.save_tau2.size()));
   SEXP out_P            = PROTECT(allocVector(REALSXP, samples.save_P.size()));
   SEXP out_max_id       = PROTECT(allocVector(INTSXP, samples.save_max_id.size()));
   SEXP out_num_occupied = PROTECT(allocVector(INTSXP, samples.save_num_occupied.size()));
+  if(!samples.alpha_fixed){
+    SEXP out_alpha      = PROTECT(allocVector(INTSXP, samples.save_alpha.size()));
+  }
   thrust::copy(samples.save_beta.begin(), samples.save_beta.end(), REAL(out_beta));
   thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(out_tau2));
   thrust::copy(samples.save_P.begin(), samples.save_P.end(), REAL(out_P));
   thrust::copy(samples.save_max_id.begin(), samples.save_max_id.end(), INTEGER(out_max_id));
   thrust::copy(samples.save_num_occupied.begin(), samples.save_num_occupied.end(), INTEGER(out_num_occupied));
+  if(!samples.alpha_fixed){
+    thrust::copy(samples.save_alpha.begin(), samples.save_alpha.end(), REAL(out_alpha));
+  }
   SET_VECTOR_ELT(samples_out, 0, out_beta);
   SET_VECTOR_ELT(samples_out, 1, out_tau2);
   SET_VECTOR_ELT(samples_out, 2, out_P);
   SET_VECTOR_ELT(samples_out, 3, out_max_id);
   SET_VECTOR_ELT(samples_out, 4, out_num_occupied);
+  if(!samples.alpha_fixed){
+    SET_VECTOR_ELT(samples_out, 5, out_alpha);
+  }
   return samples_out;
 }
 

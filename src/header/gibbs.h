@@ -25,4 +25,7 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
 
 void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry, int verbose);
 
+void draw_alpha(chain_t &chain, priors_t &priors, int verbose);
+
+void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose);
 #endif

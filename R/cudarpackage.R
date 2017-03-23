@@ -124,7 +124,7 @@ Rdevice_mmultiply = function(A, B){
 #' @export
 #' @param data list, use formatData
 #' @param priors list, use formatPrior
-#' @param weightMethod Specifies the model for the weights of the
+#' @param weightsMethod Specifies the model for the weights of the
 #' unknown mixture. The default is "stickBreaking" and the other option
 #' is "symmDirichlet"
 #' @param chain list, use formatChain
@@ -133,19 +133,43 @@ Rdevice_mmultiply = function(A, B){
 #' @param thin int
 #' @param n_save_P int
 #' @param C numeric matrix, contrasts
+#' @param alpha_fixed logical
+#' @param s_RW_alpha double
 #' @param verbose int, higher verbosity -> more printing
-mcmc <- function(data, priors, weightMethod = "stickBreaking", chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, verbose=0){
+mcmc <- function(data, priors, weightsMethod = "stickBreaking", chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
     chain <- initChain(priors, data$G, C)
+    if(!alpha_fixed & weightsMethod == "symmDirichlet"){
+      if(is.null(s_RW_alpha)){
+        message("No value provided for s_RW_alpha, but alpha_fixed = F and weightsMethod = 'symmDirichlet'!\t Defaulting to 0.5")
+        chain$s_RW_alpha <- 0.5
+      } else{
+        if(s_RW_alpha<=0) stop("s_RW_alpha must be > 0")
+        chain$s_RW_alpha <- s_RW_alpha
+      }
+    }
+  } else{
+    if(!alpha_fixed & weightsMethod == "symmDirichlet"){
+      if(chain$s_RW_alpha == 0){
+        stop("chain must have s_RW_alpha > 0 when alpha_fixed=F and weightsMethod = 'symmDirichlet'!")
+      }
+    }
   }
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < data$G)) stop("idx_save should use 0-indexing")
+  
   methodPi <- switch(weightMethod,
                      "stickBreaking" = as.integer(0),
                      "symmDirichlet" = as.integer(1))
+  if(methodPi == 0){
+    methodAlpha <- ifelse(alpha_fixed, as.integer(0), as.integer(1))
+  } else{
+    methodAlpha <- ifelse(alpha_fixed, as.integer(0), as.integer(2))
+  }
+  
   seed <- as.integer(sample(1e6, 1))
   n_iter <- as.integer(n_iter)
   n_save_P <- as.integer(n_save_P)
@@ -153,10 +177,13 @@ mcmc <- function(data, priors, weightMethod = "stickBreaking", chain = NULL, n_i
   verbose <- as.integer(verbose)
   
   
-  out <- .Call("Rrun_mcmc", data, priors, methodPi, chain, n_iter, n_save_P, as.integer(idx_save),
+  out <- .Call("Rrun_mcmc", data, priors, methodPi, methodAlpha, chain, n_iter, n_save_P, as.integer(idx_save),
                thin, seed, verbose)
   
-  names(out[[1]]) <- c("beta", "tau2", "P", "max_id", "num_occupied")
+  # Format the output
+  gnames <- ifelse(alpha_fixed, c("beta", "tau2", "P", "max_id", "num_occupied"),
+                   c("beta", "tau2", "P", "max_id", "num_occupied", "alpha"))
+  names(out[[1]]) <- gnames
   dim(out[[1]][['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
   dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
   out[[1]][['beta']] <- aperm(out[[1]][['beta']], c(1,3,2))
@@ -169,8 +196,12 @@ mcmc <- function(data, priors, weightMethod = "stickBreaking", chain = NULL, n_i
                                   }), "tau2"),
                                 iter=1:n_save_P)
   out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
-  names(out[[1]][['max_id']]) <- as.character(1:n_iter)
-  names(out[[1]][['num_occupied']]) <- as.character(1:n_iter)
+  names(out[[1]][['max_id']]) <- 1:n_iter
+  names(out[[1]][['num_occupied']]) <- 1:n_iter
+  if(!alpha_fixed){
+    names(out[[1]][['alpha']]) <- 1:n_iter
+  }
+  
   names(out[[2]]) <- c("probs","means","meansquares")
   dim(out[[2]][['probs']]) <- c(chain$n_hyp, data$G)
   dimnames(out[[2]][['probs']]) <- list(hyp = 1:chain$n_hyp, g = 1:data$G) 
