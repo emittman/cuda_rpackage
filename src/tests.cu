@@ -43,15 +43,15 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
 
 extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors){
   data_t data = Rdata_wrap(Rdata);
-  //chain_t chain = Rchain_wrap(Rchain);
+  chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
-  //fvec_d grid(data.G*priors.K);
-  //cluster_weights(grid, data, chain);
+  fvec_d grid(data.G*priors.K);
+  cluster_weights(grid, data, chain);
 
-  //fvec_h grid_h(data.G*priors.K);
-  //thrust::copy(grid.begin(), grid.end(), grid_h.begin());
+  fvec_h grid_h(data.G*priors.K);
+  thrust::copy(grid.begin(), grid.end(), grid_h.begin());
   SEXP OUT = PROTECT(allocVector(REALSXP, data.G*priors.K));
-  //for(int i=0; i<data.G*priors.K; ++i) REAL(OUT)[i] = grid_h[i];
+  for(int i=0; i<data.G*priors.K; ++i) REAL(OUT)[i] = grid_h[i];
   UNPROTECT(1);
   return OUT;
 }
