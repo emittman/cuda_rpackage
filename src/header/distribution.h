@@ -11,9 +11,9 @@ __device__ double rgamma2(curandState *state, double a, double b, bool logscale)
 
 __device__ double rbeta(curandState *state,  double a, double b, bool logscale);
 
-__global__ void setup_kernel(int seed, curandState *states);
+__global__ void setup_kernel(int seed, int n_threads, curandState *states);
 
-__global__ void getGamma(curandState *states, double *a, double *b, double *result, bool logscale);
+__global__ void getGamma(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale);
 
 __global__ void getBeta(curandState *states, double *a, double *b, double *result, bool logscale);
 

@@ -58,7 +58,7 @@ __device__ double rbeta(curandState *state,  double a, double b, bool logscale =
   return out;
 }
 
-__global__ void setup_kernel(int seed, int n, curandState *states) {
+__global__ void setup_kernel(int seed, int n_threads, curandState *states) {
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   if(id<n){
@@ -67,7 +67,7 @@ __global__ void setup_kernel(int seed, int n, curandState *states) {
   }
 }
 
-__global__ void getGamma(curandState *states, int n, double *a, double *b, double *result, bool logscale = false){
+__global__ void getGamma(curandState *states, int n_threads, double *a, double *b, double *result, bool logscale = false){
   
   int id = threadIdx.x + blockIdx.x * blockDim.x;
   if(id < n){
