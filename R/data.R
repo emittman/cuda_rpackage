@@ -68,7 +68,7 @@ formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
 #' @param tau2 numeric vector, length K, taking positive values
 #' @param zeta integer vector, length G, with values in the range $\{0,...,K-1\}$
 #' @param C list of matrices with V columns. Each matrix represents a hypothesis which is
-#'   true, for a given cluster, iff \code{ all(C[[i]] %*% beta[,j] > 0) == TRUE }
+#'   true, for a given cluster, iff all C_i * beta_g > 0 == TRUE
 #' @param probs numeric vector, length G*length(C), representing probabilities of the hypotheses
 #'   encoded in C for all G genes in column-major order
 #' @param means numeric vector, length G*V, representing latent posterior mean for location parameter
