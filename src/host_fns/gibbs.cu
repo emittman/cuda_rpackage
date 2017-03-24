@@ -120,7 +120,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   int K = priors.K;
   fvec_d Tk(K);
   fvec_d Mkp1(K);
-  fvec_d Vk(K, 1.0);
+  fvec_d Vk(K, 0.0);
   if(verbose > 1){
     std::cout << "Tk init:\n";
     printVec(Tk, K, 1);
