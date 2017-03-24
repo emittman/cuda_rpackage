@@ -136,7 +136,8 @@ Rdevice_mmultiply = function(A, B){
 #' @param alpha_fixed logical
 #' @param s_RW_alpha double
 #' @param verbose int, higher verbosity -> more printing
-mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
+mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin,
+                 n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
@@ -196,11 +197,6 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
                                   }), "tau2"),
                                 iter=1:n_save_P)
   out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
-  names(out[[1]][['max_id']]) <- 1:n_iter
-  names(out[[1]][['num_occupied']]) <- 1:n_iter
-  #if(!alpha_fixed){
-  #  names(out[[1]][['alpha']]) <- 1:n_iter
-  #}
   
   names(out[[2]]) <- c("probs","means","meansquares")
   dim(out[[2]][['probs']]) <- c(chain$n_hyp, data$G)
