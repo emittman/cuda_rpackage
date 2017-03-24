@@ -15,11 +15,7 @@ samples_t::samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, 
   n_save_g(_n_save_g), n_save_P(_n_save_P), step_g(0), step_P(0), G_save(_G_save), K(_K), V(_V),
   save_idx(idx, idx + _G_save), alpha_fixed(_alpha_fixed), save_beta(_n_save_g*_G_save*_V),
   save_tau2(_n_save_g*_G_save), save_P(_n_save_P*_K*(_V+2)), save_max_id(_n_save_g),
-  save_num_occupied(_n_save_g){
-    if(!alpha_fixed){
-      save_alpha.reserve(n_save_g);
-    }
-  }
+  save_num_occupied(_n_save_g), save_alpha(_n_save_g){}
 
 void samples_t::write_g_samples(chain_t &chain, summary2 &smry){
   if(step_g < n_save_g){
