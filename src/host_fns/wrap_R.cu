@@ -64,7 +64,10 @@ chain_t Rchain_wrap(SEXP Rchain, int verbose){
 }
 
 
-SEXP Csamples_wrap(samples_t &samples){
+SEXP Csamples_wrap(samples_t &samples, int verbose){
+  if(verbose>0){
+    std::cout << "Wrapping samples... ";
+  }
   int size = 5;
   if(!samples.alpha_fixed) ++size;
   SEXP samples_out      = PROTECT(allocVector(VECSXP, size));
@@ -91,10 +94,16 @@ SEXP Csamples_wrap(samples_t &samples){
   if(!samples.alpha_fixed){
     SET_VECTOR_ELT(samples_out, 5, out_alpha);
   }
+  if(verbose>0){
+    std::cout << "samples wrapped." << std::endl;
+  }
   return samples_out;
 }
 
-SEXP Cchain_wrap(chain_t &chain){
+SEXP Cchain_wrap(chain_t &chain, int verbose){
+  if(verbose>0){
+    std::cout << "Wrapping chain... ";
+  }
   SEXP chain_out       = PROTECT(allocVector(VECSXP, 3));
   SEXP out_probs       = PROTECT(allocVector(REALSXP, chain.probs.size()));
   SEXP out_means       = PROTECT(allocVector(REALSXP, chain.means.size()));
@@ -105,5 +114,8 @@ SEXP Cchain_wrap(chain_t &chain){
   SET_VECTOR_ELT(chain_out, 0, out_probs);
   SET_VECTOR_ELT(chain_out, 1, out_means);
   SET_VECTOR_ELT(chain_out, 2, out_meansquares);
+  if(verbose>0){
+    std::cout << "chain wrapped." << std::endl;
+  }
   return chain_out;
 }

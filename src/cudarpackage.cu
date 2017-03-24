@@ -244,9 +244,9 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
 extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
-  data_t data      = Rdata_wrap(Rdata, --verbose);
-  priors_t priors  = Rpriors_wrap(Rpriors, --verbose);
-  chain_t chain    = Rchain_wrap(Rchain, --verbose);
+  data_t data      = Rdata_wrap(Rdata, verbose-1);
+  priors_t priors  = Rpriors_wrap(Rpriors, verbose-1);
+  chain_t chain    = Rchain_wrap(Rchain, verbose-1);
   int methodPi     = INTEGER(RmethodPi)[0],
       methodAlpha  = INTEGER(RmethodAlpha)[0],
       n_iter       = INTEGER(Rn_iter)[0],
