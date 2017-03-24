@@ -181,8 +181,8 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
                thin, seed, verbose)
   
   # Format the output
-  gnames <- ifelse(alpha_fixed, c("beta", "tau2", "P", "max_id", "num_occupied"),
-                   c("beta", "tau2", "P", "max_id", "num_occupied", "alpha"))
+  if(alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied")
+  if(!alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied", "alpha")
   names(out[[1]]) <- gnames
   dim(out[[1]][['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
   dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
