@@ -1,6 +1,9 @@
 #include "../header/wrap_R.h"
 
-data_t Rdata_wrap(SEXP Rdata){
+data_t Rdata_wrap(SEXP Rdata, int verbose){
+  if(verbose>0){
+    std::cout << "Reading data... ";
+  }
   double *yty = REAL(VECTOR_ELT(Rdata, 0)),
     *xty = REAL(VECTOR_ELT(Rdata, 1)),
     *xtx = REAL(VECTOR_ELT(Rdata, 2));
@@ -8,10 +11,16 @@ data_t Rdata_wrap(SEXP Rdata){
       V = INTEGER(VECTOR_ELT(Rdata, 4))[0],
       N = INTEGER(VECTOR_ELT(Rdata, 5))[0];
   data_t data(yty, xty, xtx, G, V, N);
+  if(verbose>0){
+    std::cout << "data transferred." << std::endl;
+  }
   return data;
 }
 
-priors_t Rpriors_wrap(SEXP Rpriors){
+priors_t Rpriors_wrap(SEXP Rpriors, int verbose){
+  if(verbose>0){
+    std::cout << "Reading priors... ";
+  }
   int K = INTEGER(VECTOR_ELT(Rpriors, 0))[0],
       V = INTEGER(VECTOR_ELT(Rpriors, 1))[0];
   double *mu0 = REAL(VECTOR_ELT(Rpriors, 2)),
@@ -22,10 +31,16 @@ priors_t Rpriors_wrap(SEXP Rpriors){
          A = REAL(VECTOR_ELT(Rpriors, 7))[0],
          B = REAL(VECTOR_ELT(Rpriors, 8))[0];
   priors_t priors(K, V, mu0, lambda, a, b, alpha, A, B);
+  if(verbose>0)
+    std::cout << "priors transferred." << std::endl;
+  }
   return priors;
 }
 
 chain_t Rchain_wrap(SEXP Rchain){
+  if(verbose>0){
+    std::cout << "Reading chain... ";
+  }
   int    G = INTEGER(VECTOR_ELT(Rchain, 0))[0],
          V = INTEGER(VECTOR_ELT(Rchain, 1))[0],
          K = INTEGER(VECTOR_ELT(Rchain, 2))[0],
@@ -42,6 +57,9 @@ chain_t Rchain_wrap(SEXP Rchain){
          *meansquares = REAL(VECTOR_ELT(Rchain, 13)),
            s_RW_alpha = REAL(VECTOR_ELT(Rchain, 14))[0];
   chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, C, probs, means, meansquares, s_RW_alpha);
+  if(verbose>0){
+    std::cout << "chain transferred." << std::endl;
+  }
   return chain;
 }
 

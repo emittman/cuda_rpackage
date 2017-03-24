@@ -242,9 +242,11 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
 }
 
 extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
-  data_t data      = Rdata_wrap(Rdata);
-  priors_t priors  = Rpriors_wrap(Rpriors);
-  chain_t chain    = Rchain_wrap(Rchain);
+  int verbose = INTEGER(Rverbose)[0];
+  std::cout << "verbosity level = " << verbose << std::endl;
+  data_t data      = Rdata_wrap(Rdata, --verbose);
+  priors_t priors  = Rpriors_wrap(Rpriors, --verbose);
+  chain_t chain    = Rchain_wrap(Rchain, --verbose);
   int methodPi     = INTEGER(RmethodPi)[0],
       methodAlpha  = INTEGER(RmethodAlpha)[0],
       n_iter       = INTEGER(Rn_iter)[0],
@@ -263,9 +265,6 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   }
   
   samples_t samples(n_save_g, n_save_P, G_save, priors.K, data.V, INTEGER(Ridx_save), alpha_fixed);
-
-  int verbose = INTEGER(Rverbose)[0];
-  std::cout << "verbosity level = " << verbose << std::endl;
   
   std::cout << "Model for pi: ";
   if(methodPi==0){
