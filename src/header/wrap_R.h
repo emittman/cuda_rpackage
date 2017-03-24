@@ -4,9 +4,9 @@
 #include "chain.h"
 #include <Rinternals.h>
 
-data_t Rdata_wrap(SEXP Rdata, int verbose);
-priors_t Rpriors_wrap(SEXP Rpriors, int verbose);
-chain_t Rchain_wrap(SEXP Rchain, int verbose);
+data_t Rdata_wrap(SEXP Rdata, int verbose=0);
+priors_t Rpriors_wrap(SEXP Rpriors, int verbose=0);
+chain_t Rchain_wrap(SEXP Rchain, int verbose=0);
 SEXP Csamples_wrap(samples_t &samples);
 SEXP Cchain_wrap(chain_t &chain);
 #endif
