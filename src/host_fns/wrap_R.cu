@@ -37,7 +37,7 @@ priors_t Rpriors_wrap(SEXP Rpriors, int verbose){
   return priors;
 }
 
-chain_t Rchain_wrap(SEXP Rchain){
+chain_t Rchain_wrap(SEXP Rchain, int verbose){
   if(verbose>0){
     std::cout << "Reading chain... ";
   }
