@@ -31,7 +31,7 @@ priors_t Rpriors_wrap(SEXP Rpriors, int verbose){
          A = REAL(VECTOR_ELT(Rpriors, 7))[0],
          B = REAL(VECTOR_ELT(Rpriors, 8))[0];
   priors_t priors(K, V, mu0, lambda, a, b, alpha, A, B);
-  if(verbose>0)
+  if(verbose>0){
     std::cout << "priors transferred." << std::endl;
   }
   return priors;
