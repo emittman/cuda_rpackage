@@ -124,7 +124,7 @@ Rdevice_mmultiply = function(A, B){
 #' @export
 #' @param data list, use formatData
 #' @param priors list, use formatPrior
-#' @param weightsMethod Specifies the model for the weights of the
+#' @param methodPi Specifies the model for the weights of the
 #' unknown mixture. The default is "stickBreaking" and the other option
 #' is "symmDirichlet"
 #' @param chain list, use formatChain
@@ -136,15 +136,15 @@ Rdevice_mmultiply = function(A, B){
 #' @param alpha_fixed logical
 #' @param s_RW_alpha double
 #' @param verbose int, higher verbosity -> more printing
-mcmc <- function(data, priors, weightsMethod = "stickBreaking", chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
+mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin, n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
     chain <- initChain(priors, data$G, C)
-    if(!alpha_fixed & weightsMethod == "symmDirichlet"){
+    if(!alpha_fixed & methodPi == "symmDirichlet"){
       if(is.null(s_RW_alpha)){
-        message("No value provided for s_RW_alpha, but alpha_fixed = F and weightsMethod = 'symmDirichlet'!\t Defaulting to 0.5")
+        message("No value provided for s_RW_alpha, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 0.5")
         chain$s_RW_alpha <- 0.5
       } else{
         if(s_RW_alpha<=0) stop("s_RW_alpha must be > 0")
@@ -152,16 +152,16 @@ mcmc <- function(data, priors, weightsMethod = "stickBreaking", chain = NULL, n_
       }
     }
   } else{
-    if(!alpha_fixed & weightsMethod == "symmDirichlet"){
+    if(!alpha_fixed & methodPi == "symmDirichlet"){
       if(chain$s_RW_alpha == 0){
-        stop("chain must have s_RW_alpha > 0 when alpha_fixed=F and weightsMethod = 'symmDirichlet'!")
+        stop("chain must have s_RW_alpha > 0 when alpha_fixed=F and methodPi = 'symmDirichlet'!")
       }
     }
   }
   if(!(data$V == chain$V)) stop("data$V != chain$V")
   if(!(max(idx_save) < data$G)) stop("idx_save should use 0-indexing")
   
-  methodPi <- switch(weightMethod,
+  methodPi <- switch(methodPi,
                      "stickBreaking" = as.integer(0),
                      "symmDirichlet" = as.integer(1))
   if(methodPi == 0){
