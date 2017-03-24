@@ -234,8 +234,14 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
 void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
   int K = priors.K;
   GetRNGstate();
-  priors.alpha = Rf_rgamma(priors.A + K - 1, priors.B - chain.pi[K-1]);
+  double Aupdate = priors.A + K - 1;
+  double Bupdate = priors.B - chain.pi[K-1];
+  double draw = Rf_rgamma(priors.A + K - 1, priors.B - chain.pi[K-1]);
   PutRNGstate();
+  priors.alpha = draw;
+  if(verbose>0){
+    std::cout << "Updated A: " << Aupdate << ", updated B: " << Bupdate << ", draw = " << draw << std::endl;
+  }
 }
 
 void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose){
