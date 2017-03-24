@@ -198,9 +198,9 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
   out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
   names(out[[1]][['max_id']]) <- 1:n_iter
   names(out[[1]][['num_occupied']]) <- 1:n_iter
-  if(!alpha_fixed){
-    names(out[[1]][['alpha']]) <- 1:n_iter
-  }
+  #if(!alpha_fixed){
+  #  names(out[[1]][['alpha']]) <- 1:n_iter
+  #}
   
   names(out[[2]]) <- c("probs","means","meansquares")
   dim(out[[2]][['probs']]) <- c(chain$n_hyp, data$G)
