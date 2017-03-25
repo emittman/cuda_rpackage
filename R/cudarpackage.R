@@ -139,7 +139,7 @@ Rdevice_mmultiply = function(A, B){
 mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin,
                  n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
-  if(!(data$G >= priors$K)) stop("G must be <= K!")
+  # if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
     chain <- initChain(priors, data$G, C)

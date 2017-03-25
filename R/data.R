@@ -82,7 +82,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
   
-  if(max(zeta)>K-1) stop("C uses zero indexing")
+  if(max(zeta)>K-1) stop("Invalid zeta value (use zero indexing)")
   
   if(!is.null(C)){
     if(!is.list(C)){
