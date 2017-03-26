@@ -236,7 +236,7 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
   GetRNGstate();
   double Aupdate = priors.A + K - 1;
   double Bupdate = priors.B - chain.pi[K-1];
-  double draw = Rf_rgamma(priors.A + K - 1, priors.B - chain.pi[K-1]);
+  double draw = Rf_rgamma(priors.A + K - 1, 1/(priors.B - chain.pi[K-1]));
   PutRNGstate();
   priors.alpha = draw;
   if(verbose>0){
