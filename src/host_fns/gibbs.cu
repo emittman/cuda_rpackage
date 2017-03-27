@@ -1,6 +1,7 @@
 #include "../header/gibbs.h"
 #include <thrust/scan.h>
 #include <thrust/transform_scan.h>
+#include <thrust/reduce.h>
 
 struct log_1m_exp {
   __host__ __device__ double operator()(double &x){
