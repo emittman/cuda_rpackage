@@ -257,8 +257,7 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose){
   }
   if(ppsl>0){
   
-    double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), thrust::plus<double>());
-    double mean_logpi /= K;
+    double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>())/K;
     double logprob, logu;
     logprob = Rf_lgammafn(ppsl) - Rf_lgammafn(prev) - K * (Rf_lgammafn(ppsl/K) - Rf_lgammafn(prev/K));
     logprob += (priors.A-1)*(log(ppsl) - log(prev)) + (mean_logpi - priors.B) * (ppsl - prev);
