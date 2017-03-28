@@ -84,7 +84,7 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   return out_prec;
 }
 
-extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, bool logscale=F){
+extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, bool logscale=false){
 
   int n = length(a), seed = INTEGER(Rseed)[0];
   
