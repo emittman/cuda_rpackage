@@ -14,7 +14,7 @@ for(i in 1:values) {
   mu <- a/b
   mu_se <- sqrt(a/b^2/n)
 
-  gamma_c <- lapply(1:n_reps, function(rep) .Call("Rgamma_rng", sample(1e6, 1), rep(a, n), rep(b, n)))
+  gamma_c <- lapply(1:n_reps, function(rep) .Call("Rgamma_rng", sample(1e6, 1), rep(a, n), rep(b, n), FALSE))
   in_range <- sum(sapply(gamma_c, function(rep) abs((mean(rep)-mu)/mu_se) < 2))
   
   test <- c(in_range > qbinom(.005, n_reps, .95), in_range < qbinom(.995, n_reps, .95))

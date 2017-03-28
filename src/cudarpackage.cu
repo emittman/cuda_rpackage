@@ -84,10 +84,10 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   return out_prec;
 }
 
-extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
+extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, bool logscale=F){
 
   int n = length(a), seed = INTEGER(Rseed)[0];
-
+  
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, n * sizeof(curandState)));
@@ -109,7 +109,7 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b){
   setup_kernel<<<n_blocks,512>>>(seed, n, devStates);
   
   //sample from Gamma(a, b)
-  getGamma<<<n_blocks,512>>>(devStates, n, a_d_ptr, b_d_ptr, out_d_ptr, false);
+  getGamma<<<n_blocks,512>>>(devStates, n, a_d_ptr, b_d_ptr, out_d_ptr, logscale);
   
   //copy to host
   thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
