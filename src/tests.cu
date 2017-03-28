@@ -358,7 +358,11 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata,
   data_t data = Rdata_wrap(Rdata);
   chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
+
   summary2 smry(chain.K, chain.zeta, data);
+  std::cout << "Mk:\n";
+  printVec(smry.Mk, chain.K, 1);
+
   int methodPi = INTEGER(RmethodPi)[0];
   //instantiate RNGs
   curandState *devStates;
