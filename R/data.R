@@ -129,8 +129,8 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
 initChain <- function(priors, G, C=NULL){
   beta <- with(priors, matrix(rnorm(V*K, rep(mu_0, K), rep(1/sqrt(lambda2), K)), V, K))
   tau2 <- with(priors, rgamma(K, a, b))
-  pi <- with(priors, c(rbeta(K-1, 1, alpha), 1))
-  pi <- pi * c(1, cumprod(1-pi[-priors$K]))
+  pi <- rexp(K)
+  pi <- pi/sum(pi)
   zeta <- with(priors, as.integer(sample(K, G, replace=T) - 1))
   formatChain(beta, pi, tau2, zeta, C)
 }
