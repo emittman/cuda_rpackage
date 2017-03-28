@@ -543,3 +543,24 @@ extern "C" SEXP Rtest_weighted_sum(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP R
   return out;
 }
 
+extern "C" SEXP Rsample_wwr(SEXP Rseed, SEXP Rweights){
+  int N = length(Rweights), seed = INTEGER(Rseed)[0];
+  fvec_d weights(REAL(Rweights), REAL(Rweights) + N);
+  fvec_d e(N);
+  ivec_d out_d(N);
+  thrust::sequence(d.begin(), d.end());
+  //instantiate RNGs
+  curandState *devStates;
+  CUDA_CALL(cudaMalloc((void **) &devStates, N * sizeof(curandState)));
+  unsigned blocksize = 512;
+  unsigned nblocks = N/512 + 1;
+  setup_kernel<<<nblocks, blocksize>>>(seed, N, devStates);
+  getExponential<<<nblocks, blocksize>>>(devStates, N, thrust::raw_pointer_cast(weights.data()), thrust:::raw_pointer_cast(e.data()));
+  thrust::sort_by_key(e.begin(), e.end(), out_d.begin());
+  thrust::host_vector<int> out_h(N);
+  thrust::copy(out_d.begin(), out_d.end(), out_h.begin());
+  SEXP out = PROTECT(allocVector(INTSEXP, N));
+  for(int i=0; i<N; i++) INTEGER(out)[i] = out_h[i];
+  UNPROTECT(1);
+  return out;
+}

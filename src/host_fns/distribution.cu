@@ -96,6 +96,13 @@ __global__ void getUniform(curandState *states, int n_threads, double *upper_res
   }
 }
 
+__global__ void getExponential(curandState *states, int n_threads, double *weights, double *result){
+  int id = threadIdx.x + blockIdx.x * blockDim.x;
+  if(id < n_threads){
+    result[id] = -log(curand_uniform(&(states[id]))) / weights[id];
+  }
+}
+
 __global__ void getNormal(curandState *states, int n_threads, double *result)
 {
   int id = threadIdx.x + blockIdx.x * blockDim.x;

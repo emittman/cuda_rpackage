@@ -19,7 +19,8 @@ __global__ void getBeta(curandState *states, int n_threads, double *a, double *b
 
 __global__ void getUniform(curandState *states, int n_threads, double *upper_result);
                           
-__global__ void getNormal(curandState *states, int n_threads, double *result);
+__global__ void getExponential(curandState *states, int n_threads, double *weights, double *result);
 
+__global__ void getNormal(curandState *states, int n_threads, double *result);
 
 #endif
