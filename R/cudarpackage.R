@@ -136,9 +136,11 @@ Rdevice_mmultiply = function(A, B){
 #' @param alpha_fixed logical
 #' @param s_RW_alpha double
 #' @param verbose int, higher verbosity -> more printing
+#' @param warmup int, number of initial iterations to run without saving. Default is 0.
 mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin,
-                 n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0){
+                 n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0, warmup=0){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
+  if(warmup<0) stop("Warmup must be >=0")
   # if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
@@ -176,10 +178,10 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
   n_save_P <- as.integer(n_save_P)
   thin <- as.integer(thin)
   verbose <- as.integer(verbose)
-  
+  warmup <- as.integer(warmup)
   
   out <- .Call("Rrun_mcmc", data, priors, methodPi, methodAlpha, chain, n_iter, n_save_P, as.integer(idx_save),
-               thin, seed, verbose)
+               thin, seed, verbose, warmup)
   
   # Format the output
   if(alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied")
@@ -199,11 +201,16 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
   out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
   
   names(out[[2]]) <- c("probs","means","meansquares")
+  
   dim(out[[2]][['probs']]) <- c(chain$n_hyp, data$G)
   dimnames(out[[2]][['probs']]) <- list(hyp = 1:chain$n_hyp, g = 1:data$G) 
   dim(out[[2]][['means']]) <- c(data$V, data$G)
   dimnames(out[[2]][['means']]) <- list(v = 1:data$V, g = 1:data$G)
   dim(out[[2]][['meansquares']]) <- c(data$V, data$G)
   dimnames(out[[2]][['meansquares']]) <- list(v = 1:data$V, g = 1:data$G)
+  
+  names(out[[3]]) <- c("beta", "tau2", "pi")
+  dim(out[[3]][['beta']]) <- c(data$V, priors$K)
+  names(out) <- c("samples","summaries","state")
   out
 }

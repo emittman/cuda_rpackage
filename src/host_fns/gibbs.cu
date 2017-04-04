@@ -245,7 +245,7 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
   }
 }
 
-void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose){
+void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   int K = priors.K;
   double prev = priors.alpha;
   
@@ -271,6 +271,13 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose){
   } else{
     if(verbose > 1){
       std::cout << ",\t acceptance prob.: ZERO" << std::endl;
+    }
+  }
+  if(adapt){
+    if(ppsl<0 || logu > logprob){
+      chain.s_RW_alpha *= 1.1;
+    } else {
+      chain.s_RW_alpha *= .9;
     }
   }
   PutRNGstate();

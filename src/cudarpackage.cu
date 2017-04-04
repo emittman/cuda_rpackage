@@ -241,7 +241,7 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose){
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose, int warmup){
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
   data_t data      = Rdata_wrap(Rdata, verbose-1);
@@ -287,7 +287,12 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   //progress bar
   boost::progress_display show_progress(n_iter);
   
-  for(int i=0; i<n_iter; i++){
+  //adapt == true for warmup
+  bool adapt == true;
+  
+  for(int i= -(warmup); i<n_iter; i++){
+    if(i==0) adapt = false;
+    
     //Gibbs steps
     summary2 summary(chain.K, chain.zeta, data);
     if(verbose > 1){
@@ -324,7 +329,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
       draw_alpha(chain, priors, verbose-1);
     }
     if(methodAlpha == 2){
-      draw_alpha_SD(chain, priors, verbose-1);
+      draw_alpha_SD(chain, priors, verbose-1, adapt);
     }
     if(!alpha_fixed & verbose > 0) {
       std::cout << "alpha = " << priors.alpha << std::endl;
@@ -335,30 +340,33 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
       std::cout << "zeta:\n";
       printVec(chain.zeta, data.G, 1);
     }
-    
-    if(i % thin == 0){
-      if(!alpha_fixed){
-        samples.save_alpha[samples.step_g] = priors.alpha;
+    if(i>=0){
+      if(i % thin == 0){
+        if(!alpha_fixed){
+          samples.save_alpha[samples.step_g] = priors.alpha;
+        }
+        samples.write_g_samples(chain, summary);
       }
-      samples.write_g_samples(chain, summary);
+      
+      if(i % thin_P == 0 & samples.step_P < n_save_P){
+        samples.write_P_samples(chain);
+      }
+      
+      chain.update_means(i+1);
+      chain.update_probabilities(i+1);
+      ++show_progress;
     }
-    
-    if(i % thin_P == 0 & samples.step_P < n_save_P){
-      samples.write_P_samples(chain);
-    }
-    
-    chain.update_means(i+1);
-    chain.update_probabilities(i+1);
-    ++show_progress;
   }
   
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples, verbose-1);          //PROTECT(7)
   SEXP chain_out   = Cchain_wrap(chain, verbose-1);              //PROTECT(4)
-  SEXP out         = PROTECT(allocVector(VECSXP, 2)); //PROTECT(1)
+  SEXP state_out   = Cstate_wrap(chain, verbose-1);              //PROTECT(4)
+  SEXP out         = PROTECT(allocVector(VECSXP, 3)); //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
   SET_VECTOR_ELT(out, 1, chain_out);
-  UNPROTECT(12);                                      //7 + 4 + 1
+  SET_VECTOR_ELT(out, 2, state_out);
+  UNPROTECT(16);                                      //7 + 4 + 4 + 1
   
   return out;
 }

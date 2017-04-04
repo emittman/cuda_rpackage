@@ -119,3 +119,23 @@ SEXP Cchain_wrap(chain_t &chain, int verbose){
   }
   return chain_out;
 }
+
+SEXP Cstate_wrap(chain_t &chain, int verbose){
+  if(verbose>0){
+    std::cout << "Wrapping state... ";
+  }
+  SEXP state_out = PROTECT(allocVector(VECSXP, 3));
+  SEXP out_beta  = PROTECT(allocVector(REALSXP, chain.beta.size()));
+  SEXP out_tau2  = PROTECT(allocVector(REALSXP, chain.tau2.size()));
+  SEXP out_pi    = PROTECT(allocVector(REALSXP, chain.pi.size()));
+  thrust::copy(chain.beta.begin(), chain.beta.end(), REAL(out_beta));
+  thrust::copy(chain.tau2.begin(), chain.tau2.end(), REAL(out_tau2));
+  thrust::copy(chain.pi.begin(), chain.pi.end(), REAL(out_pi));
+  SET_VECTOR_ELT(state_out, 0, out_beta);
+  SET_VECTOR_ELT(state_out, 1, out_tau2);
+  SET_VECTOR_ELT(state_out, 2, out_pi);
+  if(verbose>0){
+    std::cout << "state wrapped." << std::endl;
+  }
+  return state_out;
+}
