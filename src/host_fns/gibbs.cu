@@ -248,17 +248,16 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
 void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   int K = priors.K;
   double prev = priors.alpha;
-  
+  double logprob, logu;
   GetRNGstate();
   double ppsl = Rf_rnorm(prev, chain.s_RW_alpha);
   if(verbose > 1){
     std::cout << "previous value for alpha: " << prev;
     std::cout << ",\t proposal: " << ppsl;
   }
-  if(ppsl>0){
   
+  if(ppsl>0){
     double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>())/K;
-    double logprob, logu;
     logprob = Rf_lgammafn(ppsl) - Rf_lgammafn(prev) - K * (Rf_lgammafn(ppsl/K) - Rf_lgammafn(prev/K));
     logprob += (priors.A-1)*(log(ppsl) - log(prev)) + (mean_logpi - priors.B) * (ppsl - prev);
     logu = log(Rf_runif(0, 1));
