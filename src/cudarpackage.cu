@@ -288,7 +288,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   boost::progress_display show_progress(n_iter);
   
   //adapt == true for warmup
-  bool adapt == true;
+  bool adapt = true;
   
   for(int i= -(warmup); i<n_iter; i++){
     if(i==0) adapt = false;
