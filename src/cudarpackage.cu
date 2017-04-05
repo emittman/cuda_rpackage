@@ -279,6 +279,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     std::cout <<"varying alpha" << std::endl;
   }
   
+  
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
@@ -292,7 +293,13 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   bool adapt = true;
   
   for(int i= -(warmup); i<n_iter; i++){
-    if(i==0) adapt = false;
+    if(i==0){
+      adapt = false;
+    } else {
+      if(i == -(warmup)){
+        std::cout << "Beginning warmup..." << std::endl;
+      }
+    }
     
     //Gibbs steps
     summary2 summary(chain.K, chain.zeta, data);
@@ -330,7 +337,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
       draw_alpha(chain, priors, verbose-1);
     }
     if(methodAlpha == 2){
-      draw_alpha_SD(chain, priors, verbose-1, adapt);
+      draw_alpha_SD(chain, priors, verbose, adapt);
     }
     if(!alpha_fixed & verbose > 0) {
       std::cout << "alpha = " << priors.alpha << std::endl;
