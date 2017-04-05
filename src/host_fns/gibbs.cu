@@ -280,9 +280,9 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
       }
     } else {
       chain.s_RW_alpha *= 1.1;
-      if(verbose>0{
+      if(verbose>0){
         std::cout << "Proposal accepted: new sd = " << chain.s_RW_alpha << std::endl;
-      })
+      }
     }
   }
   PutRNGstate();
