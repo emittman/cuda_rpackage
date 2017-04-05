@@ -241,7 +241,7 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
   return out;
 }
 
-extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose, int warmup){
+extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose, SEXP Rwarmup){
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
   data_t data      = Rdata_wrap(Rdata, verbose-1);
@@ -255,6 +255,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   int G_save       = length(Ridx_save), seed = INTEGER(Rseed)[0];
   int n_save_g     = n_iter/thin + (n_iter % thin == 0 ? 0 : 1);
   bool alpha_fixed = methodAlpha == 0;
+  int warmup       = INTEGER(Rwarmup)[0];
   
   /* Set thin_P to ensure at least n_save_P draws are saved*/
   int thin_P = n_iter - n_save_P; //in case n_save_P = 1, last iteration is saved
