@@ -84,10 +84,10 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   return out_prec;
 }
 
-extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, SEXP logscale){
+extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, SEXP Rlogscale){
 
   int n = length(a), seed = INTEGER(Rseed)[0];
-  bool logscale = LOGICAL(logscale)[0];
+  bool logscale = LOGICAL(Rlogscale)[0];
   
   //instantiate RNGs
   curandState *devStates;
