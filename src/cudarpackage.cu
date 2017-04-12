@@ -119,7 +119,7 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, SEXP Rlogscale){
   SEXP out = PROTECT(allocVector(REALSXP, n));
   double *outptr = REAL(out);
   for(int i=0; i<n; ++i)
-    ouptr[i] = out_h[i];
+    outptr[i] = out_h[i];
   
   //clean up
   CUDA_CALL(cudaFree(devStates));
