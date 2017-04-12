@@ -274,12 +274,12 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   }
   if(adapt){
     if(ppsl<0 || logu > logprob){
-      chain.s_RW_alpha *= .99;
+      chain.s_RW_alpha *= .95;
       if(verbose>0){
         std::cout << "Proposal rejected: new sd = " << chain.s_RW_alpha << std::endl;
       }
     } else {
-      chain.s_RW_alpha *= 1.01;
+      chain.s_RW_alpha /= .95;
       if(verbose>0){
         std::cout << "Proposal accepted: new sd = " << chain.s_RW_alpha << std::endl;
       }
