@@ -21,7 +21,7 @@ for(i in 1:values) {
 
   if(!(all(test))){
     chance <- 1 - (.99)^values
-    sprintf("Stochastic test, can fail due to random chance (%.2f chance)", round(chance,2))
+    cat(sprintf("Stochastic test, can fail due to random chance (%.2f chance)", round(chance,2)))
   }
   
   test_that("Results match expectations", {

@@ -84,9 +84,10 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   return out_prec;
 }
 
-extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, bool logscale=false){
+extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, SEXP logscale){
 
   int n = length(a), seed = INTEGER(Rseed)[0];
+  bool logscale = LOGICAL(logscale)[0];
   
   //instantiate RNGs
   curandState *devStates;
@@ -116,8 +117,9 @@ extern "C" SEXP Rgamma_rng(SEXP Rseed, SEXP a, SEXP b, bool logscale=false){
   
   //transfer memory
   SEXP out = PROTECT(allocVector(REALSXP, n));
+  double *outptr = REAL(out);
   for(int i=0; i<n; ++i)
-    REAL(out)[i] = out_h[i];
+    ouptr[i] = out_h[i];
   
   //clean up
   CUDA_CALL(cudaFree(devStates));
