@@ -19,7 +19,10 @@ struct data_t{
   int V;
   int N;
   
-  data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N);
+  //indicates whether to use precision weights
+  bool voom;
+  
+  data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N, bool _voom);
 };
 
 struct priors_t{
