@@ -1,6 +1,6 @@
 Package: cudarpackage
 Title: cudarpackage
-Description: Just getting familiar with calling CUDA from R
+Description: Fit latent mixture models to high-dimensional gene expression data
 URL: https://github.com/emittman/cuda_rpackage
 Version: 0.0
 Author: Eric Mittman
@@ -8,7 +8,8 @@ Maintainer: Eric Mittman<emittman@iastate.edu>
 Depends:
     R (>= 3.2.3)
 Suggests:
-    knitr
+    knitr,
+    limma
 VignetteBuilder: knitr
 License: GPL (>= 3)
 RoxygenNote: 5.0.1
