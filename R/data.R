@@ -8,8 +8,7 @@
 formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1)){
   adjustX = FALSE
   if(nrow(X) != ncol(counts)){
-    if(is.null(groups))  stop("groups must be specified!")
-    if(length(groups) != ncol(counts)) stop("length(groups) must equal ncol(counts)!")
+    stopifnot(!is.null(groups), length(groups) == ncol(counts))
     adjustX = TRUE
   }
   
@@ -40,15 +39,13 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @param a prior shape for error precision
 #' @param b prior scale for error precision
 
-formatPriors <- function(K, prior_mean, prior_sd, alpha, a, b, A=0, B=0){
-  if(K < 1) stop("K must be postive!")
-  if(length(prior_mean) != length(prior_sd)){
-    stop("Check dimensions of prior!")
+formatPriors <- function(K, prior_mean, prior_sd, alpha=NULL, a=1, b=1, A=1, B=1){
+  stopifnot(K >= 1, length(prior_mean)==length(prior_sd), a>0, b>0, A>0, B>0)
+  if(is.null(alpha)){
+    alpha = rgamma(1, A, B)
+  } else {
+    stopifnot(alpha>0)
   }
-  if(alpha<=0) stop("alpha must be positive!")
-  if(a<=0) stop("a must be postive!")
-  if(b<=0) stop("b must be postive!")
-                         
   list(K       = as.integer(K),
        V       = as.integer(length(prior_mean)),
        mu_0    = as.numeric(prior_mean),
@@ -82,14 +79,13 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
   
-  if(max(zeta)>K-1) stop("Invalid zeta value (use zero indexing)")
+  stopifnot(max(zeta) < K, min(zeta) < 0)
   
   if(!is.null(C)){
     if(!is.list(C)){
       C <- list(C)
     }
-    if(!all(sapply(C, is.matrix)))                stop("C must be a matrix or a list of matrices")
-    if(!all(sapply(C, function(h) ncol(h) == V))) stop("All elements of C must have same number of columns")
+    stopifnot(all(sapply(C, is.matrix)), all(sapply(C, function(h) ncol(h) == V)))
     n_hyp <- length(C)
     C_rowid <- as.integer(rep(1:n_hyp, sapply(C, nrow)) - 1)
     Cmat <- do.call(rbind, C)
@@ -101,17 +97,17 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
     P <- V
   }
   if(!is.null(probs)){
-    if(length(probs) != n_hyp*G) stop("probs doesn't match C and/or G")
+    stopifnot(length(probs) == n_hyp*G)
   } else {
     probs = rep(0, n_hyp*G)
   }
   if(!is.null(means)){
-    if(length(means) != V*G) stop("means is wrong dimension")
+    stopifnot(length(means) == V*G)
   } else{
     means = rep(0, V*G)
   }
   if(!is.null(meansquares)){
-    if(length(meansquares) != V*G) stop("means is wrong dimension!")
+    stopifnot(length(meansquares) == V*G)
   } else{
     meansquares = rep(0, V*G)
   }
