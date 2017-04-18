@@ -12,11 +12,15 @@ void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain
   realIter prec_begin = prec.begin();
   realIter prec_end   = prec.end();
 
-  //copy xtx over in a repeating loop (initialization)
-  realIter xtx_begin = data.xtx.begin();
-  realIter xtx_end = data.xtx.end();
-  gRepTimes<realIter>::iterator xtx_rep = getGRepTimesIter(xtx_begin, xtx_end, V*V, 1); 
-  thrust::copy(xtx_rep, xtx_rep + K*V*V, prec_begin);
+  if(!data.voom){
+    //copy xtx over in a repeating loop (initialization)
+    realIter xtx_begin = data.xtx.begin();
+    realIter xtx_end = data.xtx.end();
+    gRepTimes<realIter>::iterator xtx_rep = getGRepTimesIter(xtx_begin, xtx_end, V*V, 1); 
+    thrust::copy(xtx_rep, xtx_rep + K*V*V, prec_begin);
+  } else{
+    thrust::copy(data.xtx.begin(), data.xtx.end(), prec_begin);
+  }
   
   //multiply by Mk[k], tau2[k]
   intIter Mk_begin = Mk.begin();

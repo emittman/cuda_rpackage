@@ -4,6 +4,9 @@
 #' @param counts matrix of counts
 #' @param X number of vectors
 #' @param groups identifies columns with treatments
+#' @param transform_y function specifying how to transform the counts. Defaults to log(x+1). If voom==TRUE,
+#' then transform_y is ignored
+#' @param voom Logical value indicating whether to compute Voom precision weights
 
 formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE){
   adjustX = FALSE
@@ -20,9 +23,11 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
   V <- ncol(X)
   N <- nrow(X)
   if (voom & requireNamespace("limma", quietly = TRUE)) {
+    cat("Computing precision weights with voom ...")
     voom_out <- limma::voomWithQualityWeights(counts, design=X,
                                             nomalization="none",
                                             plot = FALSE)
+    cat("done.\n")
     y <- voom_out[[1]]
     W <- voom_out[[2]]
     ytWy <- drop(sapply(1:G, function(g) y[g,] %*% diag(W[g,]) %*% y[g,]))

@@ -8,7 +8,7 @@ __host__ __device__ void clust_prob::operator()(weight_tup_el Tup){
 void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
   big_matrix_multiply(chain.beta, data.xty, big_grid, data.V, chain.K, data.V, data.G);
   fvec_d bxxb(chain.K);
-  quad_form_multi(data.xtx, chain.beta, bxxb, chain.K, data.V);
+  quad_form_multi(data.xtx, chain.beta, bxxb, chain.K, data.V, data.voom);
   gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(chain.pi.begin(), chain.pi.end(), chain.K, 1);
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
   gRepEach<realIter>::iterator yty_iter = getGRepEachIter(data.yty.begin(), data.yty.end(), chain.K, 1);
