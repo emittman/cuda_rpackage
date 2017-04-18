@@ -79,7 +79,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
   
-  stopifnot(max(zeta) < K, min(zeta) < 0)
+  stopifnot(max(zeta) < K, min(zeta) >= 0)
   
   if(!is.null(C)){
     if(!is.list(C)){
