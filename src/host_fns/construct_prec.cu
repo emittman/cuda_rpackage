@@ -4,7 +4,7 @@ __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup);
   }
 
-void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &chain, ivec_d &Mk, int verbose = 0){
+void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &chain, int verbose = 0){
   int K = priors.K, V = smry.V;
   if(prec.size() < K*V*V) std::cout <<"DIMENSION MISMATCH!\n";
 

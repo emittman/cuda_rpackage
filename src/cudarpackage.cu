@@ -75,7 +75,7 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   int psize = priors.K * data.V * data.V;
   summary2 summary(priors.K, chain.zeta, data);
   fvec_d prec(psize);
-  construct_prec(prec, data, priors, chain, summary.Mk, 0);
+  construct_prec(prec, summary, priors, chain, 0);
 
   SEXP out_prec = PROTECT(allocVector(REALSXP, psize));
   for(int i=0; i<psize; ++i)
