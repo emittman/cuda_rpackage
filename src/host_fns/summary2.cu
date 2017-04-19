@@ -83,8 +83,8 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
     gRepEach<thrust::permutation_iterator<intIter,intIter> >::iterator Mk_rep = getGRepEachIter(Mk_occ, Mk_occ + K, V*V, 1);
     std::cout << "here's that weird iterator of Mk\n";
     thrust::copy(Mk_rep, Mk_rep + V*V*num_occupied, std::ostream_iterator<int>(std::cout, " "));
-    realIter xtx_sum_b = xtx_sums_begin();
-    realIter xtx_sum_e = xtx_sums_end();
+    realIter xtx_sum_b = xtx_sums.begin();
+    realIter xtx_sum_e = xtx_sums.end();
     transform(xtx_sums_b, xtx_sums_e, Mk_rep, xtx_sums_b, thrust::placeholders::_1 * thrust::placeholders::_2);
     
   } else{
