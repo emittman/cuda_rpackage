@@ -36,7 +36,7 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
     xtWx <- sapply(1:G, function(g) t(X) %*% diag(W[g,]) %*% X)
     data = list(yty = ytWy, xty = xtWy, xtx = xtWx, G = as.integer(G),
                 V = as.integer(V), N = as.integer(N), voom=voom)
-  } else if(test_voom){
+  } else {
     if(voom) print("limma is not installed, defaulting to unweighted version")
       y <- transform_y(counts)  
       xty <- apply(y, 1, function(y) t(y) %*% X)
