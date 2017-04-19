@@ -17,7 +17,12 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec.begin(), colIter);
   thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.end(), clustOcc);
-  
+  if(verbose>0){
+    std::cout << "xtx_sums:\n";
+    printVec(smry.xtx_sums, V*V, smry.num_occupied);
+    std::cout << "xtx_sums mapped to clusters:\n";
+    printVec(prec, V*V, priors.K);
+  }
   //multiply by tau2
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
   transform(prec_begin, prec_end, tau2_rep, prec_begin, thrust::multiplies<double>());
