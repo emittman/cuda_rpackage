@@ -75,7 +75,7 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rver
   chain_t chain = Rchain_wrap(Rchain, verbose);
   if(verbose>0){
     std::cout << "data.xtx:\n";
-    printVec(data.xtx, data.V*data.V, data.G);
+    printVec(data.xtx, data.V*data.V, 1 + data.voom*(data.G - 1));
   }
   
   int psize = priors.K * data.V * data.V;
