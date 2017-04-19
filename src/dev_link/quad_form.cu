@@ -49,17 +49,24 @@ void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim, bool voom)
   gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
   fvec_d tmp(n*dim, 0.0);
   gRepTimes<realIter>::iterator tmp_strided = getGRepTimesIter(tmp.begin(), tmp.end(), n, dim);
+
   if(!voom){
+    // Inner matrix is same for all g = 1:G
     gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
     qf_tup my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst>(tmp_strided, x_strided, A_repeat);
     thrust::zip_iterator<qf_tup> zip_qf = thrust::zip_iterator<qf_tup>(my_tuple);
+    quad_form f(dim);
+    thrust::transform(zip_qf, zip_qf + n, y.begin(), f);
+    
   } else{
+    // Inner matrices are different for all g = 1:G
     gRepTimes<realIter>::iterator A_strided = getGRepTimesIter(A.begin(), A.end(), n, dim*dim);
     qf_tup2 my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator>(tmp_strided, x_strided, A_strided);
     thrust::zip_iterator<qf_tup2> zip_qf = thrust::zip_iterator<qf_tup2>(my_tuple);
+    quad_form f(dim);
+    thrust::transform(zip_qf, zip_qf + n, y.begin(), f);
+    
   }
-  quad_form f(dim);
-  thrust::transform(zip_qf, zip_qf + n, y.begin(), f);
 }
 
 
