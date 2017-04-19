@@ -76,6 +76,10 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rver
   
   int psize = priors.K * data.V * data.V;
   summary2 summary(priors.K, chain.zeta, data);
+  if(verbose>0){
+    std::cout << "xtx_sums"
+    printVec(summary.xtx_sums, data.V*data.V, data.G);
+  }
   fvec_d prec(psize);
   construct_prec(prec, summary, priors, chain, verbose);
 
