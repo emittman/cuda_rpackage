@@ -14,6 +14,8 @@ struct data_t{
   fvec_d xty;
   fvec_d ytx;
   fvec_d xtx;
+  fvec_d txtx;
+  
   //dims
   int G;
   int V;
