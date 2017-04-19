@@ -73,12 +73,16 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rver
   data_t data = Rdata_wrap(Rdata, verbose);
   priors_t priors = Rpriors_wrap(Rpriors, verbose);
   chain_t chain = Rchain_wrap(Rchain, verbose);
+  if(verbose>0){
+    std::cout << "data.xtx:\n";
+    printVec(data.xtx, data.V*data.V*data.G);
+  }
   
   int psize = priors.K * data.V * data.V;
   summary2 summary(priors.K, chain.zeta, data);
   if(verbose>0){
     std::cout << "xtx_sums:\n";
-    printVec(summary.xtx_sums, data.V*data.V, data.G);
+    printVec(summary.xtx_sums, data.V*data.V, priors.K);
   }
   fvec_d prec(psize, 0.0);
   construct_prec(prec, summary, priors, chain, verbose);
