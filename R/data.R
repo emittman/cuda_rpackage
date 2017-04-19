@@ -46,7 +46,7 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
         xtx <- rep(xtx, times=G)
       }
       data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G),
-                  V = as.integer(V), N = as.integer(N), voom=voom+test_voom)
+                  V = as.integer(V), N = as.integer(N), voom=as.logical(voom+test_voom))
   } 
   return(data)
 }
