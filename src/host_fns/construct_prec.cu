@@ -13,11 +13,13 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   realIter prec_end   = prec.end();
   
   //move xtx_sums to occupied
-  SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), smry.V*smry.V);
+  SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V*V);
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
-  gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec.begin(), colIter);
+  gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec_begin, colIter);
   thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.end(), clustOcc);
   if(verbose>0){
+    std::cout << "Select occupied columns iterator:\n";
+    thrust::copy(clustOcc, clustOcc + smry.num_occupied*V*V, std::ostream_iterator<int>(std::cout, " "))
     std::cout << "xtx_sums:\n";
     printVec(smry.xtx_sums, V*V, smry.num_occupied);
     std::cout << "xtx_sums mapped to clusters:\n";
