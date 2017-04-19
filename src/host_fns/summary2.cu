@@ -85,7 +85,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
     thrust::copy(Mk_rep, Mk_rep + V*V*num_occupied, std::ostream_iterator<int>(std::cout, " "));
     realIter xtx_sum_b = xtx_sums.begin();
     realIter xtx_sum_e = xtx_sums.end();
-    transform(xtx_sums_b, xtx_sums_e, Mk_rep, xtx_sums_b, thrust::placeholders::_1 * thrust::placeholders::_2);
+    transform(xtx_sum_b, xtx_sum_e, Mk_rep, xtx_sums_b, thrust::placeholders::_1 * thrust::placeholders::_2);
     
   } else{
   
