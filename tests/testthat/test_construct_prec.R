@@ -24,8 +24,12 @@ dim(xtx_rep) <- c(V, V, K)
 
 Mk <- sapply(0:(K-1), function(k) sum(zeta == k))
 
+xtx_Mk <- xtx_rep * rep(Mk, each=V*V)
+
+data$xtx <- xtx_Mk
+
 Rprec <- sapply(1:K, function(k){
-  submat <- xtx_rep[,,k] * Mk[k] * tau2[k]
+  submat <- xtx_Mk[,,k] * tau2[k]
   if(V == 1){
     submat <- submat + lambda2
   } else{

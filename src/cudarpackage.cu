@@ -67,15 +67,17 @@ extern "C" SEXP Rchol_multiple(SEXP all, SEXP arraydim, SEXP n_array){
   return out;
 }
 
-extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
-  data_t data = Rdata_wrap(Rdata);
-  priors_t priors = Rpriors_wrap(Rpriors);
-  chain_t chain = Rchain_wrap(Rchain);
+extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rverbose){
+  int verbose = INTEGER(Rverbose)[0];
+
+  data_t data = Rdata_wrap(Rdata, verbose);
+  priors_t priors = Rpriors_wrap(Rpriors, verbose);
+  chain_t chain = Rchain_wrap(Rchain, verbose);
   
   int psize = priors.K * data.V * data.V;
   summary2 summary(priors.K, chain.zeta, data);
   fvec_d prec(psize);
-  construct_prec(prec, summary, priors, chain, 0);
+  construct_prec(prec, summary, priors, chain, verbose);
 
   SEXP out_prec = PROTECT(allocVector(REALSXP, psize));
   for(int i=0; i<psize; ++i)
