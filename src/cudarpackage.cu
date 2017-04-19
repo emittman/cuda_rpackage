@@ -80,7 +80,7 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rver
     std::cout << "xtx_sums:\n";
     printVec(summary.xtx_sums, data.V*data.V, data.G);
   }
-  fvec_d prec(psize);
+  fvec_d prec(psize, 0.0);
   construct_prec(prec, summary, priors, chain, verbose);
 
   SEXP out_prec = PROTECT(allocVector(REALSXP, psize));
