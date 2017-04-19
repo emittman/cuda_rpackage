@@ -8,7 +8,7 @@
 #' then transform_y is ignored
 #' @param voom Logical value indicating whether to compute Voom precision weights
 
-formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE){
+formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE, test_voom=FALSE){
   adjustX = FALSE
   if(nrow(X) != ncol(counts)){
     stopifnot(!is.null(groups), length(groups) == ncol(counts))
@@ -22,7 +22,8 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
   G <- nrow(counts)
   V <- ncol(X)
   N <- nrow(X)
-  if (voom & requireNamespace("limma", quietly = TRUE)) {
+  if(test_voom) cat("Testing voom by simply setting all W_g to 1.\n")
+  if (voom & requireNamespace("limma", quietly = TRUE) & !test_voom) {
     cat("Computing precision weights with voom ...")
     voom_out <- limma::voomWithQualityWeights(counts, design=X,
                                             nomalization="none",
@@ -35,14 +36,17 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
     xtWx <- sapply(1:G, function(g) t(X) %*% diag(W[g,]) %*% X)
     data = list(yty = ytWy, xty = xtWy, xtx = xtWx, G = as.integer(G),
                 V = as.integer(V), N = as.integer(N), voom=voom)
-  } else{
+  } else if(test_voom){
     if(voom) print("limma is not installed, defaulting to unweighted version")
       y <- transform_y(counts)  
       xty <- apply(y, 1, function(y) t(y) %*% X)
       yty <- drop(apply(y, 1, crossprod))
       xtx <- as.numeric(t(X) %*% X)
+      if(test_voom){
+        xtx <- rep(xtx, times=G)
+      }
       data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G),
-                  V = as.integer(V), N = as.integer(N), voom=voom)
+                  V = as.integer(V), N = as.integer(N), voom=voom+test_voom)
   } 
   return(data)
 }
