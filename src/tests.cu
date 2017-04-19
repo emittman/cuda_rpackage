@@ -31,7 +31,7 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
   double *ytyp = REAL(ytyR);
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
-  data_t data(ytyp, xtyp, xtxp, g, v, n);
+  data_t data(ytyp, xtyp, xtxp, g, v, n, false);
   printVec(data.xtx, v, v);
   printVec(data.xty, v, g);
   printVec(data.ytx, g, v);
@@ -302,7 +302,7 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   //printVec(zeta_d, data.G, 1);
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied*data.V);
   fvec_d sse_d(smry.num_occupied);
-  smry.sumSqErr(sse_d, beta, data.xtx, 0);
+  smry.sumSqErr(sse_d, beta, 0);
   fvec_h sse_h(smry.num_occupied);
   thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
   //std::cout << "sse_d:\n";
