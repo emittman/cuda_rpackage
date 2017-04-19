@@ -4,37 +4,25 @@ __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup);
   }
 
-void construct_prec(fvec_d &prec, data_t &data, priors_t &priors, chain_t &chain, ivec_d &Mk, int verbose = 0){
-  int K = priors.K, V = data.V;
+void construct_prec(fvec_d &prec, summary_t &smry, priors_t &priors, chain_t &chain, ivec_d &Mk, int verbose = 0){
+  int K = priors.K, V = smry.V;
   if(prec.size() < K*V*V) std::cout <<"DIMENSION MISMATCH!\n";
 
   //iterators for reuse
   realIter prec_begin = prec.begin();
   realIter prec_end   = prec.end();
-
-  if(!data.voom){
-    //copy xtx over in a repeating loop (initialization)
-    realIter xtx_begin = data.xtx.begin();
-    realIter xtx_end = data.xtx.end();
-    gRepTimes<realIter>::iterator xtx_rep = getGRepTimesIter(xtx_begin, xtx_end, V*V, 1); 
-    thrust::copy(xtx_rep, xtx_rep + K*V*V, prec_begin);
-  } else{
-    thrust::copy(data.xtx.begin(), data.xtx.end(), prec_begin);
-  }
   
-  //multiply by Mk[k], tau2[k]
-  intIter Mk_begin = Mk.begin();
-  intIter Mk_end   = Mk.end();
-  gRepEach<intIter>::iterator Mk_rep = getGRepEachIter(Mk_begin, Mk_end, V*V, 1);
+  //move xtx_sums to occupied
+  SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), smry.V*smry.V);
+  typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
+  gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec.begin(), colIter);
+  thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.end(), clustOcc);
+  
+  //multiply by tau2
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
-  transform(prec_begin,prec_end, Mk_rep, prec_begin, thrust::multiplies<double>());
-  if(verbose>0){
-    std::cout << "xtx_sums * Mk" << std::endl;
-    printVec(prec, V, K*V);
-  }
   transform(prec_begin, prec_end, tau2_rep, prec_begin, thrust::multiplies<double>());
   if(verbose>0){
-    std::cout << "xtx_sums * Mk * tau2" << std::endl;
+    std::cout << "xtx_sums * tau2" << std::endl;
     printVec(prec, V, K*V);
   }
   //modify diagonal; increment by prior prec

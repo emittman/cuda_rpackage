@@ -42,6 +42,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   yty_sums.reserve(num_occupied);
   xty_sums.reserve(num_occupied*V);
   ytx_sums.reserve(num_occupied*V);
+  xtx_sums.reserve(num_occupied*V*V);
   
   /*yty_sums
    *
@@ -65,6 +66,35 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   * 
     */
     transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), num_occupied, V, xty_sums.begin());
+
+  /* xtx_sums
+  *
+  */
+  voom = data.voom;
+  if(!voom){
+  
+    //copy xtx over in a repeating loop (initialization)
+    realIter xtx_begin = data.xtx.begin();
+    realIter xtx_end = data.xtx.end();
+    gRepTimes<realIter>::iterator xtx_rep = getGRepTimesIter(xtx_begin, xtx_end, V*V, 1); 
+    thrust::copy(xtx_rep, xtx_rep + num_occupied*V*V, xtx_sums.begin());
+    //multiply xtx by occupied Mk[k]
+    thrust::permutation_iterator<intIter, intIter> Mk_occ = thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
+    gRepEach<thrust::permutation_iterator<intIter,intIter> >::iterator Mk_rep = getGRepEachIter(Mk_occ, Mk_occ, V*V, 1);
+    transform(xtx_sums.begin(), xtx_sums.end(), Mk_rep, xtx_sums.begin(), thrust::multiplies<double>());
+    
+  } else{
+  
+    // temporary
+    fvec_d txtx_sums(num_occupied*V*V);
+    // "arrange" data
+    thrust::permutation_iterator<realIter, RSIntIter> sort_txtx = thrust::permutation_iterator<realIter, RSIntIter>(data.txtx.begin(), in_index);
+    //reduce
+    thrust::reduce_by_key(zeta_rep, zeta_rep + G*V*V, sort_txtx, thrust::make_discard_iterator(), txtx_sums.begin());
+    //transpose into xtx_sums
+    transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), K, V*V, xtx_sums.begin());
+    
+  }
 }
 
 typedef thrust::tuple<realIter,realIter,realIter> tup3;

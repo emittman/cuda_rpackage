@@ -45,6 +45,8 @@ struct summary2{
   fvec_d yty_sums;
   fvec_d xty_sums;
   fvec_d ytx_sums;
+  fvec_d xtx_sums;
+  bool voom;
   
   summary2(int _K, ivec_d zeta, data_t &dat);
   void print_Mk(){ printVec(Mk, 1, K);}
