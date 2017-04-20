@@ -40,8 +40,8 @@ dim(Rprec) <- c(V,V,K)
   
 data1 <- formatData(y, X, transform_y = identity, test_voom=T)
 data2 <- formatData(y, X, transform_y = identity, test_voom=F)
-Cprec1 <- Rconstruct_prec(data1, priors, chain, as.integer(1))
-Cprec2 <- Rconstruct_prec(data2, priors, chain, as.integer(1))
+Cprec1 <- Rconstruct_prec(data1, priors, chain)
+Cprec2 <- Rconstruct_prec(data2, priors, chain)
 
 test_that("Correct values",{
   expect_equal(Rprec, Cprec1)
