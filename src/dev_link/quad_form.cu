@@ -51,7 +51,7 @@ void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim, bool fixed
   fvec_d tmp(n*dim, 0.0);
   gRepTimes<realIter>::iterator tmp_strided = getGRepTimesIter(tmp.begin(), tmp.end(), n, dim);
 
-  if(!voom){
+  if(fixed_A){
     // Inner matrix is same for all g = 1:G
     gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
     qf_tup my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst>(tmp_strided, x_strided, A_repeat);
