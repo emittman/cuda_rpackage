@@ -93,6 +93,12 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
     thrust::permutation_iterator<realIter, RSIntIter> sort_txtx = thrust::permutation_iterator<realIter, RSIntIter>(data.txtx.begin(), in_index);
     //reduce
     thrust::reduce_by_key(zeta_rep, zeta_rep + G*V*V, sort_txtx, thrust::make_discard_iterator(), txtx_sums.begin());
+    if(verbose>0){
+      std::cout << "First 2 columns of txtx:\n";
+      printVec(data.txtx, G, 2);
+      std::cout << "First 2 columns of txtx_sums:\n";
+      printVec(txtx_sums, K, 2);
+    }
     //transpose into xtx_sums
     transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), K, V*V, xtx_sums.begin());
   }
