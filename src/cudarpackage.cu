@@ -81,6 +81,8 @@ extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rver
   int psize = priors.K * data.V * data.V;
   summary2 summary(priors.K, chain.zeta, data);
   if(verbose>0){
+    std::cout << "xtx_sums via begin and endptrs:\n";
+    thrust::copy(summary.xtx_sums.begin(), summary.xtx_sums.end(), std::ostream_iterator<double>(std::cout, " "));
     std::cout << "xtx_sums:\n";
     printVec(summary.xtx_sums, data.V*data.V, summary.num_occupied);
     std::cout << "xtx_sums via begin/end\n";
