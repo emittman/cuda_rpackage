@@ -193,7 +193,7 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
   fvec_d dx(xptr, xptr+N*D);
   fvec_d dy(N);
 
-  quad_form_multi(dA, dx, dy, N, D, false);
+  quad_form_multi(dA, dx, dy, N, D, true);
 
   SEXP y = PROTECT(allocVector(REALSXP, N));
   for(int i=0; i<N; ++i)
