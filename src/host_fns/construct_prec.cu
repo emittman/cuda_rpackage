@@ -20,7 +20,9 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   thrust::sequence(prec.begin(), prec.end());
   std::cout << "target of xtx_sums:\n";
   thrust::copy(clustOcc, clustOcc + V*V*smry.num_occupied, std::ostream_iterator<double>(std::cout, " "));
-  thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.end(), clustOcc);
+  realIter xtx_sums_b = smry.xtx_sums.begin();
+  realIter xtx_sums_e = smry.xtx_sums.end();
+  thrust::copy(xtx_sums_b, xtx_sums_e, clustOcc);
   if(verbose>0){
     std::cout << "Select occupied columns iterator:\n";
     thrust::copy(colIter, colIter + smry.num_occupied*V*V, std::ostream_iterator<int>(std::cout, " "));
