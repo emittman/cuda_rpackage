@@ -96,7 +96,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
       std::cout << "First 2 columns of txtx:\n";
       printVec(data.txtx, G, 2);
       std::cout << "First 2 columns of txtx_sums:\n";
-      printVec(txtx_sums, K, 2);
+      printVec(txtx_sums, num_occupied, 2);
     
     //transpose into xtx_sums
     transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), K, V*V, xtx_sums.begin());
