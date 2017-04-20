@@ -97,9 +97,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
     thrust::reduce_by_key(zeta_rep, zeta_rep + G*V*V, sort_txtx, thrust::make_discard_iterator(), txtx_sums.begin());
     //transpose into xtx_sums
     transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), K, V*V, xtx_sums.begin());
-    
   }
-  xtx_sums.shrink_to_fit();
 }
 
 typedef thrust::tuple<realIter,realIter,realIter> tup3;
