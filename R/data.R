@@ -4,8 +4,11 @@
 #' @param counts matrix of counts
 #' @param X number of vectors
 #' @param groups identifies columns with treatments
+#' @param transform_y function specifying how to transform the counts. Defaults to log(x+1). If voom==TRUE,
+#' then transform_y is ignored
+#' @param voom Logical value indicating whether to compute Voom precision weights
 
-formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1)){
+formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE, test_voom=FALSE){
   adjustX = FALSE
   if(nrow(X) != ncol(counts)){
     stopifnot(!is.null(groups), length(groups) == ncol(counts))
@@ -19,13 +22,32 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
   G <- nrow(counts)
   V <- ncol(X)
   N <- nrow(X)
-
-  y <- transform_y(counts)  
-  xty <- apply(y, 1, function(y) t(y) %*% X)
-  yty <- drop(apply(y, 1, crossprod))
-  xtx <- as.numeric(t(X) %*% X)
-  
-  data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G), V = as.integer(V), N = as.integer(N))
+  if(test_voom) cat("Testing voom by simply setting all W_g to 1.\n")
+  if (voom & requireNamespace("limma", quietly = TRUE) & !test_voom) {
+    cat("Computing precision weights with voom ...")
+    voom_out <- limma::voomWithQualityWeights(counts, design=X,
+                                            nomalization="none",
+                                            plot = FALSE)
+    cat("done.\n")
+    y <- voom_out[[1]]
+    W <- voom_out[[2]]
+    ytWy <- drop(sapply(1:G, function(g) y[g,] %*% diag(W[g,]) %*% y[g,]))
+    xtWy <- sapply(1:G, function(g) y[g,] %*% diag(W[g,]) %*% X)
+    xtWx <- sapply(1:G, function(g) t(X) %*% diag(W[g,]) %*% X)
+    data = list(yty = ytWy, xty = xtWy, xtx = xtWx, G = as.integer(G),
+                V = as.integer(V), N = as.integer(N), voom=voom)
+  } else {
+    if(voom) print("limma is not installed, defaulting to unweighted version")
+      y <- transform_y(counts)  
+      xty <- apply(y, 1, function(y) t(y) %*% X)
+      yty <- drop(apply(y, 1, crossprod))
+      xtx <- as.numeric(t(X) %*% X)
+      if(test_voom){
+        xtx <- rep(xtx, times=G)
+      }
+      data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G),
+                  V = as.integer(V), N = as.integer(N), voom=as.logical(voom+test_voom))
+  } 
   return(data)
 }
 

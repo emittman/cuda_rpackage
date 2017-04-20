@@ -67,16 +67,29 @@ extern "C" SEXP Rchol_multiple(SEXP all, SEXP arraydim, SEXP n_array){
   return out;
 }
 
-extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
-  data_t data = Rdata_wrap(Rdata);
-  priors_t priors = Rpriors_wrap(Rpriors);
-  chain_t chain = Rchain_wrap(Rchain);
+extern "C" SEXP Rconstruct_prec(SEXP Rdata, SEXP Rpriors, SEXP Rchain, SEXP Rverbose){
+  int verbose = INTEGER(Rverbose)[0];
+
+  data_t data = Rdata_wrap(Rdata, verbose);
+  priors_t priors = Rpriors_wrap(Rpriors, verbose);
+  chain_t chain = Rchain_wrap(Rchain, verbose);
+  if(verbose>0){
+    std::cout << "data.xtx:\n";
+    printVec(data.xtx, data.V*data.V, 1 + data.voom*(data.G - 1));
+  }
   
   int psize = priors.K * data.V * data.V;
   summary2 summary(priors.K, chain.zeta, data);
-  fvec_d prec(psize);
-  construct_prec(prec, data, priors, chain, summary.Mk, 0);
-
+  if(verbose>0){
+    std::cout << "xtx_sums via begin and endptrs:\n";
+    thrust::copy(summary.xtx_sums.begin(), summary.xtx_sums.begin()+data.V*data.V*summary.num_occupied, std::ostream_iterator<double>(std::cout, " "));
+    std::cout << "xtx_sums:\n";
+    printVec(summary.xtx_sums, data.V*data.V, summary.num_occupied);
+    std::cout << "xtx_sums via begin/end\n";
+  }
+  fvec_d prec(psize, 0.0);
+  construct_prec(prec, summary, priors, chain, verbose);
+  
   SEXP out_prec = PROTECT(allocVector(REALSXP, psize));
   for(int i=0; i<psize; ++i)
     REAL(out_prec)[i] = prec[i];
@@ -180,7 +193,7 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
   fvec_d dx(xptr, xptr+N*D);
   fvec_d dy(N);
 
-  quad_form_multi(dA, dx, dy, N, D);
+  quad_form_multi(dA, dx, dy, N, D, true);
 
   SEXP y = PROTECT(allocVector(REALSXP, N));
   for(int i=0; i<N; ++i)
@@ -198,7 +211,7 @@ extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEX
   double *ytxp = REAL(ytxR);
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
-  data_t data(ytyp, xtyp, xtxp, g, v, 1);
+  data_t data(ytyp, xtyp, xtxp, g, v, 1, false);
   
   ivec_d ZETA(zp, zp+g);
   summary2 smry(k, ZETA, data);

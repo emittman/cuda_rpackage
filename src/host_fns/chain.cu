@@ -5,10 +5,18 @@
 #include "../header/running_mean.h"
 #include "../header/summary2.h"
 
-data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N): 
-  yty(_yty, _yty + _G), xty(_xty, _xty + _G*_V), xtx(_xtx, _xtx + _V*_V), G(_G), V(_V), N(_N) {
-  ytx = fvec_d(G*V);
+data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N, bool _voom): 
+  yty(_yty, _yty + _G), xty(_xty, _xty + _G*_V), G(_G), V(_V), N(_N), voom(_voom) {
+  // store transpose of xty
+  ytx.resize(V*G);
   transpose(xty.begin(), xty.end(), V, G, ytx.begin());
+  
+  // store transpose of xtx
+  size_t xtx_size = (voom*(G-1)+1)*V*V;
+  xtx.resize(xtx_size);
+  thrust::copy(_xtx, _xtx + xtx_size, xtx.begin());
+  txtx.resize(xtx_size);
+  transpose(xtx.begin(), xtx.end(), V*V, G, txtx.begin());
 }
 
 samples_t::samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx, bool _alpha_fixed):

@@ -61,7 +61,7 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
 void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &smry, int verbose=0){
   fvec_d sse(smry.num_occupied);
   int K = chain.K;
-  smry.sumSqErr(sse, chain.beta, data.xtx, --verbose);
+  smry.sumSqErr(sse, chain.beta, --verbose);
   if(verbose > 1){
     std::cout << "sse:\n";
     printVec(sse, smry.num_occupied, 1);
@@ -183,7 +183,7 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   fvec_d betahat(priors.K * data.V, 0.0);
   
   //get cluster (inv)scales
-  construct_prec(prec, data, priors, chain, smry.Mk, --verbose);
+  construct_prec(prec, smry, priors, chain, --verbose);
   realIter prec_begin = prec.begin();
   realIter prec_end = prec.end();
   chol_multiple(prec_begin, prec_end, data.V, priors.K);

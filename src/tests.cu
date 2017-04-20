@@ -31,7 +31,7 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
   double *ytyp = REAL(ytyR);
   double *xtyp = REAL(xtyR);
   double *xtxp = &(xtx[0]);
-  data_t data(ytyp, xtyp, xtxp, g, v, n);
+  data_t data(ytyp, xtyp, xtxp, g, v, n, false);
   printVec(data.xtx, v, v);
   printVec(data.xty, v, g);
   printVec(data.ytx, g, v);
@@ -290,30 +290,26 @@ extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
 extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   int k = INTEGER(K)[0];
   data_t data = Rdata_wrap(Rdata);
-  //std::cout << "\n G= " << data.G << "\n";
-  //std::cout << "\n xty:\n";
-  //printVec(data.xty, data.V, data.G);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
   ivec_d zeta_d(zeta_h.begin(), zeta_h.end());
+
+    // get cluster summaries
   summary2 smry(k, zeta_d, data);
-  //std::cout << "\nxty_sums:\n";
-  //printVec(smry.xty_sums, smry.V, smry.num_occupied);
-  //std::cout << "\nzeta_d:\n";
-  //printVec(zeta_d, data.G, 1);
+  
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied*data.V);
   fvec_d sse_d(smry.num_occupied);
-  smry.sumSqErr(sse_d, beta, data.xtx, 0);
+    // calculate SSE for given value of beta
+  smry.sumSqErr(sse_d, beta, 0);
+    //transfer to host vector
   fvec_h sse_h(smry.num_occupied);
-  thrust::copy(sse_d.begin(), sse_d.end(), sse_h.begin());
-  //std::cout << "sse_d:\n";
-  //printVec(sse_d, smry.num_occupied, 1);
   thrust::device_ptr<double> sse_ptr = &sse_d[0];
   thrust::copy(sse_ptr, sse_ptr + smry.num_occupied, sse_h.begin());
-  //std::cout << "sse_h after:\n";
-  //printVec(sse_h, smry.num_occupied, 1);
+
+   //copy to SEXP
   SEXP out = PROTECT(allocVector(REALSXP, smry.num_occupied));
+  double *Rout = REAL(out);
   for(int i=0; i<smry.num_occupied; ++i){
-    REAL(out)[i] = sse_h[i];
+    Rout[i] = sse_h[i];
   }
   UNPROTECT(1);
   return out;

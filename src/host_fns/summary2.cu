@@ -39,9 +39,10 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   unoccupied.erase(endptr, unoccupied.end());
 
   //size vectors
-  yty_sums.reserve(num_occupied);
-  xty_sums.reserve(num_occupied*V);
-  ytx_sums.reserve(num_occupied*V);
+  yty_sums.resize(num_occupied);
+  xty_sums.resize(num_occupied*V);
+  ytx_sums.resize(num_occupied*V);
+  xtx_sums.resize(num_occupied*V*V);
   
   /*yty_sums
    *
@@ -65,23 +66,44 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   * 
     */
     transpose<realIter>(ytx_sums.begin(), ytx_sums.end(), num_occupied, V, xty_sums.begin());
+
+  /* xtx_sums
+  *
+  */
+  voom = data.voom; // whether or not W_g depends on g
+  size_t sz_xtx = num_occupied * V * V;
+  
+  if(!voom){
+    //copy xtx over in a repeating loop (initialization)
+    realIter xtx_begin = data.xtx.begin();
+    realIter xtx_end = data.xtx.end();
+    gRepTimes<realIter>::iterator xtx_rep = getGRepTimesIter(xtx_begin, xtx_end, V*V, 1); 
+    thrust::copy(xtx_rep, xtx_rep + sz_xtx, xtx_sums.begin());
+    //multiply xtx by occupied Mk[k]
+    thrust::permutation_iterator<intIter, intIter> Mk_occ = thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
+    gRepEach<thrust::permutation_iterator<intIter,intIter> >::iterator Mk_rep = getGRepEachIter(Mk_occ, Mk_occ + K, V*V, 1);
+    transform(xtx_sums.begin(), xtx_sums.begin() + sz_xtx, Mk_rep, xtx_sums.begin(), thrust::placeholders::_1 * thrust::placeholders::_2);
+    
+  } else{
+    // temporary
+    fvec_d txtx_sums(sz_xtx);
+    // "arrange" data
+    thrust::permutation_iterator<realIter, RSIntIter> sort_txtx = thrust::permutation_iterator<realIter, RSIntIter>(data.txtx.begin(), in_index);
+    //reduce
+    thrust::reduce_by_key(zeta_rep, zeta_rep + G*V*V, sort_txtx, thrust::make_discard_iterator(), txtx_sums.begin());
+    //transpose into xtx_sums
+    transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), num_occupied, V*V, xtx_sums.begin());
+  }
 }
 
 typedef thrust::tuple<realIter,realIter,realIter> tup3;
 typedef thrust::zip_iterator<tup3> zip3;
 
-void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, fvec_d &xtx, int verbose=0){
-  if(verbose>0){
-    std::cout << "xtx:\n";
-    printVec(xtx, V, V);
-    std::cout << "beta:\n";
-    printVec(beta, V, K);
-  }
-  quad_form_multi(xtx, beta, sse, num_occupied, V);
-  //M_k occupied
-  typedef thrust::permutation_iterator<intIter, intIter> IntPermIter;
-  IntPermIter Mk_iter =  thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
-  thrust::transform(sse.begin(), sse.end(), Mk_iter, sse.begin(), thrust::multiplies<double>());
+void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
+
+  quad_form_multi(xtx_sums, beta, sse, num_occupied, V, false);
+  
+  // Print value of $\beta_k^{\top} xtx_sums[k] \beta_k$
   if(verbose>0){
     std::cout << "\nbxxb\n";
     printVec(sse, num_occupied, 1);

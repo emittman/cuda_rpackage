@@ -10,7 +10,8 @@ data_t Rdata_wrap(SEXP Rdata, int verbose){
   int G = INTEGER(VECTOR_ELT(Rdata, 3))[0],
       V = INTEGER(VECTOR_ELT(Rdata, 4))[0],
       N = INTEGER(VECTOR_ELT(Rdata, 5))[0];
-  data_t data(yty, xty, xtx, G, V, N);
+  bool voom = LOGICAL(VECTOR_ELT(Rdata, 6))[0];
+  data_t data(yty, xty, xtx, G, V, N, voom);
   if(verbose>0){
     std::cout << "data transferred." << std::endl;
   }

@@ -2,7 +2,7 @@ context("Beta full conditional")
 G <- as.integer(300)
 V <- as.integer(1)
 N <- as.integer(20)
-n_iter <- as.integer(1000)
+n_iter <- as.integer(100)
 
 seed <- as.integer(sample(1e5, 1))
 K <- G
