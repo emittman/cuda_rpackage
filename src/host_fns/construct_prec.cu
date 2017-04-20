@@ -16,16 +16,9 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V*V);
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec_begin, colIter);
-  //TESTING
-  thrust::sequence(prec_begin, prec_end);
-  *prec_begin = 3.14159;
-  std::cout << "target memory of xtx_sums via clustOcc:\n";
-  thrust::copy(clustOcc, clustOcc + V*V*smry.num_occupied, std::ostream_iterator<double>(std::cout, " "));
-  std::cout << "IF THIS PRINTS XTX_SUMS...\n";
-  thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.begin()+smry.num_occupied*V*V, std::ostream_iterator<double>(std::cout, " "));
+
   thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.begin()+smry.num_occupied*V*V, clustOcc);
-  std::cout << "THEN THIS HAD BETTER TOO ?:\n";
-  thrust::copy(clustOcc, clustOcc + V*V*smry.num_occupied, std::ostream_iterator<double>(std::cout, " "));
+  
   if(verbose>0){
     std::cout << "\nSelect occupied columns iterator:\n";
     thrust::copy(colIter, colIter + smry.num_occupied*V*V, std::ostream_iterator<int>(std::cout, " "));
