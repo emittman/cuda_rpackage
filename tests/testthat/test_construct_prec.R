@@ -1,13 +1,12 @@
 context("Testing construct precision")
 
-K <- 5
-G <- 10
+K <- 100
+G <- 200
 V <- 2
 N <- 5
 
 X <- matrix(rnorm(N*V), N, V)
 y <- matrix(rnorm(N*G), G, N)
-data <- formatData(y, X, transform_y = identity)
 
 lambda2 <- rlnorm(V)
 mu_0 <- rnorm(V)
@@ -26,7 +25,6 @@ Mk <- sapply(0:(K-1), function(k) sum(zeta == k))
 
 xtx_Mk <- xtx_rep * rep(Mk, each=V*V)
 
-data$xtx <- xtx_Mk
 
 Rprec <- sapply(1:K, function(k){
   submat <- xtx_Mk[,,k] * tau2[k]
@@ -40,9 +38,12 @@ Rprec <- sapply(1:K, function(k){
   
 dim(Rprec) <- c(V,V,K)
   
-  
-Cprec <- Rconstruct_prec(data, priors, chain, as.integer(1))
-  
+data1 <- formatData(y, X, transform_y = identity, test_voom=T)
+data2 <- formatData(y, X, transform_y = identity, test_voom=F)
+Cprec1 <- Rconstruct_prec(data1, priors, chain, as.integer(1))
+Cprec2 <- Rconstruct_prec(data2, priors, chain, as.integer(1))
+
 test_that("Correct values",{
-  expect_equal(Rprec, Cprec)
+  expect_equal(Rprec, Cprec1)
+  expect_equal(Rprec, Cprec2)
 })
