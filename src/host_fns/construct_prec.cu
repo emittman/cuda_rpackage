@@ -24,10 +24,10 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   realIter xtx_sums_b = smry.xtx_sums.begin();
   realIter xtx_sums_e = smry.xtx_sums.end();
   std::cout << "IF THIS PRINTS XTX_SUMS...\n";
-  thrust::copy(xtx_sums_b, xtx_sums_e, std::ostream<double>(std::cout, " "));
+  thrust::copy(xtx_sums_b, xtx_sums_e, std::ostream_iterator<double>(std::cout, " "));
   thrust::copy(xtx_sums_b, xtx_sums_e, clustOcc);
   std::cout << "THEN THIS HAD BETTER TOO ?:\n";
-  thrust::copy(clustOcc, clustOcc + V*V*smry.num_occupied, std::ostream<double>(std::cout, " ")):
+  thrust::copy(clustOcc, clustOcc + V*V*smry.num_occupied, std::ostream_iterator<double>(std::cout, " ")):
   if(verbose>0){
     std::cout << "\nSelect occupied columns iterator:\n";
     thrust::copy(colIter, colIter + smry.num_occupied*V*V, std::ostream_iterator<int>(std::cout, " "));
