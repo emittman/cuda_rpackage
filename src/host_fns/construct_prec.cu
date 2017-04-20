@@ -17,18 +17,18 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec_begin, colIter);
   //TESTING
-  thrust::sequence(prec.begin(), prec.end());
+  thrust::sequence(prec_begin, prec_end);
   std::cout << "target of xtx_sums:\n";
   thrust::copy(clustOcc, clustOcc + V*V*smry.num_occupied, std::ostream_iterator<double>(std::cout, " "));
   realIter xtx_sums_b = smry.xtx_sums.begin();
   realIter xtx_sums_e = smry.xtx_sums.end();
   thrust::copy(xtx_sums_b, xtx_sums_e, clustOcc);
   if(verbose>0){
-    std::cout << "Select occupied columns iterator:\n";
+    std::cout << "\nSelect occupied columns iterator:\n";
     thrust::copy(colIter, colIter + smry.num_occupied*V*V, std::ostream_iterator<int>(std::cout, " "));
-    std::cout << "xtx_sums:\n";
-    printVec(smry.xtx_sums, V*V, smry.num_occupied);
-    std::cout << "xtx_sums mapped to clusters:\n";
+    std::cout << "\nxtx_sums:\n";
+    thrust::copy(xtx_sums_b, xtx_sums_e, std::ostream_iterator<double>(std::cout, " "));
+    std::cout << "\nxtx_sums mapped to clusters:\n";
     printVec(prec, V*V, priors.K);
   }
   //multiply by tau2
