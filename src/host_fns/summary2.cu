@@ -82,8 +82,6 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
     //multiply xtx by occupied Mk[k]
     thrust::permutation_iterator<intIter, intIter> Mk_occ = thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
     gRepEach<thrust::permutation_iterator<intIter,intIter> >::iterator Mk_rep = getGRepEachIter(Mk_occ, Mk_occ + K, V*V, 1);
-    std::cout << "here's that weird iterator of Mk\n";
-    thrust::copy(Mk_rep, Mk_rep + sz_xtx, std::ostream_iterator<int>(std::cout, " "));
     transform(xtx_sums.begin(), xtx_sums.begin() + sz_xtx, Mk_rep, xtx_sums.begin(), thrust::placeholders::_1 * thrust::placeholders::_2);
     
   } else{
@@ -93,11 +91,6 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
     thrust::permutation_iterator<realIter, RSIntIter> sort_txtx = thrust::permutation_iterator<realIter, RSIntIter>(data.txtx.begin(), in_index);
     //reduce
     thrust::reduce_by_key(zeta_rep, zeta_rep + G*V*V, sort_txtx, thrust::make_discard_iterator(), txtx_sums.begin());
-      std::cout << "First 2 columns of txtx:\n";
-      printVec(data.txtx, G, 2);
-      std::cout << "First 2 columns of txtx_sums:\n";
-      printVec(txtx_sums, num_occupied, 2);
-    
     //transpose into xtx_sums
     transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), num_occupied, V*V, xtx_sums.begin());
   }
@@ -108,7 +101,7 @@ typedef thrust::zip_iterator<tup3> zip3;
 
 void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
 
-  quad_form_multi(xtx_sums, beta, sse, num_occupied, V, voom);
+  quad_form_multi(xtx_sums, beta, sse, num_occupied, V, false);
   
   // Print value of $\beta_k^{\top} xtx_sums[k] \beta_k$
   if(verbose>0){

@@ -39,11 +39,12 @@ struct quad_form: thrust::unary_function<ftrip, double>{
 
 
 //Compute t(x_i) %*% A %*% x_i where i=0, ..., n-1
-void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim, bool voom){
-  if(voom){
-    if(A.size() != n*dim*dim) std::cout << "A.size() is not n*dim*dim (using precision weights)!";
+void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim, bool fixed_A){
+  if(!fixed_A){
+    if(A.size() != n*dim*dim)
+    std::cout << "in quad_form_multi:\t fixed_A is false, but A.size() != n*dim*dim\n";
   } else if(A.size() != dim*dim){
-    std::cout << "A.size() is not dim*dim!\n";
+    std::cout << in quad_form_multi:\t fixed_A is true, but A.size() != dim*dim\n";
   }
   if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
   gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
