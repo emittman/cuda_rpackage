@@ -70,25 +70,25 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   /* xtx_sums
   *
   */
-  voom = data.voom;
-  if(!voom){
+  voom = data.voom; // whether or not W_g depends on g
+  size_t sz_xtx = num_occupied * V * V;
   
+  if(!voom){
     //copy xtx over in a repeating loop (initialization)
     realIter xtx_begin = data.xtx.begin();
     realIter xtx_end = data.xtx.end();
     gRepTimes<realIter>::iterator xtx_rep = getGRepTimesIter(xtx_begin, xtx_end, V*V, 1); 
-    thrust::copy(xtx_rep, xtx_rep + num_occupied*V*V, xtx_sums.begin());
+    thrust::copy(xtx_rep, xtx_rep + sz_xtx, xtx_sums.begin());
     //multiply xtx by occupied Mk[k]
     thrust::permutation_iterator<intIter, intIter> Mk_occ = thrust::permutation_iterator<intIter, intIter>(Mk.begin(), occupied.begin());
     gRepEach<thrust::permutation_iterator<intIter,intIter> >::iterator Mk_rep = getGRepEachIter(Mk_occ, Mk_occ + K, V*V, 1);
     std::cout << "here's that weird iterator of Mk\n";
-    thrust::copy(Mk_rep, Mk_rep + V*V*num_occupied, std::ostream_iterator<int>(std::cout, " "));
-    transform(xtx_sum.begin(), xtx_sum.begin()+num_occupied*V*V, Mk_rep, xtx_sum.begin(), thrust::placeholders::_1 * thrust::placeholders::_2);
+    thrust::copy(Mk_rep, Mk_rep + sz_xtx, std::ostream_iterator<int>(std::cout, " "));
+    transform(xtx_sums.begin(), xtx_sums.begin() + sz_xtx, Mk_rep, xtx_sums.begin(), thrust::placeholders::_1 * thrust::placeholders::_2);
     
   } else{
-  
     // temporary
-    fvec_d txtx_sums(num_occupied*V*V);
+    fvec_d txtx_sums(sz_xtx);
     // "arrange" data
     thrust::permutation_iterator<realIter, RSIntIter> sort_txtx = thrust::permutation_iterator<realIter, RSIntIter>(data.txtx.begin(), in_index);
     //reduce
