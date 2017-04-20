@@ -99,7 +99,7 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
       printVec(txtx_sums, num_occupied, 2);
     
     //transpose into xtx_sums
-    transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), K, V*V, xtx_sums.begin());
+    transpose<realIter>(txtx_sums.begin(), txtx_sums.end(), num_occupied, V*V, xtx_sums.begin());
   }
 }
 
