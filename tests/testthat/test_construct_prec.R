@@ -17,8 +17,10 @@ zeta <- sample(0:(K-1), G, replace=T)
 beta <- rep(0, V*K)
 pi <- rep(1/K, K)
 chain <- formatChain(beta, pi, tau2, zeta)
+data1 <- formatData(y, X, transform_y = identity, test_voom=T)
+data2 <- formatData(y, X, transform_y = identity, test_voom=F)
 
-xtx_rep <- rep(data$xtx, times=K)
+xtx_rep <- rep(data1$xtx, times=K)
 dim(xtx_rep) <- c(V, V, K)
 
 Mk <- sapply(0:(K-1), function(k) sum(zeta == k))
@@ -38,8 +40,6 @@ Rprec <- sapply(1:K, function(k){
   
 dim(Rprec) <- c(V,V,K)
   
-data1 <- formatData(y, X, transform_y = identity, test_voom=T)
-data2 <- formatData(y, X, transform_y = identity, test_voom=F)
 Cprec1 <- Rconstruct_prec(data1, priors, chain)
 Cprec2 <- Rconstruct_prec(data2, priors, chain)
 
