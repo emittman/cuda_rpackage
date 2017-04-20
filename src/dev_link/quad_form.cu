@@ -44,7 +44,7 @@ void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim, bool fixed
     if(A.size() != n*dim*dim)
     std::cout << "in quad_form_multi:\t fixed_A is false, but A.size() != n*dim*dim\n";
   } else if(A.size() != dim*dim){
-    std::cout << in quad_form_multi:\t fixed_A is true, but A.size() != dim*dim\n";
+    std::cout << "in quad_form_multi:\t fixed_A is true, but A.size() != dim*dim\n";
   }
   if(y.size() != n) std::cout << "y.size() doesn't match inputs!";
   gRepTimes<realIter>::iterator x_strided = getGRepTimesIter(x.begin(), x.end(), n, dim);
