@@ -1,5 +1,5 @@
 #include "../header/construct_prec.h"
-#include <thrust/sequennce.h>
+#include <thrust/sequence.h>
 __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup);
   }
