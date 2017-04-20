@@ -1,5 +1,5 @@
 #include "../header/construct_prec.h"
-
+#include <thrust/sequennce.h>
 __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<0>(Tup) + thrust::get<1>(Tup);
   }
@@ -16,6 +16,10 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V*V);
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec_begin, colIter);
+  //TESTING
+  thrust::sequence(prec.begin(), prec.end());
+  std::cout << "target of xtx_sums:\n";
+  thrust::copy(clustOcc, clustOcc + V*V*num_occupied, std::ostream_iterator<double>(std::cout, " "));
   thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.end(), clustOcc);
   if(verbose>0){
     std::cout << "Select occupied columns iterator:\n";
