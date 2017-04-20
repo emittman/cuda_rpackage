@@ -39,10 +39,10 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   unoccupied.erase(endptr, unoccupied.end());
 
   //size vectors
-  yty_sums.reserve(num_occupied);
-  xty_sums.reserve(num_occupied*V);
-  ytx_sums.reserve(num_occupied*V);
-  xtx_sums.reserve(num_occupied*V*V);
+  yty_sums.resize(num_occupied);
+  xty_sums.resize(num_occupied*V);
+  ytx_sums.resize(num_occupied*V);
+  xtx_sums.resize(num_occupied*V*V);
   
   /*yty_sums
    *
