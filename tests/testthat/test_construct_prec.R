@@ -20,7 +20,7 @@ chain <- formatChain(beta, pi, tau2, zeta)
 data1 <- formatData(y, X, transform_y = identity, test_voom=T)
 data2 <- formatData(y, X, transform_y = identity, test_voom=F)
 
-xtx_rep <- rep(data1$xtx, times=K)
+xtx_rep <- rep(data2$xtx, times=K)
 dim(xtx_rep) <- c(V, V, K)
 
 Mk <- sapply(0:(K-1), function(k) sum(zeta == k))
