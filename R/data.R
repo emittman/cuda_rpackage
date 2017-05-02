@@ -7,6 +7,7 @@
 #' @param transform_y function specifying how to transform the counts. Defaults to log(x+1). If voom==TRUE,
 #' then transform_y is ignored
 #' @param voom Logical value indicating whether to compute Voom precision weights
+#' @param test_voom logical Only used for testing purposes. If true, forced separate xtx matrices in memory
 
 formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE, test_voom=FALSE){
   adjustX = FALSE
@@ -35,7 +36,8 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
     xtWy <- sapply(1:G, function(g) y[g,] %*% diag(W[g,]) %*% X)
     xtWx <- sapply(1:G, function(g) t(X) %*% diag(W[g,]) %*% X)
     data = list(yty = ytWy, xty = xtWy, xtx = xtWx, G = as.integer(G),
-                V = as.integer(V), N = as.integer(N), voom=voom)
+                V = as.integer(V), N = as.integer(N), voom=voom,
+                transformed_counts = y, X = X)
   } else {
     if(voom) print("limma is not installed, defaulting to unweighted version")
       y <- transform_y(counts)  
@@ -46,7 +48,8 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
         xtx <- rep(xtx, times=G)
       }
       data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G),
-                  V = as.integer(V), N = as.integer(N), voom=as.logical(voom+test_voom))
+                  V = as.integer(V), N = as.integer(N), voom=as.logical(voom+test_voom),
+                  transformed_counts = y, X = X)
   } 
   return(data)
 }
@@ -61,22 +64,30 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @param a prior shape for error precision
 #' @param b prior scale for error precision
 
-formatPriors <- function(K, prior_mean, prior_sd, alpha=NULL, a=1, b=1, A=1, B=1){
+formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, alpha=NULL, a=1, b=1, A=1, B=1, estimates=NULL){
+  # Checking input
   stopifnot(K >= 1, length(prior_mean)==length(prior_sd), a>0, b>0, A>0, B>0)
-  if(is.null(alpha)){
-    alpha = rgamma(1, A, B)
-  } else {
-    stopifnot(alpha>0)
+  if(is.null(prior_mean) & is.null(prior_sd) & is.null(estimates)) stop("Need to specify more parameters")
+  
+  if(!is.null(estimates)){
+    print("Estimating priors...")
+    estPriors <- informPriors(estimates)
+    print("done.")
   }
-  list(K       = as.integer(K),
-       V       = as.integer(length(prior_mean)),
-       mu_0    = as.numeric(prior_mean),
-       lambda2 = 1/as.numeric(prior_sd)^2,
-       a       = as.numeric(a),
-       b       = as.numeric(b),
-       alpha   = as.numeric(alpha),
-       A       = as.numeric(A),
-       B       = as.numeric(B))
+  if(is.null(alpha)){
+    alpha <- rgamma(1, A, B)
+  }
+  with(estPriors, list(
+    K       = as.integer(K),
+    V       = as.integer(length(prior_mean)),
+    mu_0    = as.numeric(prior_mean),
+    lambda2 = 1/as.numeric(prior_sd)^2,
+    a       = as.numeric(a),
+    b       = as.numeric(b),
+    alpha   = as.numeric(alpha),
+    A       = as.numeric(A),
+    B       = as.numeric(B))
+  )
 }
 
 #' @title Function \code{formatChain}
@@ -152,3 +163,35 @@ initChain <- function(priors, G, C=NULL){
   zeta <- with(priors, as.integer(sample(K, G, replace=T) - 1))
   formatChain(beta, pi, tau2, zeta, C)
 }
+
+#' @title Function \code{indEstimates}
+#' @description compute independent estimates of gene specific parameters. Used for 
+#' computing informative priors and initializing chain
+#' @param data list, from formatData
+
+indEstimates <- function(data){
+  betas <- with(data, sapply(1:G, function(g){
+    qr.solve(qr(matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V)), xty[,g])
+  }))
+  sigma2s <- with(data, sapply(1:G, function(g){
+    (yty[g] - 2*t(xty[,g]) %*% betas[,g] + 
+       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V)
+  }))
+  return(list(beta=betas, sigma2=sigma2s))
+}
+
+#' @title Function \code{informPriors}
+#' @description select priors to put mass over the range of the data
+#' @param estimates list, from indEstimates
+#' @return a named list to be passed to formatPriors
+#' 
+informPriors <- function(estimates){
+  V <- dim(estimates[[1]])[1]
+  pr_tau2_var <- var(1/estimates[[2]] + .01)
+  pr_tau2_mean <- mean(1/estimates[[2]] + .01)
+  list(prior_mean = sapply(1:V, function(v) median(estimates[[1]][v,])),
+       prior_sd = sapply(1:V, function(v) 2 * sd(estimates[[1]][v,])),
+       a = pr_tau2_mean^2 / pr_tau2_var,
+       b = pr_tau2_mean   / pr_tau2_var)
+}
+
