@@ -155,11 +155,16 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
 #' @param G integer
 #' @param C list
 
-initChain <- function(priors, G, C=NULL){
-  beta <- with(priors, matrix(rnorm(V*K, rep(mu_0, K), rep(1/sqrt(lambda2), K)), V, K))
-  tau2 <- with(priors, rgamma(K, a, b))
-  pi <- with(priors, rexp(K))
-  pi <- pi/sum(pi)
+initChain <- function(priors, G, C=NULL, estimates=NULL){
+  if(length(estimates)){
+    init_id <- sort(sample(G, priors$K))
+    beta <- estimates[[1]][,init_id]
+    tau2 <- 1/estimates[[2]][init_id]
+  } else{
+    beta <- with(priors, matrix(rnorm(V*K, rep(mu_0, K), rep(1/sqrt(lambda2), K)), V, K))
+    tau2 <- with(priors, rgamma(K, a, b))    
+  }
+  pi <- with(priors, rep(1/K, K))
   zeta <- with(priors, as.integer(sample(K, G, replace=T) - 1))
   formatChain(beta, pi, tau2, zeta, C)
 }

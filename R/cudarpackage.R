@@ -138,13 +138,13 @@ Rdevice_mmultiply = function(A, B){
 #' @param verbose int, higher verbosity -> more printing
 #' @param warmup int, number of initial iterations to run without saving. Default is 0.
 mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin,
-                 n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0, warmup=0){
+                 n_save_P, C = NULL, alpha_fixed = T, s_RW_alpha=NULL, verbose=0, warmup=0, estimates=NULL){
   if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
   if(warmup<0) stop("Warmup must be >=0")
   # if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
-    chain <- initChain(priors, data$G, C)
+    chain <- initChain(priors, data$G, C, estimates)
     if(!alpha_fixed & methodPi == "symmDirichlet"){
       if(is.null(s_RW_alpha)){
         message("No value provided for s_RW_alpha, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 0.5")
