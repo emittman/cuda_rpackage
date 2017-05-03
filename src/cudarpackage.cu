@@ -352,10 +352,10 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
       draw_alpha(chain, priors, verbose-1);
     }
     if(methodAlpha == 2){
-      draw_alpha_SD(chain, priors, verbose, adapt, i+warmup); //number of warmup iterations used for tuning slice_width
+      draw_alpha_SD_slice(chain, priors, verbose, adapt, i+warmup); //number of warmup iterations used for tuning slice_width
     }
     if(!alpha_fixed & verbose > 0) {
-      std::cout << "alpha = " << priors.alpha << std::endl;
+      std::cout << "alpha = " << chain.alpha << std::endl;
     }
     
     draw_zeta(devStates, data, chain, priors, verbose-1);
