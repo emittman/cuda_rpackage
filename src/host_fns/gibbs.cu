@@ -290,7 +290,7 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
 }
 */
 
-target_alpha::operator(){
+target_alpha::operator()(double arg){
   double earg = exp(arg);
   return lgamma(earg) - K*lgamma(earg/K) + A*arg + (mean_logpi - B)*earg;
 }
