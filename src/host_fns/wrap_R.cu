@@ -51,7 +51,7 @@ chain_t Rchain_wrap(SEXP Rchain, int verbose){
          *pi   = REAL(VECTOR_ELT(Rchain, 7)),
          *tau2 = REAL(VECTOR_ELT(Rchain, 8));
   int    *zeta = INTEGER(VECTOR_ELT(Rchain, 9));
-  double alpha = REAL(VECTOR_ELT(Rchain, 10));
+  double alpha = REAL(VECTOR_ELT(Rchain, 10))[0];
   double           *C = REAL(VECTOR_ELT(Rchain, 11)),
                *probs = REAL(VECTOR_ELT(Rchain, 12)),
                *means = REAL(VECTOR_ELT(Rchain, 13)),
