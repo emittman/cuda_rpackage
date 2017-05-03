@@ -290,20 +290,16 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
 }
 */
 
-target_alpha::operator()(double arg){
+double target_alpha::operator()(double arg){
   double earg = exp(arg);
   return lgamma(earg) - K*lgamma(earg/K) + A*arg + (mean_logpi - B)*earg;
 }
 
     
 void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool adapt, int warmup_iter){
-  // handy constants
-  int K = priors.K;
-  int V = priors.V;
-  
-  // get log-likelihood function
-  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>())/K;
-  target_alpha f(priors.A, priors.B, K, mean_logpi);
+// get log-likelihood function
+  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>())/priors.K;
+  target_alpha f(priors.A, priors.B, priors.K, mean_logpi);
 
   double y, U, L, R, V, x0 = log(chain.alpha), w0 = chain.slice_width;
   int J, K;
