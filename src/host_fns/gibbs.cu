@@ -245,6 +245,7 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
   }
 }
 
+/*
 void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   int K = priors.K;
   double prev = chain.alpha;
@@ -287,6 +288,7 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   }
   PutRNGstate();
 }
+*/
 
 target_alpha::operator(){
   double earg = exp(arg);
