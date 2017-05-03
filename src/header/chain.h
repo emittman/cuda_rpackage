@@ -77,7 +77,7 @@ struct chain_t{
           int _max_width):
     G(_G), V(_V), K(_K), n_hyp(_n_hyp), C_rowid(_C_rowid, _C_rowid + _P), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
     tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), alpha(_alpha), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
-    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), slice_width(_slice_width), max_width(_max_width){}
+    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), slice_width(_slice_width), max_steps(_max_steps){}
   
   void update_means(int step);
   void update_probabilities(int step);
