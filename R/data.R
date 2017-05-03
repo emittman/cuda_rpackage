@@ -64,7 +64,7 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @param a prior shape for error precision
 #' @param b prior scale for error precision
 
-formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, alpha=NULL, a=1, b=1, A=1, B=1, estimates=NULL){
+formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, a=1, b=1, A=1, B=1, estimates=NULL){
   # Checking input
   stopifnot(K >= 1, length(prior_mean)==length(prior_sd), a>0, b>0, A>0, B>0)
   if(is.null(prior_mean) & is.null(prior_sd) & is.null(estimates)) stop("Need to specify more parameters")
@@ -74,9 +74,7 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, alpha=NULL, a=1, b=1
     estPriors <- informPriors(estimates)
     print("done.")
   }
-  if(is.null(alpha)){
-    alpha <- rgamma(1, A, B)
-  }
+
   with(estPriors, list(
     K       = as.integer(K),
     V       = as.integer(length(prior_mean)),
@@ -84,7 +82,6 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, alpha=NULL, a=1, b=1
     lambda2 = 1/as.numeric(prior_sd)^2,
     a       = as.numeric(a),
     b       = as.numeric(b),
-    alpha   = as.numeric(alpha),
     A       = as.numeric(A),
     B       = as.numeric(B))
   )
@@ -97,6 +94,7 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, alpha=NULL, a=1, b=1
 #' @param pi numeric vector, length K, taking values in $(0, 1)$
 #' @param tau2 numeric vector, length K, taking positive values
 #' @param zeta integer vector, length G, with values in the range $\{0,...,K-1\}$
+#' @param alpha numeric, positive
 #' @param C list of matrices with V columns. Each matrix represents a hypothesis which is
 #'   true, for a given cluster, iff all C_i * beta_g > 0 == TRUE
 #' @param probs numeric vector, length G*length(C), representing probabilities of the hypotheses
@@ -107,12 +105,12 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, alpha=NULL, a=1, b=1
 #' @param s_RW_alpha numeric, standard deviation for random walk Metropolis when
 #'   \code{!alpha_fixed} and weightsMethod = "symmDirichlet". Defaults to 0.
 
-formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, meansquares=NULL, s_RW_alpha=0){
+formatChain <- function(beta, pi, tau2, zeta, alpha, C=NULL, probs=NULL, means=NULL, meansquares=NULL, s_RW_alpha=0){
   G = as.integer(length(zeta))
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
   
-  stopifnot(max(zeta) < K, min(zeta) >= 0)
+  stopifnot(max(zeta) < K, min(zeta) >= 0, alpha > 0, min(tau2) > 0, min(pi) > 0, max(pi) < 1)
   
   if(!is.null(C)){
     if(!is.list(C)){
@@ -145,7 +143,7 @@ formatChain <- function(beta, pi, tau2, zeta, C=NULL, probs=NULL, means=NULL, me
     meansquares = rep(0, V*G)
   }
   list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid = C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(log(pi)), tau2 = as.numeric(tau2),
-       zeta = as.integer(zeta), C = t(Cmat), probs = probs, means = means, meansquares = meansquares, s_RW_alpha=s_RW_alpha)
+       zeta = as.integer(zeta), alpha = as.numeric(alpha), C = t(Cmat), probs = probs, means = means, meansquares = meansquares, s_RW_alpha=s_RW_alpha)
 }
 
 #'@title Function \code{initChain}
@@ -166,6 +164,7 @@ initChain <- function(priors, G, C=NULL, estimates=NULL){
   }
   pi <- with(priors, rep(1/K, K))
   zeta <- with(priors, as.integer(sample(K, G, replace=T) - 1))
+  alpha <- with(priors, rgamma(1, A, B))
   formatChain(beta, pi, tau2, zeta, C)
 }
 

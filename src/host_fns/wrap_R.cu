@@ -28,10 +28,9 @@ priors_t Rpriors_wrap(SEXP Rpriors, int verbose){
          *lambda = REAL(VECTOR_ELT(Rpriors, 3)),
          a = REAL(VECTOR_ELT(Rpriors, 4))[0],
          b = REAL(VECTOR_ELT(Rpriors, 5))[0],
-         alpha = REAL(VECTOR_ELT(Rpriors, 6))[0],
-         A = REAL(VECTOR_ELT(Rpriors, 7))[0],
-         B = REAL(VECTOR_ELT(Rpriors, 8))[0];
-  priors_t priors(K, V, mu0, lambda, a, b, alpha, A, B);
+         A = REAL(VECTOR_ELT(Rpriors, 6))[0],
+         B = REAL(VECTOR_ELT(Rpriors, 7))[0];
+  priors_t priors(K, V, mu0, lambda, a, b, A, B);
   if(verbose>0){
     std::cout << "priors transferred." << std::endl;
   }
@@ -52,12 +51,13 @@ chain_t Rchain_wrap(SEXP Rchain, int verbose){
          *pi   = REAL(VECTOR_ELT(Rchain, 7)),
          *tau2 = REAL(VECTOR_ELT(Rchain, 8));
   int    *zeta = INTEGER(VECTOR_ELT(Rchain, 9));
-  double           *C = REAL(VECTOR_ELT(Rchain, 10)),
-               *probs = REAL(VECTOR_ELT(Rchain, 11)),
-               *means = REAL(VECTOR_ELT(Rchain, 12)),
-         *meansquares = REAL(VECTOR_ELT(Rchain, 13)),
-           s_RW_alpha = REAL(VECTOR_ELT(Rchain, 14))[0];
-  chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, C, probs, means, meansquares, s_RW_alpha);
+  double alpha = REAL(VECTOR_ELT(Rchain, 10));
+  double           *C = REAL(VECTOR_ELT(Rchain, 11)),
+               *probs = REAL(VECTOR_ELT(Rchain, 12)),
+               *means = REAL(VECTOR_ELT(Rchain, 13)),
+         *meansquares = REAL(VECTOR_ELT(Rchain, 14)),
+           s_RW_alpha = REAL(VECTOR_ELT(Rchain, 15))[0];
+  chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, alpha, C, probs, means, meansquares, s_RW_alpha);
   if(verbose>0){
     std::cout << "chain transferred." << std::endl;
   }
@@ -125,16 +125,19 @@ SEXP Cstate_wrap(chain_t &chain, int verbose){
   if(verbose>0){
     std::cout << "Wrapping state... ";
   }
-  SEXP state_out = PROTECT(allocVector(VECSXP, 3));
+  SEXP state_out = PROTECT(allocVector(VECSXP, 4));
   SEXP out_beta  = PROTECT(allocVector(REALSXP, chain.beta.size()));
   SEXP out_tau2  = PROTECT(allocVector(REALSXP, chain.tau2.size()));
   SEXP out_pi    = PROTECT(allocVector(REALSXP, chain.pi.size()));
+  SEXP out_alpha = PROTECT(allocVector(REALSXP, 1));
   thrust::copy(chain.beta.begin(), chain.beta.end(), REAL(out_beta));
   thrust::copy(chain.tau2.begin(), chain.tau2.end(), REAL(out_tau2));
   thrust::copy(chain.pi.begin(), chain.pi.end(), REAL(out_pi));
+  REAL(out_alpha)[0] = chain.alpha;
   SET_VECTOR_ELT(state_out, 0, out_beta);
   SET_VECTOR_ELT(state_out, 1, out_tau2);
   SET_VECTOR_ELT(state_out, 2, out_pi);
+  SET_VECTOR_ELT(state_out, 3, out_alpha);
   if(verbose>0){
     std::cout << "state wrapped." << std::endl;
   }

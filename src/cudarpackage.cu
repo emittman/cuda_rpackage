@@ -366,7 +366,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     if(i>=0){
       if(i % thin == 0){
         if(!alpha_fixed){
-          samples.save_alpha[samples.step_g] = priors.alpha;
+          samples.save_alpha[samples.step_g] = chain.alpha;
         }
         samples.write_g_samples(chain, summary);
       }
@@ -384,12 +384,12 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples, verbose-1);          //PROTECT(7)
   SEXP chain_out   = Cchain_wrap(chain, verbose-1);              //PROTECT(4)
-  SEXP state_out   = Cstate_wrap(chain, verbose-1);              //PROTECT(4)
+  SEXP state_out   = Cstate_wrap(chain, verbose-1);              //PROTECT(5)
   SEXP out         = PROTECT(allocVector(VECSXP, 3)); //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
   SET_VECTOR_ELT(out, 1, chain_out);
   SET_VECTOR_ELT(out, 2, state_out);
-  UNPROTECT(16);                                      //7 + 4 + 4 + 1
+  UNPROTECT(17);                                      //7 + 4 + 5 + 1
   
   return out;
 }

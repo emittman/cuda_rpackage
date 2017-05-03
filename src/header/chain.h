@@ -35,12 +35,11 @@ struct priors_t{
   fvec_d lambda2;
   double a;
   double b;
-  double alpha;
   double A;
   double B;
   
-  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _alpha, double _A, double _B) :
-    K(_K), V(_V), a(_a), b(_b), alpha(_alpha), A(_A), B(_B){
+  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _A, double _B) :
+    K(_K), V(_V), a(_a), b(_b), A(_A), B(_B){
     mu0 = fvec_d(_mu0, _mu0 + V);
     lambda2 = fvec_d(_lambda2, _lambda2 + V);
   }
@@ -60,6 +59,7 @@ struct chain_t{
   fvec_d pi;
   fvec_d tau2;
   ivec_d zeta;
+  double alpha;
   //contrasts
   ivec_d C_rowid;
   fvec_d C;
@@ -71,9 +71,9 @@ struct chain_t{
   double s_RW_alpha;
   
   chain_t(int _G, int _V, int _K, int _n_hyp, int *_C_rowid, int _P, double *_beta, double *_pi, double *_tau2,
-          int *_zeta, double *_C, double *_probs, double *_means, double *_meansquares, double _s_RW_alpha):
+          int *_zeta, double _alpha, double *_C, double *_probs, double *_means, double *_meansquares, double _s_RW_alpha):
     G(_G), V(_V), K(_K), n_hyp(_n_hyp), C_rowid(_C_rowid, _C_rowid + _P), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
-    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
+    tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), alpha(_alpha), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
     means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), s_RW_alpha(_s_RW_alpha){}
   
   void update_means(int step);
