@@ -68,13 +68,16 @@ struct chain_t{
   fvec_d means;
   fvec_d meansquares;
   //tuning parameter
-  double s_RW_alpha;
+  //double s_RW_alpha;
+  double slice_width;
+  int max_steps;
   
   chain_t(int _G, int _V, int _K, int _n_hyp, int *_C_rowid, int _P, double *_beta, double *_pi, double *_tau2,
-          int *_zeta, double _alpha, double *_C, double *_probs, double *_means, double *_meansquares, double _s_RW_alpha):
+          int *_zeta, double _alpha, double *_C, double *_probs, double *_means, double *_meansquares, double _slice_width,
+          int _max_width):
     G(_G), V(_V), K(_K), n_hyp(_n_hyp), C_rowid(_C_rowid, _C_rowid + _P), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
     tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), alpha(_alpha), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
-    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), s_RW_alpha(_s_RW_alpha){}
+    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), slice_width(_slice_width), max_width(_max_width){}
   
   void update_means(int step);
   void update_probabilities(int step);

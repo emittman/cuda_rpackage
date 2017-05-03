@@ -33,4 +33,16 @@ void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
 void draw_alpha(chain_t &chain, priors_t &priors, int verbose);
 
 void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt);
+
+void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool adapt, int warmup_iter);
+
+struct target_alpha{
+  double A;
+  double B;
+  double K;
+  double mean_logpi;
+  target_alpha(double _A, double _B, double _K, double _mean_logpi):
+    A(_A), B(_B), K(_K), mean_logpi(_mean_logpi){}
+  double operator()(double arg);
+};
 #endif

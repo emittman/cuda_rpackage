@@ -287,3 +287,53 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   }
   PutRNGstate();
 }
+
+target_alpha::operator(){
+  double earg = exp(arg);
+  return lgamma(earg) - K*lgamma(earg/K) + A*arg + (mean_logpi - B)*earg;
+}
+
+    
+void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool adapt, int warmup_iter){
+  // handy constants
+  int K = priors.K;
+  int V = priors.V;
+  
+  // get log-likelihood function
+  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>())/K;
+  target_alpha f(priors.A, priors.B, K, mean_logpi);
+
+  double y, U, L, R, V, x0 = log(chain.alpha), w0 = chain.slice_width;
+  int J, K;
+
+  y = f(x0) + log(Rf_runif(0,1));
+  U = Rf_runif(0,1);
+  L = x0 - w0 * U;
+  R = L + w0;
+  V = Rf_runif(0,1);
+  J = floor(chain.max_steps * V);
+  K = (chain.max_steps - 1) - J;
+  while(J>0 & y<f(L)){
+    L = L - w0;
+    J = J - 1;
+  }
+  while(K>0 & y<f(R)){
+    R = R + w0;
+    K = K - 1;
+  }
+  
+  double x;
+  do {
+    x = Rf_runif(L, R);
+    if (x > x0)
+      R = x;
+    else
+      L = x;
+  } while(f(x) < y);
+  chain.alpha = exp(x);
+  if(adapt){
+    double w = fabs(x-x0);
+    chain.slice_width += (w - chain.slice_width)/(warmup_iter+2);
+  }
+}
+
