@@ -131,7 +131,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
     std::cout << "Tk filled:\n";
     printVec(Tk, K, 1);
   }
-  thrust::transform(Tk.begin(), Tk.end(), Tk.begin(), thrust::placeholders::_1 + priors.alpha);
+  thrust::transform(Tk.begin(), Tk.end(), Tk.begin(), thrust::placeholders::_1 + chain.alpha);
   if(verbose > 1){
     std::cout <<"Tk transformed";
     printVec(Tk, K, 1);
@@ -199,7 +199,7 @@ void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 
   int K = priors.K;
   fvec_d a(K);
   fvec_d b(K, 1.0);
-  thrust::constant_iterator<double> adk = thrust::constant_iterator<double>(priors.alpha/K);
+  thrust::constant_iterator<double> adk = thrust::constant_iterator<double>(chain.alpha/K);
   thrust::transform(adk, adk+K, summary.Mk.begin(), a.begin(), thrust::plus<double>());
   if(verbose > 0){
     printVec(a, K, 1);
@@ -239,7 +239,7 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
   double Bupdate = priors.B - chain.pi[K-1];
   double draw = Rf_rgamma(priors.A + K - 1, 1/(priors.B - chain.pi[K-1]));
   PutRNGstate();
-  priors.alpha = draw;
+  chain.alpha = draw;
   if(verbose>0){
     std::cout << "Updated A: " << Aupdate << ", updated B: " << Bupdate << ", draw = " << draw << std::endl;
   }
@@ -247,7 +247,7 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose){
 
 void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
   int K = priors.K;
-  double prev = priors.alpha;
+  double prev = chain.alpha;
   double logprob, logu;
   GetRNGstate();
   double ppsl = Rf_rnorm(prev, chain.s_RW_alpha);
@@ -262,7 +262,7 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
     logprob += (priors.A-1)*(log(ppsl) - log(prev)) + (mean_logpi - priors.B) * (ppsl - prev);
     logu = log(Rf_runif(0, 1));
     if(logu < logprob){
-      priors.alpha = ppsl;
+      chain.alpha = ppsl;
     }
     if(verbose > 1){
       std::cout << ",\t acceptance prob.: " << exp(logprob) << std::endl;
