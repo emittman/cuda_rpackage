@@ -13,7 +13,8 @@ pi <- rbeta(K, 1, 9)
 pi <- pi/sum(pi)
 tau2 <- rexp(K)
 zeta <- as.integer(sample(0:(K-1), G, replace=T))
-chain <- formatChain(beta, pi, tau2, zeta)
+alpha <- 1
+chain <- formatChain(beta, pi, tau2, zeta, alpha)
 
 priors <- formatPriors(K, rcauchy(V), rexp(V), 1, 1, 1)
 
