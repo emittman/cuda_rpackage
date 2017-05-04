@@ -167,7 +167,7 @@ initChain <- function(priors, G, C=NULL, estimates=NULL){
     tau2 <- with(priors, rgamma(K, a, b))    
   }
   pi <- with(priors, rep(1/K, K))
-  zeta <- with(priors, as.integer(sample(K, G, replace=T) - 1))
+  zeta <- with(priors, as.integer(sample(K, G, replace=T) - 1)) #overwritten immediately
   alpha <- with(priors, rgamma(1, A, B))
   formatChain(beta, pi, tau2, zeta, C)
 }
