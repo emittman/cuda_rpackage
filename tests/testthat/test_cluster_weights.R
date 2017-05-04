@@ -48,9 +48,9 @@ for(i in 1:times){
   
   data <- formatData(y, X, transform_y = identity)
   
-  priors <- formatPriors(K=K, prior_mean = c(0,0), prior_sd = c(10,10), alpha = 1, a = 1, b = 1, A=1, B=1)
+  priors <- formatPriors(K=K, prior_mean = c(0,0), prior_sd = c(10,10), a = 1, b = 1, A=1, B=1)
   
-  chain <- formatChain(beta=beta, pi=pi, tau2=tau2, zeta=zeta)
+  chain <- formatChain(beta=beta, pi=pi, tau2=tau2, zeta=zeta, alpha=1)
 
   Rout <- sapply(1:G, function(g){
     sapply(1:K, function(k){
