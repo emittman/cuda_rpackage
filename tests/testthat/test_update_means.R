@@ -9,6 +9,7 @@ pi <- rbeta(K, 1, 9)
 pi <- pi/sum(pi)
 tau2 <- rgamma(K, 2, 2)
 zeta <- as.integer(sample(0:(K-1), G, replace=T))
+alpha <- 1
 
 C <- list(
   matrix(c(1, -1, 0,
@@ -23,7 +24,7 @@ probs <- matrix(rbeta(G*3, 1, 1), 3, G)
 means <- matrix(rnorm(G*V),V,G)
 meansquares <- matrix(rnorm(G*V)^2,V,G)
 
-chain <- formatChain(beta, pi, tau2, zeta, C, probs, means, meansquares)
+chain <- formatChain(beta, pi, tau2, zeta, alpha, C, probs, means, meansquares)
 step <- 10
 outC <- .Call("Rtest_update_means", chain, as.integer(step))
 means <- means + (beta[,zeta+1] - means)/step
