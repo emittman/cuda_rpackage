@@ -41,10 +41,11 @@ extern "C" SEXP Rdata_init(SEXP ytyR, SEXP xtyR, SEXP xtxR, SEXP G, SEXP V, SEXP
   return zero;
 }
 
-extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors){
-  data_t data = Rdata_wrap(Rdata);
-  chain_t chain = Rchain_wrap(Rchain);
-  priors_t priors = Rpriors_wrap(Rpriors);
+extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors, SEXP Rverbose){
+  int verbose = INTEGER(Rverbose)[0];
+  data_t data = Rdata_wrap(Rdata, verbose);
+  chain_t chain = Rchain_wrap(Rchain, verbose);
+  priors_t priors = Rpriors_wrap(Rpriors, verbose);
   fvec_d grid(data.G*priors.K);
   cluster_weights(grid, data, chain);
 
