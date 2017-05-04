@@ -73,6 +73,8 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, a=1, b=1, A=1, B=1, 
     print("Estimating priors...")
     estPriors <- informPriors(estimates)
     print("done.")
+  } else{
+    estPriors <- NULL
   }
 
   with(estPriors, list(
