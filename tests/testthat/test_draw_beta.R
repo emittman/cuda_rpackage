@@ -21,8 +21,9 @@ priors <- formatPriors(K=K, prior_mean = 0, prior_sd = 100, a = 1, b = 1)
 pi_init <- rep(1/K, K)
 zeta_init <- zeta
 tau2_init <- rep(1, K)
+alpha <- 1
 
-chain_init <- formatChain(beta, pi_init, tau2_init, zeta)
+chain_init <- formatChain(beta, pi_init, tau2_init, zeta, alpha)
 idx_save <- as.integer(0:(G-1))
 Cout <- .Call("Rtest_draw_beta", chain_init, data, priors, n_iter, idx_save, seed)
 expected <- data.frame(beta = data$xty / (N + priors$lambda))
