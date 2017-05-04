@@ -58,7 +58,7 @@ for(i in 1:times){
     })
   })
   
-  Cout <- .Call("Rcluster_weights", data, chain, priors, 1);
+  Cout <- .Call("Rcluster_weights", data, chain, priors, as.integer(1));
 
   test_that("Weights are correct, given bxxb and bxty", {
     expect_equal(as.numeric(Rout), Cout)
