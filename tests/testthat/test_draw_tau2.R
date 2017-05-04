@@ -22,8 +22,9 @@ priors <- formatPriors(K=K, prior_mean = 0, prior_sd = 100, a = 1, b = 1)
 pi_init <- rep(1/K, K)
 zeta_init <- zeta
 tau2_init <- tau2
+alpha <- 1
 
-chain_init <- formatChain(beta, pi_init, tau2, zeta)
+chain_init <- formatChain(beta, pi_init, tau2, zeta, alpha)
 idx_save <- as.integer(0:(G-1))
 Cout <- .Call("Rtest_draw_tau2", chain_init, data, priors, n_iter, idx_save, seed)
 expected <- sapply(1:G, function(g) (N/2 + priors$a)/(sum((y[g,] - beta[zeta[g]+1])^2)/2 + priors$b))
