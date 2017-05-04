@@ -16,7 +16,9 @@ tau2 <- rlnorm(K)
 zeta <- sample(0:(K-1), G, replace=T)
 beta <- rep(0, V*K)
 pi <- rep(1/K, K)
-chain <- formatChain(beta, pi, tau2, zeta)
+alpha <- 1
+
+chain <- formatChain(beta, pi, tau2, zeta, alpha)
 data1 <- formatData(y, X, transform_y = identity, test_voom=T)
 data2 <- formatData(y, X, transform_y = identity, test_voom=F)
 
