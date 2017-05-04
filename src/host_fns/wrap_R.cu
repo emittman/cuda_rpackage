@@ -56,8 +56,8 @@ chain_t Rchain_wrap(SEXP Rchain, int verbose){
                *probs = REAL(VECTOR_ELT(Rchain, 12)),
                *means = REAL(VECTOR_ELT(Rchain, 13)),
          *meansquares = REAL(VECTOR_ELT(Rchain, 14)),
-          slice_width = REAL(VECTOR_ELT(Rchain, 15))[0],
-           max_steps  = REAL(VECTOR_ELT(Rchain, 16))[0];
+          slice_width = REAL(VECTOR_ELT(Rchain, 15))[0];
+  int      max_steps  = INTEGER(VECTOR_ELT(Rchain, 16))[0];
   chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, alpha, C, probs, means, meansquares, slice_width, max_steps);
   if(verbose>0){
     std::cout << "chain transferred." << std::endl;
