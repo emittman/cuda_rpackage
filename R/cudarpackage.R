@@ -148,23 +148,20 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
     chain <- initChain(priors, data$G, C, estimates)
     if(!alpha_fixed & methodPi == "symmDirichlet"){
       if(is.null(slice_width)){
-        message("No value provided for slice_width, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 1")
-        chain$slice_width <- 0.5
+        message("No value provided for slice_width, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 1.0")
+        chain$slice_width <- 1.0
       } else{
-        if(slice_width<=0) stop("slice_width must be > 0")
+        stopifnot(slice_width>0, max_steps>2)
         chain$slice_width <- as.numeric(slice_width)
         chain$max_steps <- as.integer(max_steps)
       }
     }
   } else{
     if(!alpha_fixed & methodPi == "symmDirichlet"){
-      if(chain$slice_width == 0){
-        stop("chain must have slice_width > 0 when alpha_fixed=F and methodPi = 'symmDirichlet'!")
-      }
+      stopifnot(slice_width>0, max_steps>2)
     }
   }
-  if(!(data$V == chain$V)) stop("data$V != chain$V")
-  if(!(max(idx_save) < data$G)) stop("idx_save should use 0-indexing")
+  stopifnot(data$V == chain$V, max(idx_save)<data$G)
   
   methodPi <- switch(methodPi,
                      "stickBreaking" = as.integer(0),

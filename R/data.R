@@ -178,13 +178,13 @@ initChain <- function(priors, G, C=NULL, estimates=NULL){
 #' @param data list, from formatData
 #' @export
 
-indEstimates <- function(data){
+indEstimates <- function(data, epsilon=.1){
   betas <- with(data, sapply(1:G, function(g){
     qr.solve(qr(matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V)), xty[,g])
   }))
   sigma2s <- with(data, sapply(1:G, function(g){
     (yty[g] - 2*t(xty[,g]) %*% betas[,g] + 
-       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V)
+       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V) + .1 #guard against zeros
   }))
   return(list(beta=betas, sigma2=sigma2s))
 }
