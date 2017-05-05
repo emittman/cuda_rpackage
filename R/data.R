@@ -176,6 +176,7 @@ initChain <- function(priors, G, C=NULL, estimates=NULL){
 #' @description compute independent estimates of gene specific parameters. Used for 
 #' computing informative priors and initializing chain
 #' @param data list, from formatData
+#' @export
 
 indEstimates <- function(data){
   betas <- with(data, sapply(1:G, function(g){
@@ -192,6 +193,7 @@ indEstimates <- function(data){
 #' @description select priors to put mass over the range of the data
 #' @param estimates list, from indEstimates
 #' @return a named list to be passed to formatPriors
+#' @export
 #' 
 informPriors <- function(estimates){
   V <- dim(estimates[[1]])[1]
