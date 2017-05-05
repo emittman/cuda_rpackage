@@ -152,8 +152,8 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
         chain$slice_width <- 0.5
       } else{
         if(slice_width<=0) stop("slice_width must be > 0")
-        chain$slice_width <- slice_width
-        chain$max_steps <- max_steps
+        chain$slice_width <- as.numeric(slice_width)
+        chain$max_steps <- as.integer(max_steps)
       }
     }
   } else{
