@@ -134,7 +134,8 @@ Rdevice_mmultiply = function(A, B){
 #' @param n_save_P int
 #' @param C numeric matrix, contrasts
 #' @param alpha_fixed logical
-#' @param s_RW_alpha double
+#' @param slice_width numeric
+#' @param max_steps int
 #' @param verbose int, higher verbosity -> more printing
 #' @param warmup int, number of initial iterations to run without saving. Default is 0.
 mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin,
@@ -146,11 +147,11 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
   if(is.null(chain)){
     chain <- initChain(priors, data$G, C, estimates)
     if(!alpha_fixed & methodPi == "symmDirichlet"){
-      if(is.null(s_RW_alpha)){
+      if(is.null(slice_width)){
         message("No value provided for slice_width, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 1")
-        chain$s_RW_alpha <- 0.5
+        chain$slice_width <- 0.5
       } else{
-        if(s_RW_alpha<=0) stop("slice_width must be > 0")
+        if(slice_width<=0) stop("slice_width must be > 0")
         chain$slice_width <- slice_width
         chain$max_steps <- max_steps
       }
