@@ -310,7 +310,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   if(methodAlpha==2 & warmup > 0){
         std::cout << "Initial values of tuning parameters:\n";
         std::cout << "max_steps= "<< chain.max_steps << "\n";
-        std::cout << "slice_width= "<< chain.slice_width << endl;
+        std::cout << "slice_width= "<< chain.slice_width << std::endl;
       }
   
   for(int i= -(warmup); i<n_iter; i++){
@@ -321,7 +321,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
       if(methodAlpha==2){
         std::cout << "Tuned tuning parameters:\n";
         std::cout << "max_steps= "<< chain.max_steps << "\n";
-        std::cout << "slice_width= "<< chain.slice_width << endl;
+        std::cout << "slice_width= "<< chain.slice_width << std::endl;
       }
     } else {
       if(i == -(warmup)){
