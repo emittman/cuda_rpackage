@@ -307,9 +307,22 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   //adapt == true for warmup
   bool adapt = true;
   
+  if(methodAlpha==2 & warmup > 0){
+        std::cout << "Initial values of tuning parameters:\n";
+        std::cout << "max_steps= "<< chain.max_steps << "\n";
+        std::cout << "slice_width= "<< chain.slice_width << endl;
+      }
+  
   for(int i= -(warmup); i<n_iter; i++){
     if(i==0){
       adapt = false;
+      std::cout << "Beginning sampling..." << std::endl;
+      
+      if(methodAlpha==2){
+        std::cout << "Tuned tuning parameters:\n";
+        std::cout << "max_steps= "<< chain.max_steps << "\n";
+        std::cout << "slice_width= "<< chain.slice_width << endl;
+      }
     } else {
       if(i == -(warmup)){
         std::cout << "Beginning warmup..." << std::endl;
