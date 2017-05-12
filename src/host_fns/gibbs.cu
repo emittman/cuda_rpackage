@@ -339,8 +339,12 @@ void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool ada
   } while(f(x) < y);
   chain.alpha = exp(x);
   if(adapt){
-    double w = fabs(x-x0);
-    chain.slice_width += (w - chain.slice_width)/(warmup_iter+2);
+    double w = 2*fabs(x-x0);
+    if(chain.slice_width > w){
+      chain.slice_width *= .99;
+    } else{
+      chain.slice_width *= 1.01;
+    }
   }
 }
 
