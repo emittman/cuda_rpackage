@@ -291,23 +291,23 @@ void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt){
 */
 
 double target_alpha::operator()(double arg){
-  double earg = exp(arg);
-  return lgamma(earg) - K*lgamma(earg/K) + A*arg + (mean_logpi - B)*earg;
+  if(arg<0) return -INFINITY;
+  else return lgamma(arg) - K*lgamma(arg/K) + (A-1)*log(arg) + (mean_logpi - B)*arg;
 }
 
     
 void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool adapt, int warmup_iter){
-  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>())/priors.K;
+  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>()) / priors.K;
   if(verbose>0){
     std::cout << "sum(log(pi))/K = " << mean_logpi <<"\n";
   }
   target_alpha f(priors.A, priors.B, priors.K, mean_logpi);
 
-  double y, U, L, R, V, x0 = log(chain.alpha), w0 = chain.slice_width;
+  double y, U, L, R, V, x0 = chain.alpha, w0 = chain.slice_width;
   int J, K;
 
   if(verbose>0){
-    std::cout << "log(chain.alpha)=" << x0 << "\n";
+    std::cout << "chain.alpha=" << x0 << "\n";
   }
   if(verbose>0){
     std::cout << "chain.slice_width" << w0 << "\n";
@@ -337,7 +337,7 @@ void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool ada
     else
       L = x;
   } while(f(x) < y);
-  chain.alpha = exp(x);
+  chain.alpha = x;
   if(adapt){
     double w = 2*fabs(x-x0);
     if(chain.slice_width > w){
