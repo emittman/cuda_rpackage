@@ -208,8 +208,8 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
   dim(out[[2]][['meansquares']]) <- c(data$V, data$G)
   dimnames(out[[2]][['meansquares']]) <- list(v = 1:data$V, g = 1:data$G)
   
-  names(out[[3]]) <- c("beta", "tau2", "pi")
+  names(out[[3]]) <- c("beta", "tau2", "pi", "alpha")
   dim(out[[3]][['beta']]) <- c(data$V, priors$K)
-  names(out) <- c("samples","summaries","state")
+  names(out) <- c("samples","summaries","state", "samp_time")
   out
 }

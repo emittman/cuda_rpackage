@@ -20,6 +20,7 @@
 #undef beta
 #endif
 #include <boost/progress.hpp>
+#include <ctime>
 
 extern "C" SEXP RgetDeviceCount(){
   int count = 0;
@@ -304,6 +305,10 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   //progress bar
   boost::progress_display show_progress(n_iter);
   
+  //timer
+  std::clock_t start;
+  double duration;
+  
   //adapt == true for warmup
   bool adapt = true;
   
@@ -323,9 +328,13 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
         std::cout << "max_steps= "<< chain.max_steps << "\n";
         std::cout << "slice_width= "<< chain.slice_width << std::endl;
       }
+      
+      start = std::clock();
+
     } else {
       if(i == -(warmup)){
         std::cout << "Beginning warmup..." << std::endl;
+        start = std::clock();
       }
     }
     
@@ -378,6 +387,11 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
       std::cout << "alpha = " << chain.alpha << std::endl;
     }
     
+    if(i==-1){
+      duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+      std::cout << "Warmup completed. Took " << duration << "seconds.\n";
+    }
+    
     if(i>=0){
       if(i % thin == 0){
         if(!alpha_fixed){
@@ -396,15 +410,21 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     }
   }
   
+  duration = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+  std::cout << "Sampling completed. Took " << duration << "seconds.\n";  
+
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples, verbose-1);          //PROTECT(7)
   SEXP chain_out   = Cchain_wrap(chain, verbose-1);              //PROTECT(4)
   SEXP state_out   = Cstate_wrap(chain, verbose-1);              //PROTECT(5)
-  SEXP out         = PROTECT(allocVector(VECSXP, 3)); //PROTECT(1)
+  SEXP samp_time   = PROTECT(allocVector(REALSXP, 1));           //PROTECT(1)
+  REAL(samp_time)[0] = duration;
+  SEXP out         = PROTECT(allocVector(VECSXP, 4)); //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
   SET_VECTOR_ELT(out, 1, chain_out);
   SET_VECTOR_ELT(out, 2, state_out);
-  UNPROTECT(17);                                      //7 + 4 + 5 + 1
+  SET_VECTOR_ELT(out, 3, samp_time);
+  UNPROTECT(18);                                      //7 + 4 + 5 + 1 + 1
   
   return out;
 }
