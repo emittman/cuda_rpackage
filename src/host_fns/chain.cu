@@ -13,13 +13,13 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   yty.resize(yty_size);
   xty.resize(xty_size);
   // debugging...
-  std::copy << "copying yty\n";
+  std::cout << "copying yty\n";
   thrust::copy(_yty, _yty + yty_size, yty.begin());
-  std::copy << "copying xty\n";
+  std::cout << "copying xty\n";
   thrust::copy(_xty, _xty + xty_size, xty.begin()); 
   // store transpose of xty
   ytx.resize(V*G);
-  std::copy("transposing xty\n");
+  std::cout("transposing xty\n");
   transpose(xty.begin(), xty.end(), V, G, ytx.begin());
   
   // store transpose of xtx
