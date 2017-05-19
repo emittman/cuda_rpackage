@@ -27,6 +27,7 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   xtx.resize(xtx_size);
   thrust::copy(_xtx, _xtx + xtx_size, xtx.begin());
   txtx.resize(xtx_size);
+  std::cout << "transposing xtx\n";
   transpose(xtx.begin(), xtx.end(), V*V, G, txtx.begin());
 }
 
