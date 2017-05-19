@@ -19,7 +19,7 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   thrust::copy(_xty, _xty + xty_size, xty.begin()); 
   // store transpose of xty
   ytx.resize(V*G);
-  std::cout("transposing xty\n");
+  std::cout << "transposing xty\n";
   transpose(xty.begin(), xty.end(), V, G, ytx.begin());
   
   // store transpose of xtx
