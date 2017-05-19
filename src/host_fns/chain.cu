@@ -19,6 +19,18 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   transpose(xtx.begin(), xtx.end(), V*V, G, txtx.begin());
 }
 
+priors_t::priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _A, double _B):
+  K(_K), V(_V), a(_a), b(_b), A(_A), B(_B), mu0(_mu0, _mu0 + _V), lambda2(_lambda2, _lambda2 + _V){
+  std::cout << "And you want to use thrust to allocate, huh?\n";
+  size_t Vsize = _V;
+  mu0.resize(Vsize);
+  lambda2.resize(Vsize);
+  std::cout << "All resized..\n";  
+  thrust::copy(_mu0, _mu0 + Vsize, mu0.begin());
+  thrust::copy(_lambda2, _lambda2 + Vsize, lambda2.begin());
+  std::cout << "OK, bye!\n";    
+}
+
 samples_t::samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx, bool _alpha_fixed):
   n_save_g(_n_save_g), n_save_P(_n_save_P), step_g(0), step_P(0), G_save(_G_save), K(_K), V(_V),
   save_idx(idx, idx + _G_save), alpha_fixed(_alpha_fixed), save_beta(_n_save_g*_G_save*_V),

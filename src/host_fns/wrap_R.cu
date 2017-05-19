@@ -30,6 +30,8 @@ priors_t Rpriors_wrap(SEXP Rpriors, int verbose){
          b = REAL(VECTOR_ELT(Rpriors, 5))[0],
          A = REAL(VECTOR_ELT(Rpriors, 6))[0],
          B = REAL(VECTOR_ELT(Rpriors, 7))[0];
+  //debugging here...
+  std::cout << "So you want to initialize priors, huh?\n";
   priors_t priors(K, V, mu0, lambda, a, b, A, B);
   if(verbose>0){
     std::cout << "priors transferred." << std::endl;

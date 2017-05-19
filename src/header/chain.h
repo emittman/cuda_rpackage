@@ -38,8 +38,7 @@ struct priors_t{
   double A;
   double B;
   
-  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _A, double _B) :
-    K(_K), V(_V), a(_a), b(_b), A(_A), B(_B), mu0(_mu0, _mu0 + _V), lambda2(_lambda2, _lambda2 + _V){}
+  priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _A, double _B);
 
 };
 
