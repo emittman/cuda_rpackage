@@ -6,9 +6,20 @@
 #include "../header/summary2.h"
 
 data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N, bool _voom): 
-  yty(_yty, _yty + _G), xty(_xty, _xty + _G*_V), G(_G), V(_V), N(_N), voom(_voom) {
+  G(_G), V(_V), N(_N), voom(_voom) {
+  // 'carefully' copy data to device
+  size_t yty_size = G;
+  size_t xty_size = G*V;
+  yty.resize(yty_size);
+  xty.resize(xty_size);
+  // debugging...
+  std::copy << "copying yty\n";
+  thrust::copy(_yty, _yty + yty_size, yty.begin());
+  std::copy << "copying xty\n";
+  thrust::copy(_xty, _xty + xty_size, xty.begin()); 
   // store transpose of xty
   ytx.resize(V*G);
+  std::copy("transposing xty\n");
   transpose(xty.begin(), xty.end(), V, G, ytx.begin());
   
   // store transpose of xtx
