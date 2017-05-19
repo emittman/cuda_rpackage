@@ -28,7 +28,8 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   thrust::copy(_xtx, _xtx + xtx_size, xtx.begin());
   txtx.resize(xtx_size);
   std::cout << "transposing xtx\n";
-  transpose(xtx.begin(), xtx.end(), V*V, G, txtx.begin());
+  transpose(xtx.begin(), xtx.end(), V*V, voom*(G-1)+1, txtx.begin());
+  std::cout << "exiting constructor\n";
 }
 
 priors_t::priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _A, double _B):
