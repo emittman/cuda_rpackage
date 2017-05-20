@@ -47,7 +47,7 @@ extern "C" SEXP Rcluster_weights(SEXP Rdata, SEXP Rchain, SEXP Rpriors, SEXP Rve
   chain_t chain = Rchain_wrap(Rchain, verbose);
   priors_t priors = Rpriors_wrap(Rpriors, verbose);
   fvec_d grid(data.G*priors.K);
-  cluster_weights(grid, data, chain);
+  cluster_weights(grid, data, chain, 0);
 
   fvec_h grid_h(data.G*priors.K);
   thrust::copy(grid.begin(), grid.end(), grid_h.begin());
