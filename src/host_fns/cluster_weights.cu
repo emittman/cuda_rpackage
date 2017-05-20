@@ -5,9 +5,15 @@ __host__ __device__ void clust_prob::operator()(weight_tup_el Tup){
     thrust::get<0>(Tup) = thrust::get<1>(Tup) + n * 0.5 * log(thrust::get<2>(Tup)) + -0.5 * thrust::get<2>(Tup) * ( thrust::get<3>(Tup) - 2 * thrust::get<0>(Tup) + thrust::get<4>(Tup) );
 }
   
-void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
+void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain, int verbose=0){
+  if(verbose>0){
+    std::cout << "big matrix multiply...\n";
+  }
   big_matrix_multiply(chain.beta, data.xty, big_grid, data.V, chain.K, data.V, data.G);
   fvec_d bxxb(chain.K);
+  if(verbose>0){
+    std::cout << "quadratic form btxtxb...\n";
+  }
   quad_form_multi(data.xtx, chain.beta, bxxb, chain.K, data.V, !data.voom);
   gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(chain.pi.begin(), chain.pi.end(), chain.K, 1);
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
@@ -15,5 +21,8 @@ void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain){
   gRepTimes<realIter>::iterator bxxb_iter = getGRepTimesIter(bxxb.begin(), bxxb.end(), chain.K, 1);
   weight_zip zipped = thrust::zip_iterator<weight_tup>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
   clust_prob f(data.N);
+  if(verbose>0){
+    std::cout << "final weight computation (sum)...\n";
+  }
   thrust::for_each(zipped, zipped + data.G*chain.K, f);
 }

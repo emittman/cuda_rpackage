@@ -172,7 +172,7 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   if(verbose>1){
     std::cout << "Computing weights...\n";
   }
-  cluster_weights(grid, data, chain);
+  cluster_weights(grid, data, chain, verbose);
   if(verbose > 2){
     std::cout << "grid:\n";
     printVec(grid, priors.K, data.G);

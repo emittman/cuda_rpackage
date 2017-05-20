@@ -21,7 +21,7 @@ struct clust_prob{
   __host__ __device__ void operator()(weight_tup_el Tup);
 };  
 
-void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain);
+void cluster_weights(fvec_d &big_grid, data_t &data, chain_t &chain, int verbose);
 
 
 #endif
