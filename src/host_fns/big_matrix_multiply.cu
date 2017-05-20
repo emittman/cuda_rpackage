@@ -19,8 +19,6 @@ void big_matrix_multiply(fvec_d &A, fvec_d &B, fvec_d &big_grid, int a1, int a2,
               &beta, grid_ptr, ldc);
   if (status != CUBLAS_STATUS_SUCCESS) {
     std::cout << "matrix multiply failed\n";
-    std::cout << cudaGetErrorString(cudaGetLastError()));
-    std::cout << std::endl;
   }
   cublasDestroy(handle);
 }
