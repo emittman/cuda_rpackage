@@ -165,11 +165,20 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
 }
 
 void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, int verbose=0){
+  if(verbose>1){
+    std::cout << "Sampling zeta...\n";
+  }
   fvec_d grid(data.G*priors.K);
+  if(verbose>1){
+    std::cout << "Computing weights...\n";
+  }
   cluster_weights(grid, data, chain);
   if(verbose > 2){
     std::cout << "grid:\n";
     printVec(grid, priors.K, data.G);
+  }
+  if(verbose>1){
+    std::cout << "Mutinomial samping...\n";
   }
   gnl_multinomial(chain.zeta, grid, states, priors.K, data.G);
   if(verbose > 1){
