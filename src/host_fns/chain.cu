@@ -12,14 +12,10 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   size_t xty_size = G*V;
   yty.resize(yty_size);
   xty.resize(xty_size);
-  // debugging...
-  std::cout << "copying yty\n";
   thrust::copy(_yty, _yty + yty_size, yty.begin());
-  std::cout << "copying xty\n";
   thrust::copy(_xty, _xty + xty_size, xty.begin()); 
   // store transpose of xty
   ytx.resize(V*G);
-  std::cout << "transposing xty\n";
   transpose(xty.begin(), xty.end(), V, G, ytx.begin());
   
   // store transpose of xtx
@@ -27,21 +23,16 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   xtx.resize(xtx_size);
   thrust::copy(_xtx, _xtx + xtx_size, xtx.begin());
   txtx.resize(xtx_size);
-  std::cout << "transposing xtx\n";
   transpose(xtx.begin(), xtx.end(), V*V, voom*(G-1)+1, txtx.begin());
-  std::cout << "exiting constructor\n";
 }
 
 priors_t::priors_t(int _K, int _V, double* _mu0, double* _lambda2, double _a, double _b, double _A, double _B):
   K(_K), V(_V), a(_a), b(_b), A(_A), B(_B){
-  std::cout << "And you want to use thrust to allocate, huh?\n";
   size_t Vsize = _V;
   mu0.resize(Vsize);
   lambda2.resize(Vsize);
-  std::cout << "All resized..\n";  
   thrust::copy(_mu0, _mu0 + Vsize, mu0.begin());
   thrust::copy(_lambda2, _lambda2 + Vsize, lambda2.begin());
-  std::cout << "OK, bye!\n";    
 }
 
 samples_t::samples_t(int _n_save_g, int _n_save_P, int _G_save, int _K, int _V, int *idx, bool _alpha_fixed):
