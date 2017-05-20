@@ -18,9 +18,7 @@ void big_matrix_multiply(fvec_d &A, fvec_d &B, fvec_d &big_grid, int a1, int a2,
               B_ptr, ldb,
               &beta, grid_ptr, ldc);
   if (status != CUBLAS_STATUS_SUCCESS) {
-    std::cout << "data download failed\n";
-    cublasDestroy(handle);
-    return EXIT_FAILURE;
-  })
+    std::cout << "matrix multiply failed\n";
+  }
   cublasDestroy(handle);
 }
