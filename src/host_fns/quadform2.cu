@@ -3,7 +3,7 @@
 #include <thrust/iterator/permutation_iterator.h>
 #include <thrust/iterator/transform_iterator.h>
 #include "../header/iter_getter.h"
-
+#include "../header/quadform2.cu"
 
 //helper functions to get a constant iterator to a real-valued array
 typedef thrust::permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
