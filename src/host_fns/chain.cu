@@ -103,12 +103,24 @@ void chain_t::update_probabilities(int step){
   update_running_means(probs, resultG, n_hyp*G, step, 1);
 }
 
+struct inv_sqrt: thrust::unary_function<double, double>{
+  __host__ __device__ double operator()(double x){
+    return 1/sqrt(x);
+  }
+};
+
 void chain_t::update_means(int step){
   fvec_d beta_g(G*V);
+  fvec_d sigma_g(G);
   SCIntIter map_zeta = getSCIntIter(zeta.begin(), zeta.end(), V);
   thrust::permutation_iterator<realIter, SCIntIter> map_beta = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), map_zeta);
+  thrust::permutation_iterator<realIter, intIter> map_tau2 = thrust::permutation_iterator<realIter, intIter>(tau2.begin(), zeta);
   thrust::copy(map_beta, map_beta+G*V, beta_g.begin());
-  update_running_means(means, beta_g, G*V, step, 1);
-  update_running_means(meansquares, beta_g, G*V, step, 2);
+  thrust::copy(map_tau2, map_tau2+G, sigma_g.begin());
+  thrust::transform(sigma_g.begin(), sigma_g.end(), sigma_g.end(), inv_sqrt());
+  update_running_means(means_betas, beta_g, G*V, step, 1);
+  update_running_means(meansquares_betas, beta_g, G*V, step, 2);
+  update_running_means(means_sigmas, sigma_g, G, step, 1);
+  update_running_means(meansquares_sigmas, sigma_g, G, step, 2);
 }
 
