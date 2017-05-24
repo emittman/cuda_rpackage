@@ -114,7 +114,7 @@ void chain_t::update_means(int step){
   fvec_d sigma_g(G);
   SCIntIter map_zeta = getSCIntIter(zeta.begin(), zeta.end(), V);
   thrust::permutation_iterator<realIter, SCIntIter> map_beta = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), map_zeta);
-  thrust::permutation_iterator<realIter, intIter> map_tau2 = thrust::permutation_iterator<realIter, intIter>(tau2.begin(), zeta);
+  thrust::permutation_iterator<realIter, intIter> map_tau2 = thrust::permutation_iterator<realIter, intIter>(tau2.begin(), zeta.begin());
   thrust::copy(map_beta, map_beta+G*V, beta_g.begin());
   thrust::copy(map_tau2, map_tau2+G, sigma_g.begin());
   thrust::transform(sigma_g.begin(), sigma_g.end(), sigma_g.end(), inv_sqrt());
