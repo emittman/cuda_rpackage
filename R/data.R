@@ -110,8 +110,8 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, a=1, b=1, A=1, B=1, 
 #' @param s_RW_alpha numeric, standard deviation for random walk Metropolis when
 #'   \code{!alpha_fixed} and weightsMethod = "symmDirichlet". Defaults to 0.
 
-formatChain <- function(beta, pi, tau2, zeta, alpha, C=NULL, probs=NULL, means=NULL, meansquares=NULL,
-                        slice_width=1, max_steps=100){
+formatChain <- function(beta, pi, tau2, zeta, alpha, C=NULL, probs=NULL, means_betas=NULL, meansquares_betas=NULL, means_sigmas=NULL,
+                        meansquares_sigmas=NULL,slice_width=1, max_steps=100){
   G = as.integer(length(zeta))
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
