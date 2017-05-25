@@ -419,12 +419,14 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   SEXP state_out   = Cstate_wrap(chain, verbose-1);              //PROTECT(5)
   SEXP samp_time   = PROTECT(allocVector(REALSXP, 1));           //PROTECT(1)
   REAL(samp_time)[0] = duration;
-  SEXP out         = PROTECT(allocVector(VECSXP, 4)); //PROTECT(1)
+  SEXP out         = PROTECT(allocVector(VECSXP, 4));            //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
   SET_VECTOR_ELT(out, 1, chain_out);
   SET_VECTOR_ELT(out, 2, state_out);
   SET_VECTOR_ELT(out, 3, samp_time);
-  UNPROTECT(18);                                      //7 + 6 + 5 + 1 + 1
+  int size = 19;                                      //6(7) + 6 + 5 + 1 + 1
+  if(!samples.alpha_fixed) ++size;
+  UNPROTECT(size);
   
   return out;
 }
