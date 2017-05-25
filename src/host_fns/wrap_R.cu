@@ -80,7 +80,9 @@ SEXP Csamples_wrap(samples_t &samples, int verbose){
   SEXP out_P            = PROTECT(allocVector(REALSXP, samples.save_P.size()));
   SEXP out_max_id       = PROTECT(allocVector(INTSXP, samples.save_max_id.size()));
   SEXP out_num_occupied = PROTECT(allocVector(INTSXP, samples.save_num_occupied.size()));
-  SEXP out_alpha        = PROTECT(allocVector(REALSXP, samples.save_alpha.size()));
+  if(!samples.alpha_fixed){
+    SEXP out_alpha        = PROTECT(allocVector(REALSXP, samples.save_alpha.size()));
+  }
 
   thrust::copy(samples.save_beta.begin(), samples.save_beta.end(), REAL(out_beta));
   thrust::copy(samples.save_tau2.begin(), samples.save_tau2.end(), REAL(out_tau2));
