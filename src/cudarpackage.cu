@@ -424,8 +424,8 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   SET_VECTOR_ELT(out, 1, chain_out);
   SET_VECTOR_ELT(out, 2, state_out);
   SET_VECTOR_ELT(out, 3, samp_time);
-  int size = 19;                                      //6(7) + 6 + 5 + 1 + 1
-  if(!samples.alpha_fixed) ++size;
+  int size = 20;                                      //7 + 6 + 5 + 1 + 1
+
   UNPROTECT(size);
   
   return out;
