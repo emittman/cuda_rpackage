@@ -108,7 +108,7 @@ SEXP Cchain_wrap(chain_t &chain, int verbose){
   if(verbose>0){
     std::cout << "Wrapping chain... ";
   }
-  SEXP chain_out       = PROTECT(allocVector(VECSXP, 3));
+  SEXP chain_out       = PROTECT(allocVector(VECSXP, 5));
   SEXP out_probs       = PROTECT(allocVector(REALSXP, chain.probs.size()));
   SEXP out_means_betas       = PROTECT(allocVector(REALSXP, chain.means_betas.size()));
   SEXP out_meansquares_betas = PROTECT(allocVector(REALSXP, chain.meansquares_betas.size()));
