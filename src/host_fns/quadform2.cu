@@ -14,6 +14,9 @@ gRepConst getGRepConstIter(realIter begin, int index){
   return iter;
 }
 
+//typedef for tuple type passed to functions
+typedef thrust::tuple<double &, double &, double &> triple_tup;
+
 
 __host__ __device__ void quadform(double *x, double *A, double *out, int V) {
   double tmp1 = 0;
@@ -33,8 +36,7 @@ struct quadform_funct{
   
   quadform_funct(int V): V(V){}
 
-  template<typename T>
-  __host__ __device__ void operator()(T tup){
+  __host__ __device__ void operator()(triple_tup tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
     double *A = thrust::raw_pointer_cast(&(thrust::get<1>(tup)));
     double *out = thrust::raw_pointer_cast(&thrust::get<2>(tup)));
@@ -51,8 +53,7 @@ struct quadform_funct_simp{
     thrust::copy(_xtx, _xtx + V*V, xtx.begin());
   }
   
-  template<typename T>
-  __host__ __device__ void operator()(T tup){
+  __host__ __device__ void operator()(triple_tup tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
     double *A = thrust::raw_pointer_cast(xtx.data());
     double *out = thrust::raw_pointer_cast(&thrust::get<1>(tup)));
