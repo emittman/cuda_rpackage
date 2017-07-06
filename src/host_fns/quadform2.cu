@@ -6,15 +6,6 @@
 #include "../header/iter_getter.h"
 #include "../header/quadform2.h"
 
-//helper functions to get a constant iterator to a real-valued array
-typedef thrust::permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
-
-gRepConst getGRepConstIter(realIter begin, int index){
-  thrust::constant_iterator<int> constIter = thrust::make_constant_iterator<int>(index);
-  gRepConst iter = thrust::permutation_iterator<realIter, thrust::constant_iterator<int> >(begin, constIter);
-  return iter;
-}
-
 //typedef for tuple type passed to functions
 typedef thrust::tuple<double &, double &, double &> triple_tup;
 

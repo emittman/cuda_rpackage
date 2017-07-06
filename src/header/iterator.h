@@ -19,6 +19,15 @@ typedef thrust::host_vector<int> ivec_h;
 typedef thrust::host_vector<double> fvec_h;
 
 
+//helper function to get a constant iterator to a real-valued array
+typedef thrust::permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
+
+gRepConst getGRepConstIter(realIter begin, int index){
+  thrust::constant_iterator<int> constIter = thrust::make_constant_iterator<int>(index);
+  gRepConst iter = thrust::permutation_iterator<realIter, thrust::constant_iterator<int> >(begin, constIter);
+  return iter;
+}
+
 /****************************************
 * Iterators for repeating consecutive indices simliar to rep(1:N) in R
 * repEach and repTimes

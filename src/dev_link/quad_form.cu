@@ -4,16 +4,6 @@
 #include "../header/iter_getter.h"
 #include "cublas_v2.h"
 
-
-//helper functions to get a constant iterator to a real-valued array
-typedef thrust::permutation_iterator<realIter, thrust::constant_iterator<int> > gRepConst;
-
-gRepConst getGRepConstIter(realIter begin, int index){
-  thrust::constant_iterator<int> constIter = thrust::make_constant_iterator<int>(index);
-  gRepConst iter = thrust::permutation_iterator<realIter, thrust::constant_iterator<int> >(begin, constIter);
-  return iter;
-}
-
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst> qf_tup;
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator> qf_tup2;
 typedef thrust::tuple<double &, double &, double &> ftrip;
