@@ -34,7 +34,7 @@ __device__ void quadform(double *x, double *A, double *out, int V) {
 struct quadform_funct{
   int V;
   
-  quadform_funct(int V): V(V){}
+  __host__ __device__ quadform_funct(int V): V(V){}
 
   __host__ __device__ void operator()(triple_tup tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
@@ -48,7 +48,7 @@ struct quadform_funct{
 struct quadform_funct_simp{
   int V;
   fvec_d xtx;
-  quadform_funct_simp(int _V, double * _xtx): V(_V){
+  __host__ __device__ quadform_funct_simp(int _V, double * _xtx): V(_V){
     xtx.resize(V*V);
     thrust::copy(_xtx, _xtx + V*V, xtx.begin());
   }
