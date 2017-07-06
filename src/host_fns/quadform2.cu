@@ -28,12 +28,12 @@ __host__ __device__ void quadform(double *x, double *A, double *out, int V) {
   *out = tmp2;
 }
 
-template<typename T>
-struct quadform_funct : thrust::unary_function<T, void>{
+struct quadform_funct{
   int V;
   
   quadform_funct(int V): V(V){}
-  
+
+  template<typename T>
   __host__ __device__ void operator()(T tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
     double *A = thrust::raw_pointer_cast(&(thrust::get<1>(tup)));
@@ -43,8 +43,7 @@ struct quadform_funct : thrust::unary_function<T, void>{
   
 };
 
-template<typename T>
-struct quadform_funct_simp : thrust::unary_function<T, void>{
+struct quadform_funct_simp{
   int V;
   fvec_d xtx;
   quadform_funct_simp(int _V, double * _xtx): V(_V){
@@ -52,6 +51,7 @@ struct quadform_funct_simp : thrust::unary_function<T, void>{
     thrust::copy(_xtx, _xtx + V*V, xtx.begin());
   }
   
+  template<typename T>
   __host__ __device__ void operator()(T tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
     double *A = thrust::raw_pointer_cast(xtx.data());
@@ -66,7 +66,7 @@ typename thrust::zip_iterator<quadTupGK> quadZipGK;
 
 void quadform_multipleGK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int G, int K, int V){
   
-  quadform_funct f(V);
+  quadform_funct<thrust::tuple<double&,double&,double&> > f(V);
 
   gRepTimes<realIter>::iterator beta_skip = getGRepTimesIter(beta.begin(), beta.end(), K, V);
   gRepEach<realIter>::iterator xtx_skip = getGRepEachIter(xtx.begin(), xtx.end(), K, V*V);
