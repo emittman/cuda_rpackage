@@ -46,10 +46,11 @@ struct quadform_funct{
   
 };
 
+/*
 struct quadform_funct_simp{
   int V;
   fvec_d xtx;
-  __host__ quadform_funct_simp(int _V, double * _xtx): V(_V){
+  __host__ __device__ quadform_funct_simp(int _V, double * _xtx): V(_V){
     xtx.resize(V*V);
     thrust::copy(_xtx, _xtx + V*V, xtx.begin());
   }
@@ -62,6 +63,7 @@ struct quadform_funct_simp{
   }
   
 };
+*/
 
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, realIter> quadTupGK;
 typedef thrust::zip_iterator<quadTupGK> quadZipGK;
@@ -82,7 +84,7 @@ typedef thrust::zip_iterator<quadTupK> quadZipK;
 
 void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int K, int V){
   
-  quadform_funct_simp f(V, thrust::raw_pointer_cast(xtx.data()));
+  quadform_funct f(V);
 
   gRepTimes<realIter>::iterator beta_skip = getGRepTimesIter(beta.begin(), beta.end(), K, V);
   gRepConst xtx_repeat = getGRepConstIter(xtx.begin(), 0);
