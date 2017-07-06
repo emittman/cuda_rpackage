@@ -19,7 +19,7 @@ gRepConst getGRepConstIter(realIter begin, int index){
 typedef thrust::tuple<double &, double &, double &> triple_tup;
 
 
-__device__ void quadform(double *x, double *A, double *out, int V) {
+__host__ __device__ void quadform(double *x, double *A, double *out, int V) {
   double tmp1 = 0;
   double tmp2 = 0;
   for(int i=0; i<V; i++){
