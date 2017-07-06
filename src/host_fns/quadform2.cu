@@ -61,8 +61,8 @@ struct quadform_funct_simp{
   
 };
 
-typename thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, realIter> quadTupGK;
-typename thrust::zip_iterator<quadTupGK> quadZipGK;
+typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, realIter> quadTupGK;
+typedef thrust::zip_iterator<quadTupGK> quadZipGK;
 
 void quadform_multipleGK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int G, int K, int V){
   
