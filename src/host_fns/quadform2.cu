@@ -39,7 +39,7 @@ struct quadform_funct{
   __host__ __device__ void operator()(triple_tup tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
     double *A = thrust::raw_pointer_cast(&(thrust::get<1>(tup)));
-    double *out = thrust::raw_pointer_cast(&thrust::get<2>(tup)));
+    double *out = thrust::raw_pointer_cast(&(thrust::get<2>(tup)));
     quadform(x, A, out, V);
   }
   
@@ -56,7 +56,7 @@ struct quadform_funct_simp{
   __host__ __device__ void operator()(triple_tup tup){
     double *x = thrust::raw_pointer_cast(&(thrust::get<0>(tup)));
     double *A = thrust::raw_pointer_cast(xtx.data());
-    double *out = thrust::raw_pointer_cast(&thrust::get<1>(tup)));
+    double *out = thrust::raw_pointer_cast(&(thrust::get<1>(tup)));
     quadform(x, A, out, V);
   }
   
