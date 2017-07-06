@@ -70,7 +70,7 @@ void quadform_multipleGK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int G, int K
   thrust::for_each(zip, zip + K*G, f);
 }
 
-typedef thrust::tuple<gRepTimes<realIter>::iterator, gConst, realIter> quadTupK;
+typedef thrust::tuple<gRepTimes<realIter>::iterator, gConst<realIter>::iterator, realIter> quadTupK;
 typedef thrust::zip_iterator<quadTupK> quadZipK;
 
 void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int K, int V){
