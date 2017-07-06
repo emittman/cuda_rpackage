@@ -80,7 +80,7 @@ typename thrust::zip_iterator<quadTupK> quadZipK;
 
 void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec &result, int K, int V){
   
-  quadform_funct_simp f(V);
+  quadform_funct_simp f(V, thrust::raw_pointer_cast(xtx.data()));
 
   gRepTimes<realIter>::iterator beta_skip = getGRepTimesIter(beta.begin(), beta.end(), K, V);
   gRepConst xtx_repeat = getGRepConstIter(xtx.begin(), 0);
