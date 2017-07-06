@@ -49,7 +49,7 @@ tests.o: tests.cu
 	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 	
 test_quadform.o: test_quadform.cu
-	nvcc -c $(NVCC_FLAGS) $< -I(R_INC) -o $@
+	nvcc -c $(NVCC_FLAGS) $< -I$(R_INC) -o $@
 
 #host functions
 host_fns/cholesky.o: host_fns/cholesky.cu
