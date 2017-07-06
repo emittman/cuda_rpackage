@@ -46,10 +46,10 @@ struct quadform_funct{
   
 };
 
-struct quadform_funct_simp{
+struct quadform_funct_constA{
   int V;
   fvec_d xtx;
-  __host__ __device__ quadform_funct_simp(int _V, double * _xtx): V(_V){
+  __host__ quadform_funct_simp(int _V, double * _xtx): V(_V){
     xtx.resize(V*V);
     thrust::copy(_xtx, _xtx + V*V, xtx.begin());
   }
