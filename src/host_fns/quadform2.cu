@@ -2,6 +2,7 @@
 #include <thrust/transform.h>
 #include <thrust/iterator/permutation_iterator.h>
 #include <thrust/iterator/transform_iterator.h>
+#include <thrust/for_each.h>
 #include "../header/iter_getter.h"
 #include "../header/quadform2.h"
 
