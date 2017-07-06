@@ -25,8 +25,7 @@ host_fns/construct_prec.o host_fns/distribution.o host_fns/big_matrix_multiply.o
 host_fns/cluster_weights.o host_fns/multinomial.o host_fns/wrap_R.o host_fns/gibbs.o\
 host_fns/running_mean.o host_fns/quadform2.o
 
-DEV_OBJS = dev_link/quad_form.o dev_link/libquadform.a\
-dev_link/beta_hat.o dev_link/libbetahat.a\
+DEV_OBJS = dev_link/beta_hat.o dev_link/libbetahat.a\
 dev_link/multi_dot_product.o dev_link/libmultiprod.a
 
 WRP_OBJS = cudarpackage.o
@@ -56,7 +55,7 @@ test_quadform.o: test_quadform.cu
 host_fns/cholesky.o: host_fns/cholesky.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
 	
-host_fns/quadform.o: host_fns/quadform.cu
+host_fns/quadform2.o: host_fns/quadform2.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ $(LIBS)
 
 host_fns/iter_getter.o: host_fns/iter_getter.cu
@@ -97,8 +96,8 @@ util/cuda_usage.o: util/cuda_usage.cu
 dev_link/libquadform.a: dev_link/quad_form.o
 	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
-dev_link/quad_form.o: dev_link/quad_form.cu
-	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
+#dev_link/quad_form.o: dev_link/quad_form.cu
+#	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
 dev_link/libbetahat.a: dev_link/beta_hat.o
 	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
