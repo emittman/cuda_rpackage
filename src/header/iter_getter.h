@@ -6,6 +6,16 @@
 //Just gets an iterator it where it[i] = i
 countIter getCountIter();
 
+//helper function to get a constant iterator to a real-valued array
+
+template<typename T>
+typename gConst<T>::iterator getGConstIter(const T &begin, int index){
+  constIter iter = thrust::make_constant_iterator<int>(index);
+  typename gConst<T>::iterator gconst = thrust::permutation_iterator<T, constIter >(begin, iter);
+  return gconst;
+}
+
+
 //Gets an iterator for generating rep(1:len, times=infinity)
 repTimesIter getRepTimesIter(int len, int incr, countIter countIt = getCountIter());
 //Gets an iterator for generating rep(arb_seq, times=infinity)

@@ -4,7 +4,7 @@
 #include "../header/iter_getter.h"
 #include "cublas_v2.h"
 
-typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst> qf_tup;
+typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gConst<realIter>::iterator> qf_tup;
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator> qf_tup2;
 typedef thrust::tuple<double &, double &, double &> ftrip;
 
@@ -43,8 +43,8 @@ void quad_form_multi(fvec_d &A, fvec_d &x, fvec_d &y, int n, int dim, bool fixed
 
   if(fixed_A){
     // Inner matrix is same for all g = 1:G
-    gRepConst A_repeat = getGRepConstIter(A.begin(), 0);
-    qf_tup my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gRepConst>(tmp_strided, x_strided, A_repeat);
+    gConst<realIter>::iterator A_repeat = getGConstIter(A.begin(), 0);
+    qf_tup my_tuple = thrust::tuple< gRepTimes<realIter>::iterator, gRepTimes<realIter>::iterator, gConst<realIter>::iterator>(tmp_strided, x_strided, A_repeat);
     thrust::zip_iterator<qf_tup> zip_qf = thrust::zip_iterator<qf_tup>(my_tuple);
     quad_form f(dim);
     thrust::transform(zip_qf, zip_qf + n, y.begin(), f);

@@ -78,8 +78,8 @@ void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int K, int V)
   quadform_funct f(V);
 
   gRepTimes<realIter>::iterator beta_skip = getGRepTimesIter(beta.begin(), beta.end(), K, V);
-  gRepConst xtx_repeat = getGRepConstIter(xtx.begin(), 0);
-  quadTupK tup = thrust::tuple<gRepTimes<realIter>::iterator, gRepConst, realIter>(beta_skip, xtx_repeat, result.begin());
+  gConst<realIter>::iterator xtx_repeat = getGConstIter(xtx.begin(), 0);
+  quadTupK tup = thrust::tuple<gRepTimes<realIter>::iterator, gConst<realIter>::iterator, realIter>(beta_skip, xtx_repeat, result.begin());
   quadZipK zip = thrust::zip_iterator<quadTupK>(tup);
   thrust::for_each(zip, zip + K, f);
 }
