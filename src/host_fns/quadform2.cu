@@ -46,7 +46,7 @@ struct quadform_funct{
   
 };
 
-struct quadform_funct_constA{
+struct quadform_funct_simp{
   int V;
   fvec_d xtx;
   __host__ quadform_funct_simp(int _V, double * _xtx): V(_V){
