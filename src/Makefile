@@ -33,7 +33,7 @@ WRP_OBJS = cudarpackage.o
 TEST_OBJS = tests.o test_quadform.o
 
 #final SHLIB
-$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) tests.o
+$(TARGET): $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(DL_LIBS) $(TEST_OBJS)
 	nvcc -shared $(NVCC_FLAGS) $(WRP_OBJS) $(HST_OBJS) $(UTIL_OBJS) $(TEST_OBJS) -o $(TARGET) -I$(R_INC)\
 	-I. -L$(DL_PATH) -L$(CUDA_PATH) $(LIBS) $(DL_FLAGS) $(DEBUG_FLAGS)
 
