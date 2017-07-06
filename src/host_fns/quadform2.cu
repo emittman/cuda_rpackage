@@ -78,7 +78,7 @@ void quadform_multipleGK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int G, int K
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepConst, realIter> quadTupK;
 typedef thrust::zip_iterator<quadTupK> quadZipK;
 
-void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec &result, int K, int V){
+void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int K, int V){
   
   quadform_funct_simp f(V, thrust::raw_pointer_cast(xtx.data()));
 
@@ -89,8 +89,8 @@ void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec &result, int K, int V){
   thrust::for_each(zip, zip + K, f);
 }
 
-typename thrust::tuple<gRepTimes<realIter>::iterator,gRepTimes<realIter>::iterator,realIter> quadTupMatch;
-typename thrust::zip_iterator<quadTupMatch> quadZipMatch;
+typedef thrust::tuple<gRepTimes<realIter>::iterator,gRepTimes<realIter>::iterator,realIter> quadTupMatch;
+typedef thrust::zip_iterator<quadTupMatch> quadZipMatch;
 
 void quadform_multipleMatch(fvec_d &beta, fvec_d &xtx, fvec &result, int K, int V){
   
