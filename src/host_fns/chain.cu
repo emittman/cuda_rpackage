@@ -18,7 +18,7 @@ data_t::data_t(double* _yty, double* _xty, double* _xtx, int _G, int _V, int _N,
   ytx.resize(V*G);
   transpose(xty.begin(), xty.end(), V, G, ytx.begin());
   
-  // store transpose of xtx
+  // store transpose of xtx for reduction, i.e. xtx_0[0,0] + xtx_1[0,0]
   size_t xtx_size = (voom*(G-1)+1)*V*V;
   xtx.resize(xtx_size);
   thrust::copy(_xtx, _xtx + xtx_size, xtx.begin());

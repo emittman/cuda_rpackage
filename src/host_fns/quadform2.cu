@@ -56,6 +56,10 @@ struct quadform_funct_simp{
 };
 */
 
+
+/************
+* This version returns (k,g)={(0,0),(1,0),...,(0,1),(1,1),...,(K,G)}
+************/
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator, realIter> quadTupGK;
 typedef thrust::zip_iterator<quadTupGK> quadZipGK;
 
@@ -70,6 +74,10 @@ void quadform_multipleGK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int G, int K
   thrust::for_each(zip, zip + K*G, f);
 }
 
+
+/************
+* This version returns (k,g)={(0,0),(1,0),...,(K,0)}
+************/
 typedef thrust::tuple<gRepTimes<realIter>::iterator, gConst<realIter>::iterator, realIter> quadTupK;
 typedef thrust::zip_iterator<quadTupK> quadZipK;
 
@@ -84,6 +92,9 @@ void quadform_multipleK(fvec_d &beta, fvec_d &xtx, fvec_d &result, int K, int V)
   thrust::for_each(zip, zip + K, f);
 }
 
+/************
+* This version returns (k,g)={(0,0),(1,1),...,(K,K)}
+************/
 typedef thrust::tuple<gRepTimes<realIter>::iterator,gRepTimes<realIter>::iterator,realIter> quadTupMatch;
 typedef thrust::zip_iterator<quadTupMatch> quadZipMatch;
 

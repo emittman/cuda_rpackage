@@ -18,15 +18,6 @@ struct exp_log_plus {
   }
 };
 
-struct modify_gamma_par {
-  double N;
-  modify_gamma_par(double _N): N(_N){}
-  template<typename T>
-  __host__ __device__ void operator()(T tup){
-    thrust::get<0>(tup) = thrust::get<0>(tup) + 1.0/ 2.0 * thrust::get<1>(tup) * N;
-  }
-};
-
 void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fvec_d &beta, priors_t &priors, int verbose = 0){
   //no longer should be passing summary2!
   int K = priors.K;
@@ -58,50 +49,75 @@ void draw_MVNormal(curandState *states, fvec_d &beta_hat, fvec_d &chol_prec, fve
   }
 }
 
+struct modify_gamma_par {
+  double N;
+  modify_gamma_par(double _N): N(_N){}
+  template<typename T>
+  __host__ __device__ void operator()(T tup){
+    thrust::get<0>(tup) = thrust::get<0>(tup) + 1.0/ 2.0 * thrust::get<1>(tup) * N;
+  }
+};
+
 void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &data, summary2 &smry, int verbose=0){
   fvec_d sse(smry.num_occupied);
   int K = chain.K;
+  fvec_d a_d(K, priors.a);
+  fvec_d b_d(K, priors.b);
+  if(verbose > 2){
+    std::cout << "a_d filled:\n";
+    printVec(a_d, K, 1);
+    std::cout << "b filled:\n";
+    printVec(b_d, K, 1);
+  }
+  
+  // get SSE by cluster (for occupied clusters)
   smry.sumSqErr(sse, chain.beta, --verbose);
-  if(verbose > 1){
+  if(verbose > 2){
     std::cout << "sse:\n";
     printVec(sse, smry.num_occupied, 1);
   }
-  fvec_d a_d(K, priors.a);
-  fvec_d b_d(K, priors.b);
-  if(verbose > 1){
-    std::cout << "a_d filled:\n";
-    printVec(a_d, K, 1);
-  }
-  // modify gamma parameters for occupied clusters
-  typedef thrust::tuple<realIter, intIter> tuple1;
-  typedef thrust::zip_iterator<tuple1> zip1;
-  tuple1 tup1 = thrust::tuple<realIter, intIter>(a_d.begin(), smry.Mk.begin());
-  zip1 zp1 = thrust::zip_iterator<tuple1>(tup1);
+  
+  /*** modify gamma parameters for occupied clusters
+  *
+  ***/
+  //a --> a + M * N/2
   modify_gamma_par f1(data.N);
-  thrust::for_each(zp1, zp1 + K, f1);
+  thrust::for_each(thrust::make_zip_iterator(thrust::make_tuple(a_d.begin(), smry.Mk.begin())),
+                   thrust::make_zip_iterator(thrust::make_tuple(a_d.begin(), smry.Mk.begin())) + K,
+                   f1);
+  /*                 
+  *typedef thrust::tuple<realIter, intIter> tuple1;
+  *typedef thrust::zip_iterator<tuple1> zip1;
+  *tuple1 tup1 = thrust::tuple<realIter, intIter>(a_d.begin(), smry.Mk.begin());
+  *zip1 zp1 = thrust::zip_iterator<tuple1>(tup1);thrust::for_each(zp1, zp1 + K, f1);
+  */
   
   if(verbose > 1){
     std::cout << "a transformed:\n";
     printVec(a_d, K, 1);
   }
   
-  typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
-  FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
-  typedef thrust::tuple<FltPermIter, realIter> tuple2;
-  typedef thrust::zip_iterator<tuple2> zip2;
-  tuple2 tup2 = thrust::tuple<FltPermIter, realIter>(b_occ, sse.begin());
-  zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
+  // b --> b + sse/2
   modify_gamma_par f2(1.0);
-  if(verbose > 1){
-    std::cout << "b filled:\n";
-    printVec(b_d, K, 1);
-  }
-  thrust::for_each(zp2, zp2 + smry.num_occupied, f2);
-
+  thrust::for_each(
+    thrust::make_zip_iterator(thrust::make_tuple(thrust::make_permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin()), sse.begin())),
+    thrust::make_zip_iterator(thrust::make_tuple(thrust::make_permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin()), sse.begin())) + smry.num_occupied,
+    f2
+  )
+  /*
+  *typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
+  *FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
+  *typedef thrust::tuple<FltPermIter, realIter> tuple2;
+  *typedef thrust::zip_iterator<tuple2> zip2;
+  *tuple2 tup2 = thrust::tuple<FltPermIter, realIter>(b_occ, sse.begin());
+  *zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
+  *thrust::for_each(zp2, zp2 + smry.num_occupied, f2);
+  */
   if(verbose > 1){
     std::cout << "b transformed:\n";
     printVec(b_d, K, 1);
   }
+  
   // raw pointers
   double *tau2_ptr = thrust::raw_pointer_cast(chain.tau2.data());
   double *a_ptr = thrust::raw_pointer_cast(a_d.data());
@@ -172,7 +188,13 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   if(verbose>1){
     std::cout << "Computing weights...\n";
   }
-  cluster_weights(grid, data, chain, verbose);
+  
+  if(chain.voom){
+    cluster_weights_voom(grid, data, chain, verbose);
+  } else{
+    cluster_weights_no_voom(grid, data, chain, verbose);
+  }
+  
   if(verbose > 2){
     std::cout << "grid:\n";
     printVec(grid, priors.K, data.G);
