@@ -111,7 +111,7 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
   SCIntIter beta_id = getSCIntIter(occupied.begin(), occupied.end(), V);
   thrust::copy(thrust::make_permutation_iterator(beta.begin(), beta_id),
                thrust::make_permutation_iterator(beta.begin(), beta_id) + num_occupied*V,
-               beta_occ);
+               beta_occ.begin());
 
 
   /***
