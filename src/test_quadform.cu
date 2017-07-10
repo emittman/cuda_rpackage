@@ -20,7 +20,8 @@ extern "C" SEXP Rquadform_multipleK(SEXP Rbeta, SEXP Rxtx, SEXP Kv, SEXP Vv){
   SEXP out = PROTECT(allocVector(REALSXP, K));
   double *outp = REAL(out);
   thrust::copy(result.begin(), result.end(), outp);
-  
+ 
+  UNPROTECT(1); 
   return out;
 }
 
@@ -38,7 +39,8 @@ extern "C" SEXP Rquadform_multipleMatch(SEXP Rbeta, SEXP Rxtx, SEXP Gv, SEXP Kv,
   SEXP out = PROTECT(allocVector(REALSXP, K));
   double *outp = REAL(out);
   thrust::copy(result.begin(), result.end(), outp);
-  
+  UNPROTECT(1); 
+
   return out;
 }
 
@@ -56,7 +58,8 @@ extern "C" SEXP Rquadform_multipleGK(SEXP Rbeta, SEXP Rxtx, SEXP Gv, SEXP Kv, SE
   SEXP out = PROTECT(allocVector(REALSXP, G*K));
   double *outp = REAL(out);
   thrust::copy(result.begin(), result.end(), outp);
-  
+  UNPROTECT(1); 
+
   return out;
 }
 
