@@ -103,7 +103,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
     thrust::make_zip_iterator(thrust::make_tuple(thrust::make_permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin()), sse.begin())),
     thrust::make_zip_iterator(thrust::make_tuple(thrust::make_permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin()), sse.begin())) + smry.num_occupied,
     f2
-  )
+  );
   /*
   *typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
   *FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
@@ -189,7 +189,7 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
     std::cout << "Computing weights...\n";
   }
   
-  if(chain.voom){
+  if(data.voom){
     cluster_weights_voom(grid, data, chain, verbose);
   } else{
     cluster_weights_no_voom(grid, data, chain, verbose);
