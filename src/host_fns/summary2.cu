@@ -109,7 +109,8 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
   
   // indices for occupied betas
   SCIntIter beta_id = getSCIntIter(occupied.begin(), occupied.end(), V);
-  thrust::permutation_iterator<realIter, SCIntIter> beta2cp = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), beta_id);
+  typedef thrust::permutation_iterator<realIter, SCIntIter> gSCiter;
+  gSCiter beta2cp = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), beta_id);
   thrust::copy(beta2cp, beta2cp + num_occupied*V, beta_occ);
 
 
