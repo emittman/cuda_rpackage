@@ -25,7 +25,7 @@ extern "C" SEXP Rquadform_multipleK(SEXP Rbeta, SEXP Rxtx, SEXP Kv, SEXP Vv){
   return out;
 }
 
-extern "C" SEXP Rquadform_multipleMatch(SEXP Rbeta, SEXP Rxtx, SEXP Gv, SEXP Kv, SEXP Vv){
+extern "C" SEXP Rquadform_multipleMatch(SEXP Rbeta, SEXP Rxtx, SEXP Kv, SEXP Vv){
 
   double *betaptr = REAL(Rbeta), *xtxptr = REAL(Rxtx);
   int G = INTEGER(Gv)[0], K = INTEGER(Kv)[0], V = INTEGER(Vv)[0];
