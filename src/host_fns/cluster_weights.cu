@@ -21,7 +21,11 @@ void cluster_weights_voom(fvec_d &big_grid, data_t &data, chain_t &chain, int ve
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
   gRepEach<realIter>::iterator yty_iter = getGRepEachIter(data.yty.begin(), data.yty.end(), chain.K, 1);
   realIter bxxb_iter = bxxb.begin();
-  weight_zip_voom zipped = thrust::zip_iterator<weight_tup_voom>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
+  weight_tup_voom tup = thrust::tuple<realIter, gRepTimes<realIter>::iterator,gRepTimes<realIter>::iterator,
+                                      gRepEach<realIter>::iterator, gRepTimes<realIter>::iterator>(
+                                      big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter
+                                      );
+  //weight_zip_voom zipped = thrust::zip_iterator<weight_tup_voom>(thrust::make_tuple(big_grid.begin(), pi_iter, tau_iter, yty_iter, bxxb_iter));
   clust_prob f(data.N);
   if(verbose>0){
     std::cout << "final weight computation (sum)...\n";
