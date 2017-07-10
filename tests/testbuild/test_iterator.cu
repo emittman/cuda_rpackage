@@ -8,7 +8,7 @@
 int main(){
 
   fvec vec(8);
-  fvec vec2(2);
+  fvec vec2(4);
   fvec out(20);
   
   thrust::sequence(vec.begin(), vec.end(), 0, 1);
@@ -29,7 +29,7 @@ int main(){
   thrust::copy(out.begin(), out.end(), std::ostream_iterator<double>(std::cout, " "));
   
   std::cout <<"\n repEach(5, 2), vec2\n";
-  gCyclicEach<realIter>::iterator cycleit = getGCyclicEachIter(vec2.begin(), vec2.end(), 5, 2, 1);
+  gCyclicEach<realIter>::iterator cycleit = getGCyclicEachIter(vec2.begin(), vec2.end(), 5, 2, 2);
   thrust::copy(cycleit, cycleit + 20, out.begin());
   thrust::copy(out.begin(), out.end(), std::ostream_iterator<double>(std::cout, " "));
   std::cout << "\n";
