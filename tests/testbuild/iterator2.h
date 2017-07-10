@@ -37,7 +37,7 @@ struct cyclicRepEach: public thrust::unary_function<int, int>{
   int len;
   int incr;
   int n_in_cycle;
-  __host__ __device__ cyclicRepEach(int len=1, int incr=1, int n_in_cycle): len(len), incr(incr), n_in_cycle(n_inc_cycle){}
+  __host__ __device__ cyclicRepEach(int len=1, int incr=1, int n_in_cycle=1): len(len), incr(incr), n_in_cycle(n_in_cycle){}
   __host__ __device__ int operator()(int x){
     return ((x/len) % n_in_cycle)*incr; //integer division
   }
