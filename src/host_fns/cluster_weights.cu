@@ -43,7 +43,7 @@ void cluster_weights_no_voom(fvec_d &big_grid, data_t &data, chain_t &chain, int
     std::cout << "quadratic form btxtxb...\n";
   }
   fvec_d bxxb(chain.K);
-  quadform_multipleK(chain.beta, data.xtx, bxxb, chain.G, chain.K, chain.V);
+  quadform_multipleK(chain.beta, data.xtx, bxxb, chain.K, chain.V);
 
   gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(chain.pi.begin(), chain.pi.end(), chain.K, 1);
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
