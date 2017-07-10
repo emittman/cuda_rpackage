@@ -8,7 +8,7 @@
 #include "curand_kernel.h"
 #include "transpose.h"
 #include "beta_hat.h"
-#include "quad_form2.h"
+#include "quadform2.h"
 #include "multi_dot_product.h"
 #include <thrust/copy.h>
 #include <thrust/reduce.h>
