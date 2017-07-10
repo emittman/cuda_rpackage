@@ -19,11 +19,11 @@ int main(){
   gRepEach<intIter>::iterator eachit = getGRepEachIter(vec.begin(), vec.end(), 5, 2);
   thrust::copy(eachit, eachit + 20, out.begin());
   thrust::copy(out.begin(), out.end(), std::ostream_iterator<int>(std::cout, " "));
-  
+  /*
   std::cout <<"\n repEach(5, 2), vec2";
   eachit = getGRepEachIter(vec2.begin(), vec2.end(), 5, 2);
   thrust::copy(eachit, eachit + 20, out.begin());
-  thrust::copy(out.begin(), out.end(), std::ostream_iterator<int>(std::cout, " "));
+  thrust::copy(out.begin(), out.end(), std::ostream_iterator<int>(std::cout, " "));*/
 
   return 0;
 }
