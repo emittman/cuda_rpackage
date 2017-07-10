@@ -109,16 +109,16 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
   
   // indices for occupied betas
   SCIntIter beta_id = getSCIntIter(occupied.begin(), occupied.end(), V);
-  typedef thrust::permutation_iterator<realIter, SCIntIter> gSCiter;
-  gSCiter beta2cp = thrust::permutation_iterator<realIter, SCIntIter>(beta.begin(), beta_id);
-  thrust::copy(beta2cp, beta2cp + num_occupied*V, beta_occ);
+  thrust::copy(thrust::make_permutation_iterator(beta.begin(), beta_id),
+               thrust::make_permutation_iterator(beta.begin(), beta_id) + num_occupied*V,
+               beta_occ);
 
 
   /***
   * calculate t(beta)*xtx_k*beta --> sse
   ***/
   
-  quadform_multipleMatch(beta_occ, xtx_sums, sse, num_occupied, V);
+  quad_form_multipleMatch(beta_occ, xtx_sums, sse, num_occupied, V);
 
   // Print value
   if(verbose>0){
@@ -143,7 +143,7 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
   }
   
   /***
-  * add three numbers together
+  * add three numberstogether
   ***/
   tup3 my_tuple = thrust::make_tuple(sse.begin(), ytxb.begin(), yty_sums.begin());
   zip3 my_zip = thrust::make_zip_iterator(my_tuple);
