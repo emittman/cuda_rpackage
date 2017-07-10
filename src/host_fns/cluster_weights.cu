@@ -38,13 +38,21 @@ void cluster_weights_no_voom(fvec_d &big_grid, data_t &data, chain_t &chain, int
     std::cout << "big matrix multiply...\n";
   }
   big_matrix_multiply(chain.beta, data.xty, big_grid, data.V, chain.K, data.V, data.G);
-  
+  if(verbose>0){
+    printVec(big_grid, K, G);
+  }
   if(verbose>0){
     std::cout << "quadratic form btxtxb...\n";
+    
   }
+  
   fvec_d bxxb(chain.K);
   quadform_multipleK(chain.beta, data.xtx, bxxb, chain.K, chain.V);
-
+  
+  if(verbose>0){
+    printVec(bxxb, K, 1)
+  }
+  
   gRepTimes<realIter>::iterator pi_iter = getGRepTimesIter(chain.pi.begin(), chain.pi.end(), chain.K, 1);
   gRepTimes<realIter>::iterator tau_iter = getGRepTimesIter(chain.tau2.begin(), chain.tau2.end(), chain.K, 1);
   gRepEach<realIter>::iterator yty_iter = getGRepEachIter(data.yty.begin(), data.yty.end(), chain.K, 1);
