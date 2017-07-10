@@ -100,8 +100,7 @@ typedef thrust::tuple<realIter,realIter,realIter> tup3;
 typedef thrust::zip_iterator<tup3> zip3;
 
 void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
-
-  quad_form_multi(xtx_sums, beta, sse, num_occupied, V, false);
+  quad_form_multipleMatch(beta, xtx_sums, sse, num_occupied, V);
   
   // Print value of $\beta_k^{\top} xtx_sums[k] \beta_k$
   if(verbose>0){
