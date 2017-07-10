@@ -8,8 +8,8 @@ int main(){
   ivec vec(10);
   ivec vec2(2);
   ivec out(20);
-  thrust::sequence(vec.begin(), vec.end(), 0, 1);
-  thrust::sequence(vec2.begin(), vec2.end(), 0, 1);
+  //thrust::sequence(vec.begin(), vec.end(), 0, 1);
+  //thrust::sequence(vec2.begin(), vec2.end(), 0, 1);
   std::cout << "initialized vec:\n";
   //thrust::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
   /*
