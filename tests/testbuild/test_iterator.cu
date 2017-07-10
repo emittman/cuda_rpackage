@@ -7,7 +7,7 @@
 
 int main(){
 
-  fvec vec(10);
+  fvec vec(8);
   fvec vec2(2);
   fvec out(20);
   
@@ -27,9 +27,10 @@ int main(){
   gRepEach<realIter>::iterator eachit = getGRepEachIter(vec.begin(), vec.end(), 5, 2);
   thrust::copy(eachit, eachit + 20, out.begin());
   thrust::copy(out.begin(), out.end(), std::ostream_iterator<double>(std::cout, " "));
+  
   std::cout <<"\n repEach(5, 2), vec2\n";
-  eachit = getGRepEachIter(vec2.begin(), vec2.end(), 5, 2);
-  thrust::copy(eachit, eachit + 20, out.begin());
+  gCyclicEach<realIter>::iterator cycleit = getGCycleEachIter(vec2.begin(), vec2.end(), 5, 2, 1);
+  thrust::copy(cycleit, cycleit + 20, out.begin());
   thrust::copy(out.begin(), out.end(), std::ostream_iterator<double>(std::cout, " "));
   std::cout << "\n";
 

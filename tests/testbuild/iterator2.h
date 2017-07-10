@@ -33,13 +33,23 @@ struct repTimes: public thrust::unary_function<int, int>{
   }
 };
 
+struct cyclicRepEach: public thrust::unary_function<int, int>{
+  int len;
+  int incr;
+  int n_in_cycle;
+  __host__ __device__ cyclicRepEach(int len=1, int incr=1, int n_in_cycle): len(len), incr(incr), n_in_cycle(n_inc_cycle){}
+  __host__ __device__ int operator()(int x){
+    return ((x/len) % n_in_cycle)*incr; //integer division
+  }
+};
+
 //typedefs for custom fancy iterators (I)
 typedef thrust::device_vector<double>::iterator realIter;
 typedef thrust::device_vector<int>::iterator intIter;
 typedef thrust::counting_iterator<int> countIter;
 typedef thrust::transform_iterator<repTimes, countIter> repTimesIter;
 typedef thrust::transform_iterator<repEach, countIter> repEachIter;
-
+typedef thrust::transform_iterator<cyclicRepEach, countIter> cyclicEachIter;
 
 //Just gets an iterator it where it[i] = i
 countIter getCountIter(){
@@ -63,6 +73,13 @@ repEachIter getRepEachIter(int len, int incr, countIter countIt = getCountIter()
   return repIt;
 }
 
+//Gets an iterator for generating rep(1:infinity, each=each) * incr
+cyclicEachIter getCyclicEachIter(int len, int incr, int n_in_cycle, countIter countIt = getCountIter()){
+  // repeat each of i*incr, len times, i>=0
+  cyclicRepEach g(len, incr, n_in_cycle);
+  cyclicEachIter repIt = thrust::transform_iterator<cyclicRepEach, countIter>(countIt, g);
+  return repIt;
+}
 
 //For generating rep(arb_seq, times=infinity)
 template<typename T>
@@ -91,6 +108,20 @@ typename gRepEach<T>::iterator getGRepEachIter(T begin, T end, int len, int incr
   // repeats each element along {0, incr, 2*incr, ...} len times
   repEachIter repeat = getRepEachIter(len, incr, countIt);
   typename gRepEach<T>::iterator gRep = thrust::permutation_iterator<T, repEachIter>(begin, repeat);
+  return gRep;
+}
+
+//For generating rep( rep(arb_seq, each=len), times=infinity)
+template<typename T>
+struct gCyclicEach{
+  typedef thrust::permutation_iterator<T, cyclicEachIter> iterator;
+};
+//Gets an iterator for generating rep(arb_seq, each= len)
+template<typename T>
+typename gCyclicEach<T>::iterator getGCyclicEachIter(T begin, T end, int len, int incr=1, int n_in_cycle=1, countIter countIt = getCountIter()){
+  // repeats each element along {0, incr, 2*incr, ...} len times
+  cyclicEachIter repeat = getCyclicEachIter(len, incr, countIt);
+  typename gCyclicEach<T>::iterator gRep = thrust::permutation_iterator<T, cyclicEachIter>(begin, repeat);
   return gRep;
 }
 
