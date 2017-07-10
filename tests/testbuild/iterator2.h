@@ -116,10 +116,12 @@ template<typename T>
 struct gCyclicEach{
   typedef thrust::permutation_iterator<T, cyclicEachIter> iterator;
 };
+
 //Gets an iterator for generating rep(arb_seq, each= len)
+// repeats each element along {0, incr, 2*incr, ...} len times
 template<typename T>
 typename gCyclicEach<T>::iterator getGCyclicEachIter(T begin, T end, int len, int incr=1, int n_in_cycle=1, countIter countIt = getCountIter()){
-  // repeats each element along {0, incr, 2*incr, ...} len times
+  
   cyclicEachIter repeat = getCyclicEachIter(len, incr, n_in_cycle, countIt);
   typename gCyclicEach<T>::iterator gRep = thrust::permutation_iterator<T, cyclicEachIter>(begin, repeat);
   return gRep;

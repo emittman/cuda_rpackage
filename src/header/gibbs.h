@@ -6,7 +6,7 @@
 #include "chain.h"
 #include "distribution.h"
 #include "cluster_probability.h"
-#include "quad_form.h"
+#include "quadform2.h"
 #include "multinomial.h"
 #include "beta_hat.h"
 #include "construct_prec.h"
