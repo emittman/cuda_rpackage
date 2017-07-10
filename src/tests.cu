@@ -12,7 +12,6 @@
 #include "header/construct_prec.h"
 #include "header/multi_dot_product.h"
 #include "header/gibbs.h"
-#include "header/quad_form.h"
 #include "header/running_mean.h"
 #include <R.h>
 #include <Rinternals.h>
