@@ -11,7 +11,7 @@ x <- matrix(rnorm(dim*n), dim, n)
 
 resultR <- apply(x, 2, function(xj) t(xj) %*% A %*% xj)
 
-resultC <- Rquad_form_multi(A, as.numeric(x), n, dim)
+resultC <- Rquadform_multipleK(A, as.numeric(x), n, dim)
 
 test_that("Results are equiv.", {
   expect_equal(resultR, resultC)
