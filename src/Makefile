@@ -10,11 +10,11 @@ CUDA_PATH = /usr/local/cuda-8.0/lib64
 
 LIBS = -lcublas_device -lcublas -lcurand -lcuda -lcudart
 
-DL_LIBS = dev_link/libquadform.a dev_link/libbetahat.a dev_link/libmultiprod.a
+DL_LIBS = dev_link/libbetahat.a dev_link/libmultiprod.a
 
 DL_PATH = ./dev_link
 
-DL_FLAGS = -lquadform -lbetahat -lmultiprod
+DL_FLAGS = -lbetahat -lmultiprod
 
 TARGET = cudarpackage.so
 
@@ -93,8 +93,8 @@ util/cuda_usage.o: util/cuda_usage.cu
 	nvcc -c $(NVCC_FLAGS) $< -o $@ -I$(R_INC) -lcudart
 
 #device-linked functions
-dev_link/libquadform.a: dev_link/quad_form.o
-	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
+#dev_link/libquadform.a: dev_link/quad_form.o
+#	nvcc -lib $(NVCC_FLAGS) $< -o $@ -lcublas_device
 
 #dev_link/quad_form.o: dev_link/quad_form.cu
 #	nvcc -dc $(NVCC_FLAGS) $< -o $@ -lcublas_device
