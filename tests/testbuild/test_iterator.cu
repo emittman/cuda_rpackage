@@ -5,9 +5,9 @@
 
 int main(){
 
-  ivec_d vec(10);
-  ivec_d vec2(2);
-  ivec_d out(20);
+  ivec vec(10);
+  ivec vec2(2);
+  ivec out(20);
   thrust::sequence(vec.begin(), vec.end(), 0, 1);
   thrust::sequence(vec2.begin(), vec2.end(), 0, 1);
   std::cout << "initialized vec:\n";
