@@ -10,8 +10,7 @@ void big_matrix_multiply(fvec_d &A, fvec_d &B, fvec_d &big_grid, int a1, int a2,
 
 // thrust boilerplate to use for_each on zip_iterator
 typedef thrust::tuple<fvec_d::iterator, gRepTimes<realIter>::iterator,
-                      gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator,
-                      gRepTimes<realIter>::iterator> weight_tup_voom;
+                      gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator,realIter> weight_tup_voom;
 typedef thrust::tuple<fvec_d::iterator, gRepTimes<realIter>::iterator,
                       gRepTimes<realIter>::iterator, gRepEach<realIter>::iterator,
                       gRepTimes<realIter>::iterator> weight_tup_no_voom;
