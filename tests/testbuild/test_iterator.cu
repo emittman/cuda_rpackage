@@ -1,6 +1,8 @@
 #include "iterator2.h"
 #include <thrust/sequence.h>
 #include <thrust/copy.h>
+#include <thrust/transform.h>
+#include <thrust/functional.h>
 #include <iostream>
 
 int main(){
@@ -10,8 +12,10 @@ int main(){
   thrust::device_vector<int> out(20);
   
   thrust::sequence(vec.begin(), vec.end(), 0, 1);
+  thrust::transform(vec.begin(), vec.end(), vec.begin(), thrust::placeholders::_1 + 0.1);
   thrust::sequence(vec2.begin(), vec2.end(), 0, 1);
-  
+  thrust::transform(vec2.begin(), vec2.end(), vec2.begin(), thrust::placeholders::_1 + 0.1);
+
   std::cout << "initialized vec:\n";
   
   thrust::copy(vec.begin(), vec.end(), std::ostream_iterator<int>(std::cout, " "));
