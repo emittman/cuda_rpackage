@@ -118,7 +118,7 @@ void summary2::sumSqErr(fvec_d &sse, fvec_d &beta, int verbose=0){
   * calculate t(beta)*xtx_k*beta --> sse
   ***/
   
-  quad_form_multipleMatch(beta_occ, xtx_sums, sse, num_occupied, V);
+  quadform_multipleMatch(beta_occ, xtx_sums, sse, num_occupied, V);
 
   // Print value
   if(verbose>0){
