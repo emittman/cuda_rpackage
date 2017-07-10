@@ -1,6 +1,5 @@
 #include "header/cuda_usage.h"
 #include "header/cholesky.h"
-#include "header/quad_form.h"
 #include "header/summary2.h"
 #include "header/chain.h"
 #include "header/iterator.h"
@@ -185,7 +184,7 @@ extern "C" SEXP Rbeta_rng(SEXP Rseed, SEXP a, SEXP b){
   return out;
 }
 
-extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
+/*extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
 
   double *Aptr = REAL(A), *xptr = REAL(x);
   int N = INTEGER(n)[0], D = INTEGER(dim)[0];
@@ -202,7 +201,7 @@ extern "C" SEXP Rquad_form_multi(SEXP A, SEXP x, SEXP n, SEXP dim){
 
   UNPROTECT(1);
   return y;
-}
+}*/
 
 extern"C" SEXP Rsummary2(SEXP zeta, SEXP ytyR, SEXP ytxR, SEXP xtyR, SEXP G, SEXP V, SEXP K){
   int g = INTEGER(G)[0], v = INTEGER(V)[0], k = INTEGER(K)[0];
