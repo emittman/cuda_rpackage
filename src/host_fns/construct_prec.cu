@@ -17,7 +17,7 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   //fill occupied ids with xtx_sums
   SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V*V);
   thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.begin()+smry.num_occupied*V*V,
-               thrust::make_permutation_iterator(prec.begin(), colIter))
+               thrust::make_permutation_iterator(prec.begin(), colIter));
   /* OLD VERSION TBD
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec_begin, colIter);
