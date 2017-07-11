@@ -5,8 +5,8 @@ G <- 200
 V <- 2
 N <- 5
 
-X <- matrix(rnorm(N*V), N, V)
-y <- matrix(rnorm(N*G), G, N)
+X <- matrix(rnorm(N*V*V), N*V, V)
+y <- matrix(exp(rnorm(N*V*G)), G, N*V)
 
 lambda2 <- rlnorm(V)
 mu_0 <- rnorm(V)
@@ -19,8 +19,9 @@ pi <- rep(1/K, K)
 alpha <- 1
 
 chain <- formatChain(beta, pi, tau2, zeta, alpha)
-data1 <- formatData(y, X, transform_y = identity, test_voom=T)
-data2 <- formatData(y, X, transform_y = identity, test_voom=F)
+data0 <- formatData(y, X, voom = T)
+data1 <- formatData(y, X, test_voom=T)
+data2 <- formatData(y, X, test_voom=F)
 
 xtx_rep <- rep(data2$xtx, times=K)
 dim(xtx_rep) <- c(V, V, K)
@@ -49,3 +50,10 @@ test_that("Correct values",{
   expect_equal(Rprec, Cprec1)
   expect_equal(Rprec, Cprec2)
 })
+
+# Rprec0 <- sapply(0:(K-1), function(k){
+#   rowSums(data0$xtx[,zeta == K])
+# })
+# test_that("Correct values (voom case)",{
+#   expect_equal()
+# })

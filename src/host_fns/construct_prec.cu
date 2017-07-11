@@ -6,38 +6,53 @@ __host__ __device__ void diagAdd::operator()(diag_tup_el Tup){
 
 void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &chain, int verbose = 0){
   int K = priors.K, V = smry.V;
+  
+  //check inputs
   if(prec.size() < K*V*V) std::cout <<"DIMENSION MISMATCH!\n";
 
   //iterators for reuse
   realIter prec_begin = prec.begin();
   realIter prec_end   = prec.end();
   
-  //move xtx_sums to occupied
+  //fill occupied ids with xtx_sums
   SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V*V);
+  thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.begin()+smry.num_occupied*V*V,
+               thrust::make_permutation_iterator(prec.begin(), colIter))
+  /* OLD VERSION TBD
   typedef thrust::permutation_iterator<realIter, SCIntIter> gColIter;
   gColIter clustOcc = thrust::permutation_iterator<realIter, SCIntIter>(prec_begin, colIter);
-
   thrust::copy(smry.xtx_sums.begin(), smry.xtx_sums.begin()+smry.num_occupied*V*V, clustOcc);
+  */
   
+  // check iterator, TBD
   if(verbose>0){
     std::cout << "\nSelect occupied columns iterator:\n";
     thrust::copy(colIter, colIter + smry.num_occupied*V*V, std::ostream_iterator<int>(std::cout, " "));
     std::cout << "\nxtx_sums mapped to clusters:\n";
     printVec(prec, V*V, priors.K);
   }
+  
   //multiply by tau2
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
   transform(prec_begin, prec_end, tau2_rep, prec_begin, thrust::multiplies<double>());
+  
   if(verbose>0){
     std::cout << "xtx_sums * tau2" << std::endl;
     printVec(prec, V, K*V);
   }
-  //modify diagonal; increment by prior prec
+  
+  // increment diagonal by lambda2 (prior precision)
   diagAdd f;
   gDiagonal<realIter>::iterator prec_diag = getGDiagIter(prec_begin, prec_end, V);
   gRepTimes<realIter>::iterator lambda2_iter  = getGRepTimesIter(priors.lambda2.begin(), priors.lambda2.end(), V, 1);
   diag_zip zipped = thrust::zip_iterator<diag_tup>(thrust::make_tuple(prec_diag, lambda2_iter));
   thrust::for_each(zipped, zipped+K*V, f);
+  //POSSIBLE REPLACEMENT CODE
+  /*
+  thrust::for_each(thrust::make_zip_iterator(thrust::make_tuple(prec_diag, lambda2_iter)),
+                   thrust::make_zip_iterator(thrust::make_tuple(prec_diag, lambda2_iter)+K*V),
+                   f)
+  */
 
 }
 
