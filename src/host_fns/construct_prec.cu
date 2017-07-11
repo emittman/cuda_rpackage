@@ -11,8 +11,8 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   if(prec.size() < K*V*V) std::cout <<"DIMENSION MISMATCH!\n";
 
   //iterators for reuse
-  realIter prec_begin = prec.begin();
-  realIter prec_end   = prec.end();
+  //realIter prec_begin = prec.begin();
+  //realIter prec_end   = prec.end();
   
   //fill occupied ids with xtx_sums
   SCIntIter colIter = getSCIntIter(smry.occupied.begin(), smry.occupied.end(), V*V);
@@ -21,16 +21,12 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   
   //multiply by tau2
   gRepEach<realIter>::iterator tau2_rep = getGRepEachIter(chain.tau2.begin(), chain.tau2.end(), V*V, 1);
-  transform(prec_begin, prec_end, tau2_rep, prec_begin, thrust::multiplies<double>());
+  transform(prec.begin(), prec.end(), tau2_rep, prec.begin(), thrust::multiplies<double>());
   
   // increment diagonal by lambda2 (prior precision)
   diagAdd f;
-  gDiagonal<realIter>::iterator prec_diag = getGDiagIter(prec_begin, prec_end, V);
+  gDiagonal<realIter>::iterator prec_diag = getGDiagIter(prec.begin(), prec.end(), V);
   gRepTimes<realIter>::iterator lambda2_iter  = getGRepTimesIter(priors.lambda2.begin(), priors.lambda2.end(), V, 1);
-  //diag_zip zipped = thrust::zip_iterator<diag_tup>(thrust::make_tuple(prec_diag, lambda2_iter));
-  //thrust::for_each(zipped, zipped+K*V, f);
-  //POSSIBLE REPLACEMENT CODE
-  
   thrust::for_each(thrust::make_zip_iterator(thrust::make_tuple(prec_diag, lambda2_iter)),
                    thrust::make_zip_iterator(thrust::make_tuple(prec_diag, lambda2_iter))+K*V,
                    f);
