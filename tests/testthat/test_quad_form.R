@@ -11,27 +11,40 @@ x <- matrix(rnorm(dim*n), dim, n)
 
 resultR_K <- apply(x, 2, function(xj) t(xj) %*% A %*% xj)
 
-resultC_K <- Rquadform_multipleK(A, as.numeric(x), n, dim)
+resultC_K <- .Call("Rquadform_multipleK", as.numeric(x),as.numeric(A), 
+                   as.integer(n), as.integer(dim))
 
 test_that("multipleK", {
   expect_equal(resultR_K, resultC_K)
 })
 
-G <- 50
+G <- 100
 
 A <- sapply(1:G, function(g){
   Asqrt <- matrix(rnorm(dim*dim), dim, dim)
   t(Asqrt) %*% Asqrt
 })
-resultsR_GK <- as.numeric(sapply(1:G, function(g){
+
+resultR_Match <- as.numeric(sapply(1:n, function(gk){
+  t(x[,gk]) %*% matrix(A[,gk], dim, dim) %*% x[,gk]
+}))
+
+resultC_Match <- .Call("Rquadform_multipleMatch", as.numeric(x), as.numeric(A),
+                       as.integer(n), as.integer(dim))
+
+test_that("multipleMatch", {
+  expect_equal(resultR_Match, resultC_Match)
+})
+
+resultR_GK <- as.numeric(sapply(1:G, function(g){
   xtA <- t(x) %*% matrix(A[,g], dim, dim)
   sapply(1:n, function(k){
     xtA[k,] %*% x[,k]
   })
 }))
   
-resultC_GK <- .Call("Rquadform_multipleGK", as.numeric(A),
-                    as.numeric(x), as.integer(G), as.integer(n), as.integer(dim))
+resultC_GK <- .Call("Rquadform_multipleGK", as.numeric(x),as.numeric(A), 
+                    as.integer(G), as.integer(n), as.integer(dim))
 
 test_that("multipleGK", {
   expect_equal(resultR_GK, resultC_GK)
