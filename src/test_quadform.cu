@@ -50,7 +50,7 @@ extern "C" SEXP Rquadform_multipleGK(SEXP Rbeta, SEXP Rxtx, SEXP Gv, SEXP Kv, SE
   int G = INTEGER(Gv)[0], K = INTEGER(Kv)[0], V = INTEGER(Vv)[0];
 
   fvec_d beta(betaptr, betaptr+K*V);
-  fvec_d xtx(xtxptr, xtxptr+V*V*K);
+  fvec_d xtx(xtxptr, xtxptr+V*V*G);
   fvec_d result(G*K);
   
   quadform_multipleGK(beta, xtx, result, G, K, V);
