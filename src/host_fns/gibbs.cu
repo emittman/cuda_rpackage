@@ -85,12 +85,6 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   thrust::for_each(thrust::make_zip_iterator(thrust::make_tuple(a_d.begin(), smry.Mk.begin())),
                    thrust::make_zip_iterator(thrust::make_tuple(a_d.begin(), smry.Mk.begin())) + K,
                    f1);
-  /*                 
-  *typedef thrust::tuple<realIter, intIter> tuple1;
-  *typedef thrust::zip_iterator<tuple1> zip1;
-  *tuple1 tup1 = thrust::tuple<realIter, intIter>(a_d.begin(), smry.Mk.begin());
-  *zip1 zp1 = thrust::zip_iterator<tuple1>(tup1);thrust::for_each(zp1, zp1 + K, f1);
-  */
   
   if(verbose > 1){
     std::cout << "a transformed:\n";
@@ -104,15 +98,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
     thrust::make_zip_iterator(thrust::make_tuple(thrust::make_permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin()), sse.begin())) + smry.num_occupied,
     f2
   );
-  /*
-  *typedef thrust::permutation_iterator<realIter, intIter> FltPermIter;
-  *FltPermIter b_occ = thrust::permutation_iterator<realIter, intIter>(b_d.begin(), smry.occupied.begin());
-  *typedef thrust::tuple<FltPermIter, realIter> tuple2;
-  *typedef thrust::zip_iterator<tuple2> zip2;
-  *tuple2 tup2 = thrust::tuple<FltPermIter, realIter>(b_occ, sse.begin());
-  *zip2 zp2 = thrust::zip_iterator<tuple2>(tup2);
-  *thrust::for_each(zp2, zp2 + smry.num_occupied, f2);
-  */
+
   if(verbose > 1){
     std::cout << "b transformed:\n";
     printVec(b_d, K, 1);
@@ -123,7 +109,7 @@ void draw_tau2(curandState *states, chain_t &chain, priors_t &priors, data_t &da
   double *a_ptr = thrust::raw_pointer_cast(a_d.data());
   double *b_ptr = thrust::raw_pointer_cast(b_d.data());
   
-  //generate
+  //generate new cluster precisions
   int blocksize = 512;
   int num_blocks = K/blocksize + 1;
   getGamma<<<num_blocks, blocksize>>>(states, K, a_ptr, b_ptr, tau2_ptr, false);
@@ -142,18 +128,30 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
     std::cout << "Tk init:\n";
     printVec(Tk, K, 1);
   }
+  
+  /***
+  * Updated beta paramaters for Vk, k=1...K-1
+  */
+  //// betapar_1 = Mk[i] + 1
+  thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
+  
+  //// betapar_2 <- sum j = i+1 to K {Mk[j]} + alpha
+  // Tail sums
   thrust::exclusive_scan(summary.Mk.rbegin(), summary.Mk.rend(), Tk.rbegin());
   if(verbose > 1){
     std::cout << "Tk filled:\n";
     printVec(Tk, K, 1);
   }
+  // add alpha ...
   thrust::transform(Tk.begin(), Tk.end(), Tk.begin(), thrust::placeholders::_1 + chain.alpha);
   if(verbose > 1){
     std::cout <<"Tk transformed";
     printVec(Tk, K, 1);
   }
-  thrust::transform(summary.Mk.begin(), summary.Mk.end(), Mkp1.begin(), thrust::placeholders::_1 + 1.0);
   
+  /***
+  * Generate new log Vk's
+  ***/
   int blocksize = 512;
   int num_blocks = (K-1)/blocksize + 1;
   getBeta<<<num_blocks, blocksize>>>(states, K-1, thrust::raw_pointer_cast(Mkp1.data()),
@@ -167,12 +165,17 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   
   fvec_d Ck(K, 0.0);
   
+  /***
+  * log pi <- log(V[k]) + sum_{j<k} log(1 - exp(V[k]))
+  ***/
+  // trailing log product
   transform_inclusive_scan(Vk.begin(), Vk.end()-1, Ck.begin()+1, log_1m_exp(), thrust::plus<double>());
   
   if(verbose > 1){
     std::cout << "Ck:\n";
     printVec(Ck, K, 1);
   }
+  // add log(Vk) ...
   transform(Vk.begin(), Vk.end(), Ck.begin(), chain.pi.begin(), thrust::plus<double>());
   if(verbose > 1){
     std::cout << "log pi:\n";
@@ -184,6 +187,9 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
   if(verbose>1){
     std::cout << "Sampling zeta...\n";
   }
+  /***
+  * Calculate log(pi_k * p(y_g|theta_k)), g=1,...,G, k=1,...,K
+  ***/
   fvec_d grid(data.G*priors.K);
   if(verbose>1){
     std::cout << "Computing weights...\n";
@@ -199,6 +205,10 @@ void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &prio
     std::cout << "grid:\n";
     printVec(grid, priors.K, data.G);
   }
+  
+  /***
+  * normalize log weights and use to sample one index each g
+  ***/
   if(verbose>1){
     std::cout << "Mutinomial samping...\n";
   }
