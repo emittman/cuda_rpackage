@@ -33,7 +33,7 @@ void construct_prec(fvec_d &prec, summary2 &smry, priors_t &priors, chain_t &cha
   
   thrust::for_each(thrust::make_zip_iterator(thrust::make_tuple(prec_diag, lambda2_iter)),
                    thrust::make_zip_iterator(thrust::make_tuple(prec_diag, lambda2_iter))+K*V,
-                   f)
+                   f);
   
 
 }
