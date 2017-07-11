@@ -17,7 +17,7 @@ __host__ __device__ void quadform(double *x, double *A, double *out, int V) {
     tmp1 = x[i];
     tmp2 += tmp1*tmp1*A[i * (V+1)];
     for(int j=i+1; j<V; j++){
-      tmp2 += x[j]*tmp1*A[j+i*V];
+      tmp2 += 2*x[j]*tmp1*A[j+i*V];
     }
   }
   *out = tmp2;
