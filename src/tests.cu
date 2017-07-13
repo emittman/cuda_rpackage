@@ -296,12 +296,23 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
     // get cluster summaries
   summary2 smry(k, zeta_d, data);
   
+  fvec_d beta(REAL(Rbeta), REAL(Rbeta) + K*data.V);
+  fvec_d sse_d(smry.num_occupied);
+
+  std::cout << "beta:\n";
+  printVec(beta, data.V, K);
+  
   std::cout << "xty sums:\n";
   printVec(smry.xty_sums, smry.V, smry.num_occupied);
   
-  fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied*data.V);
-  fvec_d sse_d(smry.num_occupied);
-    // calculate SSE for given value of beta
+  std::cout << "yty sums:\n";
+  printVec(smry.yty_sums, smry.num_occupied, 1);
+  
+  std::cout << "xtx sums:\n";
+  printVec(smry.xtx_sums, smry.V*smry.V, smry.num_occupied);
+  
+
+  // calculate SSE for given value of beta
   smry.sumSqErr(sse_d, beta, 1);
     //transfer to host vector
   fvec_h sse_h(smry.num_occupied);
