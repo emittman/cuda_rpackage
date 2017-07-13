@@ -296,6 +296,9 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
     // get cluster summaries
   summary2 smry(k, zeta_d, data);
   
+  std::cout << "xty sums:\n";
+  printVec(smry.xty_sums, smry.V, smry.num_occupied);
+  
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied*data.V);
   fvec_d sse_d(smry.num_occupied);
     // calculate SSE for given value of beta
