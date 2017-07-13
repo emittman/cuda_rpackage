@@ -19,7 +19,7 @@ for(i in 1:3){
 
   data <- formatData(y, X, transform_y = identity)
 
-  sse <- .Call("RsumSqErr", data, zeta, K, beta)
+  sse <- .Call("RsumSqErr", data, zeta, K, beta, as.integer(0))
 
   k_occ <- as.numeric(names(table(zeta)))+1
   Mk <- sapply(1:K, function(k) sum(zeta == k-1))

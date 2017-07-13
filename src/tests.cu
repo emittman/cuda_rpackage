@@ -287,8 +287,8 @@ extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
   return out;
 }
 
-extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
-  int k = INTEGER(K)[0];
+extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta SEXP verbose){
+  int k = INTEGER(K)[0], verb = INTEGER(verbose)[0];
   data_t data = Rdata_wrap(Rdata);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
   ivec_d zeta_d(zeta_h.begin(), zeta_h.end());
@@ -299,21 +299,23 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + k*data.V);
   fvec_d sse_d(smry.num_occupied);
 
-  std::cout << "beta:\n";
-  printVec(beta, data.V, k);
+  if(verb>0){
+    // debugging
+    std::cout << "beta:\n";
+    printVec(beta, data.V, k);
   
-  std::cout << "xty sums:\n";
-  printVec(smry.xty_sums, smry.V, smry.num_occupied);
+    std::cout << "xty sums:\n";
+    printVec(smry.xty_sums, smry.V, smry.num_occupied);
   
-  std::cout << "yty sums:\n";
-  printVec(smry.yty_sums, smry.num_occupied, 1);
+    std::cout << "yty sums:\n";
+    printVec(smry.yty_sums, smry.num_occupied, verb);
   
-  std::cout << "xtx sums:\n";
-  printVec(smry.xtx_sums, smry.V*smry.V, smry.num_occupied);
-  
+    std::cout << "xtx sums:\n";
+    printVec(smry.xtx_sums, smry.V*smry.V, smry.num_occupied);
+  }
 
   // calculate SSE for given value of beta
-  smry.sumSqErr(sse_d, beta, 1);
+  smry.sumSqErr(sse_d, beta, verb);
     //transfer to host vector
   fvec_h sse_h(smry.num_occupied);
   thrust::device_ptr<double> sse_ptr = &sse_d[0];
