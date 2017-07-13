@@ -296,11 +296,11 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
     // get cluster summaries
   summary2 smry(k, zeta_d, data);
   
-  fvec_d beta(REAL(Rbeta), REAL(Rbeta) + K*data.V);
+  fvec_d beta(REAL(Rbeta), REAL(Rbeta) + k*data.V);
   fvec_d sse_d(smry.num_occupied);
 
   std::cout << "beta:\n";
-  printVec(beta, data.V, K);
+  printVec(beta, data.V, k);
   
   std::cout << "xty sums:\n";
   printVec(smry.xty_sums, smry.V, smry.num_occupied);
