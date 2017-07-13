@@ -287,7 +287,7 @@ extern "C" SEXP Rmulti_dot_prod(SEXP Rx, SEXP Ry, SEXP Rdim, SEXP Rn){
   return out;
 }
 
-extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta SEXP verbose){
+extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta, SEXP verbose){
   int k = INTEGER(K)[0], verb = INTEGER(verbose)[0];
   data_t data = Rdata_wrap(Rdata);
   ivec_h zeta_h(INTEGER(Rzeta), INTEGER(Rzeta) + data.G);
