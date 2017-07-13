@@ -25,7 +25,20 @@ for(i in 1:3){
   Mk <- sapply(1:K, function(k) sum(zeta == k-1))
   
   bxxb <- sapply(k_occ, function(k) Mk[k] * t(beta[,k]) %*% matrix(data$xtx,V,V) %*% beta[,k])
-  yxb <- sapply(k_occ, function(k) t(beta[,k]) %*% rowSums(data$xty[,which(zeta == k-1)]))
+  xty_sums <- sapply(k_occ, function(k){
+    id <- which(zeta == k-1)
+    if(length(id)==1){
+      data$xty[,id]
+    } else{
+      rowSums(data$xty[,id])}
+  })
+  yxb <- sapply(k_occ, function(k){
+    id <- which(zeta == k-1)
+    if(length(id)==1){
+      t(beta[,k]) %*% data$xty[,id]
+    } else{
+      t(beta[,k]) %*% rowSums(data$xty[,id])}
+  })
   yty <- sapply(k_occ, function(k) sum(data$yty[which(zeta == k-1)]))
 
   sseR <- bxxb + yty - 2*yxb
