@@ -302,7 +302,7 @@ extern "C" SEXP RsumSqErr(SEXP Rdata, SEXP Rzeta, SEXP K, SEXP Rbeta){
   fvec_d beta(REAL(Rbeta), REAL(Rbeta) + smry.num_occupied*data.V);
   fvec_d sse_d(smry.num_occupied);
     // calculate SSE for given value of beta
-  smry.sumSqErr(sse_d, beta, 0);
+  smry.sumSqErr(sse_d, beta, 1);
     //transfer to host vector
   fvec_h sse_h(smry.num_occupied);
   thrust::device_ptr<double> sse_ptr = &sse_d[0];
