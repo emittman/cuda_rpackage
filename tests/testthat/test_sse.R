@@ -21,7 +21,7 @@ for(i in 1:3){
 
   sse <- .Call("RsumSqErr", data, zeta, K, beta)
 
-  kocc <- as.numeric(names(table(zeta)))+1
+  k_occ <- as.numeric(names(table(zeta)))+1
   Mk <- sapply(1:K, function(k) sum(zeta == k-1))
   
   bxxb <- sapply(k_occ, function(k) Mk[k] * t(beta[,k]) %*% matrix(data$xtx,V,V) %*% beta[,k])
