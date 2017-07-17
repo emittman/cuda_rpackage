@@ -280,6 +280,10 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     thin_P = n_iter/(n_save_P - 1) + (n_iter % (n_save_P - 1) == 0 ? -1 : 0);
   }
   
+  
+  /****** check inputs*/
+  std::cout << "slice_width: " << chain.slice_width << "\n";
+  
   samples_t samples(n_save_g, n_save_P, G_save, priors.K, data.V, INTEGER(Ridx_save), alpha_fixed);
   
   std::cout << "Model for pi: ";

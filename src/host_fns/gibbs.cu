@@ -351,7 +351,7 @@ void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool ada
     std::cout << "chain.alpha=" << x0 << "\n";
   }
   if(verbose>0){
-    std::cout << "chain.slice_width" << w0 << "\n";
+    std::cout << "chain.slice_width= " << w0 << "\n";
   }
 
   y = f(x0) + log(Rf_runif(0,1));
