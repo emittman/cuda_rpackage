@@ -176,6 +176,7 @@ extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
   printVec(priors.mu0, priors.V, 1);
   std::cout << "Contrasts on location parameters";
   printVec(chain.C, chain.P, chain.V);
+  std::cout << "slice sampler width parameter: " << chain.slice_width << "\n";
   SEXP out = PROTECT(allocVector(INTSXP, 1));
   INTEGER(out)[0] = 0;
   UNPROTECT(1);
