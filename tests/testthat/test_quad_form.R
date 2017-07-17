@@ -3,7 +3,7 @@ context("Testing calculate quadratic form")
 set.seed(2132510)
 
 dim <- 6
-n <- 100
+n <- 1000
 
 Asqrt <- matrix(rnorm(dim*dim), dim, dim)
 A <- t(Asqrt)%*%Asqrt
@@ -18,7 +18,7 @@ test_that("multipleK", {
   expect_equal(resultR_K, resultC_K)
 })
 
-G <- 100
+G <- 1000
 
 A <- sapply(1:G, function(g){
   Asqrt <- matrix(rnorm(dim*dim), dim, dim)
