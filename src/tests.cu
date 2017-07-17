@@ -454,8 +454,8 @@ extern "C" SEXP Rtest_update_means(SEXP Rchain, SEXP Rstep){
     REAL(probs)[i] = chain.probs[i];
   }
   for(int i=0; i<G*V; i++){
-    REAL(means)[i] = chain.means[i];
-    REAL(meansquares)[i] = chain.meansquares[i];
+    REAL(means)[i] = chain.means_betas[i];
+    REAL(meansquares)[i] = chain.meansquares_betas[i];
   }
   SET_VECTOR_ELT(out, 0, probs);
   SET_VECTOR_ELT(out, 1, means);

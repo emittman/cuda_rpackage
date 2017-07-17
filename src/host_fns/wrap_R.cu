@@ -54,11 +54,13 @@ chain_t Rchain_wrap(SEXP Rchain, int verbose){
   double alpha = REAL(VECTOR_ELT(Rchain, 10))[0];
   double           *C = REAL(VECTOR_ELT(Rchain, 11)),
                *probs = REAL(VECTOR_ELT(Rchain, 12)),
-               *means = REAL(VECTOR_ELT(Rchain, 13)),
-         *meansquares = REAL(VECTOR_ELT(Rchain, 14)),
-          slice_width = REAL(VECTOR_ELT(Rchain, 15))[0];
-  int      max_steps  = INTEGER(VECTOR_ELT(Rchain, 16))[0];
-  chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, alpha, C, probs, means, meansquares, slice_width, max_steps);
+         *means_betas = REAL(VECTOR_ELT(Rchain, 13)),
+   *meansquares_betas = REAL(VECTOR_ELT(Rchain, 14)),
+        *means_sigmas = REAL(VECTOR_ELT(Rchain, 15)),
+  *meansquares_sigmas = REAL(VECTOR_ELT(Rchain, 16)),
+          slice_width = REAL(VECTOR_ELT(Rchain, 17))[0];
+  int      max_steps  = INTEGER(VECTOR_ELT(Rchain, 18))[0];
+  chain_t chain(G, V, K, n_hyp, C_rowid, P, beta, pi, tau2, zeta, alpha, C, probs, means_betas, meansquares_betas, means_sigmas, meansquares_sigmas, slice_width, max_steps);
   if(verbose>0){
     std::cout << "chain transferred." << std::endl;
   }
@@ -106,16 +108,22 @@ SEXP Cchain_wrap(chain_t &chain, int verbose){
   if(verbose>0){
     std::cout << "Wrapping chain... ";
   }
-  SEXP chain_out       = PROTECT(allocVector(VECSXP, 3));
+  SEXP chain_out       = PROTECT(allocVector(VECSXP, 5));
   SEXP out_probs       = PROTECT(allocVector(REALSXP, chain.probs.size()));
-  SEXP out_means       = PROTECT(allocVector(REALSXP, chain.means.size()));
-  SEXP out_meansquares = PROTECT(allocVector(REALSXP, chain.meansquares.size()));
+  SEXP out_means_betas       = PROTECT(allocVector(REALSXP, chain.means_betas.size()));
+  SEXP out_meansquares_betas = PROTECT(allocVector(REALSXP, chain.meansquares_betas.size()));
+  SEXP out_means_sigmas       = PROTECT(allocVector(REALSXP, chain.means_sigmas.size()));
+  SEXP out_meansquares_sigmas = PROTECT(allocVector(REALSXP, chain.meansquares_sigmas.size()));
   thrust::copy(chain.probs.begin(), chain.probs.end(), REAL(out_probs));
-  thrust::copy(chain.means.begin(), chain.means.end(), REAL(out_means));
-  thrust::copy(chain.meansquares.begin(), chain.meansquares.end(), REAL(out_meansquares));
+  thrust::copy(chain.means_betas.begin(), chain.means_betas.end(), REAL(out_means_betas));
+  thrust::copy(chain.meansquares_betas.begin(), chain.meansquares_betas.end(), REAL(out_meansquares_betas));
+  thrust::copy(chain.means_sigmas.begin(), chain.means_sigmas.end(), REAL(out_means_sigmas));
+  thrust::copy(chain.meansquares_sigmas.begin(), chain.meansquares_sigmas.end(), REAL(out_meansquares_sigmas));
   SET_VECTOR_ELT(chain_out, 0, out_probs);
-  SET_VECTOR_ELT(chain_out, 1, out_means);
-  SET_VECTOR_ELT(chain_out, 2, out_meansquares);
+  SET_VECTOR_ELT(chain_out, 1, out_means_betas);
+  SET_VECTOR_ELT(chain_out, 2, out_meansquares_betas);
+  SET_VECTOR_ELT(chain_out, 3, out_means_sigmas);
+  SET_VECTOR_ELT(chain_out, 4, out_meansquares_sigmas);
   if(verbose>0){
     std::cout << "chain wrapped." << std::endl;
   }

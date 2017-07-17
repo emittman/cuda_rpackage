@@ -101,14 +101,17 @@ formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, a=1, b=1, A=1, B=1, 
 #'   true, for a given cluster, iff all C_i * beta_g > 0 == TRUE
 #' @param probs numeric vector, length G*length(C), representing probabilities of the hypotheses
 #'   encoded in C for all G genes in column-major order
-#' @param means numeric vector, length G*V, representing latent posterior mean for location parameter
+#' @param means_betas numeric vector, length G*V, representing latent posterior mean for location parameter
 #'  for all G genes in column-major order
-#' @param meansquares numeric vector, length G*V 
+#' @param meansquares_betas numeric vector, length G*V 
+#' @param means_sigmas numeric vector, length G, representing latent posterior mean for scale parameter
+#'  for all G genes in column-major order
+#' @param meansquares_sigmas numeric vector, length G 
 #' @param s_RW_alpha numeric, standard deviation for random walk Metropolis when
 #'   \code{!alpha_fixed} and weightsMethod = "symmDirichlet". Defaults to 0.
 
-formatChain <- function(beta, pi, tau2, zeta, alpha, C=NULL, probs=NULL, means=NULL, meansquares=NULL,
-                        slice_width=1, max_steps=100){
+formatChain <- function(beta, pi, tau2, zeta, alpha, C=NULL, probs=NULL, means_betas=NULL, meansquares_betas=NULL, means_sigmas=NULL,
+                        meansquares_sigmas=NULL,slice_width=1, max_steps=100){
   G = as.integer(length(zeta))
   V = as.integer(length(beta)/length(pi))
   K = as.integer(length(beta)/V)
@@ -135,18 +138,29 @@ formatChain <- function(beta, pi, tau2, zeta, alpha, C=NULL, probs=NULL, means=N
   } else {
     probs = rep(0, n_hyp*G)
   }
-  if(!is.null(means)){
-    stopifnot(length(means) == V*G)
+  if(!is.null(means_betas)){
+    stopifnot(length(means_betas) == V*G)
   } else{
-    means = rep(0, V*G)
+    means_betas = rep(0, V*G)
   }
-  if(!is.null(meansquares)){
-    stopifnot(length(meansquares) == V*G)
+  if(!is.null(meansquares_betas)){
+    stopifnot(length(meansquares_betas) == V*G)
   } else{
-    meansquares = rep(0, V*G)
+    meansquares_betas = rep(0, V*G)
   }
-  list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid = C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(log(pi)), tau2 = as.numeric(tau2),
-       zeta = as.integer(zeta), alpha = as.numeric(alpha), C = t(Cmat), probs = probs, means = means, meansquares = meansquares, 
+  if(!is.null(means_sigmas)){
+    stopifnot(length(means_sigmas) == G)
+  } else{
+    means_sigmas = rep(0, G)
+  }
+  if(!is.null(meansquares_sigmas)){
+    stopifnot(length(meansquares_sigmas) == G)
+  } else{
+    meansquares_sigmas = rep(0, G)
+  }
+  list(G = G, V = V, K = K, n_hyp = n_hyp, C_rowid = C_rowid, P = P, beta = as.numeric(beta), pi = as.numeric(log(pi)),
+       tau2 = as.numeric(tau2), zeta = as.integer(zeta), alpha = as.numeric(alpha), C = t(Cmat), probs = probs,
+       means_betas = means_betas, meansquares_betas = meansquares_betas,means_sigmas = means_sigmas, meansquares_sigmas=meansquares_sigmas, 
        slice_width = as.numeric(slice_width), max_steps = as.integer(max_steps))
 }
 

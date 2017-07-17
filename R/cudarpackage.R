@@ -199,14 +199,18 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
                                 iter=1:n_save_P)
   out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
   
-  names(out[[2]]) <- c("probs","means","meansquares")
+  names(out[[2]]) <- c("probs","means_betas","meansquares_betas","means_sigmas","meansquares_sigmas")
   
   dim(out[[2]][['probs']]) <- c(chain$n_hyp, data$G)
   dimnames(out[[2]][['probs']]) <- list(hyp = 1:chain$n_hyp, g = 1:data$G) 
-  dim(out[[2]][['means']]) <- c(data$V, data$G)
-  dimnames(out[[2]][['means']]) <- list(v = 1:data$V, g = 1:data$G)
-  dim(out[[2]][['meansquares']]) <- c(data$V, data$G)
-  dimnames(out[[2]][['meansquares']]) <- list(v = 1:data$V, g = 1:data$G)
+  dim(out[[2]][['means_betas']]) <- c(data$V, data$G)
+  dimnames(out[[2]][['means_betas']]) <- list(v = 1:data$V, g = 1:data$G)
+  dim(out[[2]][['meansquares_betas']]) <- c(data$V, data$G)
+  dimnames(out[[2]][['meansquares_betas']]) <- list(v = 1:data$V, g = 1:data$G)
+  dim(out[[2]][['means_sigmas']]) <- data$G
+  dimnames(out[[2]][['means_sigmas']]) <- list(g = 1:data$G)
+  dim(out[[2]][['meansquares_sigmas']]) <- data$G
+  dimnames(out[[2]][['meansquares_sigmas']]) <- list(g = 1:data$G)
   
   names(out[[3]]) <- c("beta", "tau2", "pi", "alpha")
   dim(out[[3]][['beta']]) <- c(data$V, priors$K)

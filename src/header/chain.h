@@ -61,19 +61,24 @@ struct chain_t{
   fvec_d C;
   //summaries
   fvec_d probs;
-  fvec_d means;
-  fvec_d meansquares;
+  fvec_d means_betas;
+  fvec_d meansquares_betas;
+  fvec_d means_sigmas;
+  fvec_d meansquares_sigmas;
   //tuning parameter
   //double s_RW_alpha;
   double slice_width;
   int max_steps;
   
   chain_t(int _G, int _V, int _K, int _n_hyp, int *_C_rowid, int _P, double *_beta, double *_pi, double *_tau2,
-          int *_zeta, double _alpha, double *_C, double *_probs, double *_means, double *_meansquares, double _slice_width,
+          int *_zeta, double _alpha, double *_C, double *_probs, double *_means_betas, double *_meansquares_betas,
+          double *_means_sigmas, double *_meansquares_sigmas, double _slice_width,
           int _max_steps):
     G(_G), V(_V), K(_K), n_hyp(_n_hyp), C_rowid(_C_rowid, _C_rowid + _P), P(_P), beta(_beta, _beta + _V*_K), pi(_pi, _pi + _K), 
     tau2(_tau2, _tau2 + _K), zeta(_zeta, _zeta + _G), alpha(_alpha), C(_C, _C + _P*_V), probs(_probs, _probs + _n_hyp*_G),
-    means(_means, _means + _G*_V), meansquares(_meansquares, _meansquares + _G*_V), slice_width(_slice_width), max_steps(_max_steps){}
+    means_betas(_means_betas, _means_betas + _G*_V), meansquares_betas(_meansquares_betas, _meansquares_betas + _G*_V),
+    means_sigmas(_means_sigmas, _means_sigmas + _G), meansquares_sigmas(_meansquares_sigmas, _meansquares_sigmas + _G), 
+    slice_width(_slice_width), max_steps(_max_steps){}
   
   void update_means(int step);
   void update_probabilities(int step);

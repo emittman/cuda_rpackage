@@ -414,16 +414,18 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
 
   CUDA_CALL(cudaFree(devStates));
   SEXP samples_out = Csamples_wrap(samples, verbose-1);          //PROTECT(7)
-  SEXP chain_out   = Cchain_wrap(chain, verbose-1);              //PROTECT(4)
+  SEXP chain_out   = Cchain_wrap(chain, verbose-1);              //PROTECT(6)
   SEXP state_out   = Cstate_wrap(chain, verbose-1);              //PROTECT(5)
   SEXP samp_time   = PROTECT(allocVector(REALSXP, 1));           //PROTECT(1)
   REAL(samp_time)[0] = duration;
-  SEXP out         = PROTECT(allocVector(VECSXP, 4)); //PROTECT(1)
+  SEXP out         = PROTECT(allocVector(VECSXP, 4));            //PROTECT(1)
   SET_VECTOR_ELT(out, 0, samples_out);
   SET_VECTOR_ELT(out, 1, chain_out);
   SET_VECTOR_ELT(out, 2, state_out);
   SET_VECTOR_ELT(out, 3, samp_time);
-  UNPROTECT(18);                                      //7 + 4 + 5 + 1 + 1
+  int size = 20;                                      //7 + 6 + 5 + 1 + 1
+
+  UNPROTECT(size);
   
   return out;
 }
