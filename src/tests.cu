@@ -167,9 +167,9 @@ extern "C" SEXP Rbeta_hat(SEXP R_Lvec, SEXP R_xty, SEXP K, SEXP V){
 
 
 extern "C" SEXP Rtest_data_wrap(SEXP Rdata, SEXP Rpriors, SEXP Rchain){
-  data_t data = Rdata_wrap(Rdata);
-  priors_t priors = Rpriors_wrap(Rpriors);
-  chain_t chain = Rchain_wrap(Rchain);
+  data_t data = Rdata_wrap(Rdata, 1);
+  priors_t priors = Rpriors_wrap(Rpriors, 1);
+  chain_t chain = Rchain_wrap(Rchain, 1);
   std::cout << "y transpose x\n";
   printVec(data.ytx, data.G, data.V);
   std::cout << "prior location\n";
