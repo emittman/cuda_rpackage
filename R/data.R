@@ -219,3 +219,28 @@ informPriors <- function(estimates){
        b = pr_tau2_mean   / pr_tau2_var)
 }
 
+#' @title Function \code{formatControl}
+#' @description Produce a formatted list for control arguments
+#' @param n_iter numeric, number of post-warmup MCMC iterations
+#' @param thin numeric, thinning interval
+#' @param warmup numeric, number of warmup iterations
+#' @param methodPi string, one of c("stickBreaking","symmDirichlet)
+#' @param idx_save numeric, indices of genes for which to save draws
+#' @param n_save_P numeric, number of iterations to save for random distribution
+#' @param alpha_fixed logical, whether alpha is set by user, or estimated from data
+#' @param slice_width numeric, initial value for slice sampler for alpha when methodPi="symmDirichlet". Tuned during warmup.
+#' @param max_steps numeric, maximum number of steps in slice sampler
+formatControl <- function(n_iter, thin, warmup, methodPi="stickBreaking", idx_save=1, n_save_P=1, alpha_fixed=F, slice_width=1, max_steps=100){
+  stopifnot(n_iter>=1, thin>=1, warmup>=1, methodPi %in% c("stickBreaking","symmDirichlet"), all(idx_save>=1), n_save_P>=1, slice_width>0, max_steps>1, max_steps<1000)
+  out <- list(n_iter = as.integer(n_iter),
+       thin = as.integer(thin),
+       methodPi = as.character(methodPi),
+       idx_save = as.integer(idx_save-1),
+       n_save_P <- as.integer(n_save_P),
+       alpha_fixed = as.logical(alpha_fixed),
+       slice_width = as.numeric(slice_width),
+       max_steps = as.integer(max_steps))
+  class(out) <- "formattedControlObj"
+  out
+}
+

@@ -122,46 +122,33 @@ Rdevice_mmultiply = function(A, B){
 #' @title Function \code{mcmc}
 #' @description Sample from posterior of DPMM
 #' @export
-#' @param data list, use formatData
-#' @param priors list, use formatPrior
-#' @param methodPi Specifies the model for the weights of the
-#' unknown mixture. The default is "stickBreaking" and the other option
-#' is "symmDirichlet"
-#' @param chain list, use formatChain
-#' @param n_iter int
-#' @param idx_save int vector, which genes to save (0-indexed)
-#' @param thin int
-#' @param n_save_P int
-#' @param C numeric matrix, contrasts
-#' @param alpha_fixed logical
-#' @param slice_width numeric
-#' @param max_steps int
-#' @param verbose int, higher verbosity -> more printing
-#' @param warmup int, number of initial iterations to run without saving. Default is 0.
-mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter, idx_save, thin,
-                 n_save_P, C = NULL, alpha_fixed = T, slice_width=1, max_steps=100, verbose=0, warmup=0, estimates=NULL){
-  if(!(data$V == length(priors$mu_0))) stop("Dimensions of prior mean don't match design matrix!")
-  if(warmup<0) stop("Warmup must be >=0")
+#' @param data list, use \code{\link{formatData}}
+#' @param priors list, use \code{\link{formatPrior}}
+#' @param control list, see \code{\link{formatControl}}
+#' @param chain list, optional, use \code{\link{formatChain}}
+#' @param C numeric matrix, optional, contrasts
+#' @param estimates list, optional, use \code{\link{indEstimates}}
+#' @param verbose numeric
+mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, verbose=0){
+  if(!("formattedControlObj") %in% attr(control)){
+    control <- do.call(formatControl, control)
+  }
+  stopifnot(data$V == length(priors$mu_0))
+  stopifnot(data$V == chain$V, max(control$idx_save)<data$G)
   # if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
     chain <- initChain(priors, data$G, C, estimates)
-    if(!alpha_fixed & methodPi == "symmDirichlet"){
-      if(is.null(slice_width)){
+    if(!control$alpha_fixed & control$methodPi == "symmDirichlet"){
+      if(is.null(control$slice_width)){
         message("No value provided for slice_width, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 1.0")
         chain$slice_width <- 1.0
       } else{
-        stopifnot(slice_width>0, max_steps>2)
-        chain$slice_width <- as.numeric(slice_width)
-        chain$max_steps <- as.integer(max_steps)
+        chain$slice_width <- as.numeric(control$slice_width)
+        chain$max_steps <- as.integer(control$max_steps)
       }
     }
-  } else{
-    if(!alpha_fixed & methodPi == "symmDirichlet"){
-      stopifnot(slice_width>0, max_steps>2)
-    }
   }
-  stopifnot(data$V == chain$V, max(idx_save)<data$G)
   
   methodPi <- switch(methodPi,
                      "stickBreaking" = as.integer(0),
@@ -173,14 +160,10 @@ mcmc <- function(data, priors, methodPi = "stickBreaking", chain = NULL, n_iter,
   }
   
   seed <- as.integer(sample(1e6, 1))
-  n_iter <- as.integer(n_iter)
-  n_save_P <- as.integer(n_save_P)
-  thin <- as.integer(thin)
   verbose <- as.integer(verbose)
-  warmup <- as.integer(warmup)
-  
-  out <- .Call("Rrun_mcmc", data, priors, methodPi, methodAlpha, chain, n_iter, n_save_P, as.integer(idx_save),
-               thin, seed, verbose, warmup)
+
+  out <- .Call("Rrun_mcmc", data, priors, methodPi, methodAlpha, chain, control$n_iter, control$n_save_P, as.integer(idx_save),
+               control$thin, seed, verbose, control$warmup)
   
   # Format the output
   if(alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied")
