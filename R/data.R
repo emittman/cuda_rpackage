@@ -236,7 +236,7 @@ formatControl <- function(n_iter, thin, warmup, methodPi="stickBreaking", idx_sa
        thin = as.integer(thin),
        methodPi = as.character(methodPi),
        idx_save = as.integer(idx_save-1),
-       n_save_P <- as.integer(n_save_P),
+       n_save_P = as.integer(n_save_P),
        alpha_fixed = as.logical(alpha_fixed),
        slice_width = as.numeric(slice_width),
        max_steps = as.integer(max_steps))
