@@ -150,7 +150,7 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
     }
   }
   
-  methodPi <- switch(methodPi,
+  methodPi <- switch(control$methodPi,
                      "stickBreaking" = as.integer(0),
                      "symmDirichlet" = as.integer(1))
   if(methodPi == 0){
