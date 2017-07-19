@@ -130,7 +130,7 @@ Rdevice_mmultiply = function(A, B){
 #' @param estimates list, optional, use \code{\link{indEstimates}}
 #' @param verbose numeric
 mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, verbose=0){
-  if(!("formattedControlObj") %in% attr(control)){
+  if(!("formattedControlObj") %in% attr(control, "class")){
     control <- do.call(formatControl, control)
   }
   stopifnot(data$V == length(priors$mu_0))
