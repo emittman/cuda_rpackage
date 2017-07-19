@@ -230,6 +230,9 @@ informPriors <- function(estimates){
 #' @param alpha_fixed logical, whether alpha is set by user, or estimated from data
 #' @param slice_width numeric, initial value for slice sampler for alpha when methodPi="symmDirichlet". Tuned during warmup.
 #' @param max_steps numeric, maximum number of steps in slice sampler
+#' @return a named list
+#' @export
+#' 
 formatControl <- function(n_iter, thin, warmup, methodPi="stickBreaking", idx_save=1, n_save_P=1, alpha_fixed=F, slice_width=1, max_steps=100){
   stopifnot(n_iter>=1, thin>=1, warmup>=1, methodPi %in% c("stickBreaking","symmDirichlet"), all(idx_save>=1), n_save_P>=1, slice_width>0, max_steps>1, max_steps<1000)
   out <- list(n_iter = as.integer(n_iter),
