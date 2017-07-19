@@ -129,7 +129,7 @@ Rdevice_mmultiply = function(A, B){
 #' @param C numeric matrix, optional, contrasts
 #' @param estimates list, optional, use \code{\link{indEstimates}}
 #' @param verbose numeric
-mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, verbose=0){
+mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, verbose=0, alpha=1){
   if(!("formattedControlObj") %in% attr(control, "class")){
     control <- do.call(formatControl, control)
   }
@@ -148,6 +148,10 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
         chain$max_steps <- as.integer(control$max_steps)
       }
     }
+  }
+  
+  if(control$alpha_fixed){
+    chain$alpha=alpha
   }
   
   methodPi <- switch(control$methodPi,

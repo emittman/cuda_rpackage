@@ -60,9 +60,11 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
 #' @param K number stick-breaking components
 #' @param prior_mean numeric
 #' @param prior_sd numeric matching dimension of prior_mean
-#' @param alpha mass parameter
 #' @param a prior shape for error precision
 #' @param b prior scale for error precision
+#' @param A prior shape for mass parameter
+#' @param B prior scale for mass parameter
+#' @param estimates optional, if provided, data is used to inform prior
 
 formatPriors <- function(K, prior_mean=NULL, prior_sd=NULL, a=1, b=1, A=1, B=1, estimates=NULL){
   # Checking input
