@@ -166,8 +166,8 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
                control$thin, seed, verbose, control$warmup)
   
   # Format the output
-  if(alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied")
-  if(!alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied", "alpha")
+  if(control$alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied")
+  if(!control$alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied", "alpha")
   names(out[[1]]) <- gnames
   dim(out[[1]][['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
   dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
