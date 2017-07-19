@@ -154,9 +154,9 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
                      "stickBreaking" = as.integer(0),
                      "symmDirichlet" = as.integer(1))
   if(methodPi == 0){
-    methodAlpha <- ifelse(alpha_fixed, as.integer(0), as.integer(1))
+    methodAlpha <- ifelse(control$alpha_fixed, as.integer(0), as.integer(1))
   } else{
-    methodAlpha <- ifelse(alpha_fixed, as.integer(0), as.integer(2))
+    methodAlpha <- ifelse(control$alpha_fixed, as.integer(0), as.integer(2))
   }
   
   seed <- as.integer(sample(1e6, 1))
