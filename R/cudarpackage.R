@@ -169,17 +169,17 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
   if(control$alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied")
   if(!control$alpha_fixed) gnames <- c("beta", "tau2", "P", "max_id", "num_occupied", "alpha")
   names(out[[1]]) <- gnames
-  dim(out[[1]][['beta']]) <- c(data$V, length(idx_save), ceiling(n_iter/ thin))
-  dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=idx_save+1, iter=1:ceiling(n_iter/ thin))
+  dim(out[[1]][['beta']]) <- c(data$V, length(control$idx_save), ceiling(control$n_iter/ control$thin))
+  dimnames(out[[1]][['beta']]) <- list(v=1:data$V, g=control$idx_save+1, iter=1:ceiling(control$n_iter/ control$thin))
   out[[1]][['beta']] <- aperm(out[[1]][['beta']], c(1,3,2))
-  dim(out[[1]][['tau2']]) <- c(length(idx_save), ceiling(n_iter/ thin))
-  dimnames(out[[1]][['tau2']]) <- list(g=idx_save+1, iter=1:ceiling(n_iter/ thin))
-  dim(out[[1]][['P']]) <- c(priors$K, data$V+2, n_save_P)
+  dim(out[[1]][['tau2']]) <- c(length(control$idx_save), ceiling(control$n_iter/ control$thin))
+  dimnames(out[[1]][['tau2']]) <- list(g=control$idx_save+1, iter=1:ceiling(control$n_iter/ control$thin))
+  dim(out[[1]][['P']]) <- c(priors$K, data$V+2, control$n_save_P)
   dimnames(out[[1]][['P']]) <- list(k=1:priors$K,
                                 par = c("pi", sapply(1:data$V, function(v){
                                     paste(c("beta[",v,"]"), collapse="")
                                   }), "tau2"),
-                                iter=1:n_save_P)
+                                iter=1:control$n_save_P)
   out[[1]][['P']][,"pi",] <- exp(out[[1]][['P']][,"pi",])
   
   names(out[[2]]) <- c("probs","means_betas","meansquares_betas","means_sigmas","meansquares_sigmas")
