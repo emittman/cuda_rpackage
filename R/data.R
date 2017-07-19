@@ -237,6 +237,7 @@ formatControl <- function(n_iter, thin, warmup, methodPi="stickBreaking", idx_sa
   stopifnot(n_iter>=1, thin>=1, warmup>=1, methodPi %in% c("stickBreaking","symmDirichlet"), all(idx_save>=1), n_save_P>=1, slice_width>0, max_steps>1, max_steps<1000)
   out <- list(n_iter = as.integer(n_iter),
        thin = as.integer(thin),
+       warmup = as.integer(warmup),
        methodPi = as.character(methodPi),
        idx_save = as.integer(idx_save-1),
        n_save_P = as.integer(n_save_P),

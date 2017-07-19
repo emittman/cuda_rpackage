@@ -162,7 +162,7 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
   seed <- as.integer(sample(1e6, 1))
   verbose <- as.integer(verbose)
 
-  out <- .Call("Rrun_mcmc", data, priors, methodPi, methodAlpha, chain, control$n_iter, control$n_save_P, as.integer(idx_save),
+  out <- .Call("Rrun_mcmc", data, priors, methodPi, methodAlpha, chain, control$n_iter, control$n_save_P, control$idx_save,
                control$thin, seed, verbose, control$warmup)
   
   # Format the output
