@@ -136,7 +136,7 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
   stopifnot(data$V == length(priors$mu_0))
   stopifnot(data$V == chain$V, max(control$idx_save)<data$G)
   # if(!(data$G >= priors$K)) stop("G must be <= K!")
-  if(n_save_P>n_iter) stop("n_save_P must be < n_iter!")
+  if(control$n_save_P>control$n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
     chain <- initChain(priors, data$G, C, estimates)
     if(!control$alpha_fixed & control$methodPi == "symmDirichlet"){
