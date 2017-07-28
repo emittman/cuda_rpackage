@@ -200,7 +200,7 @@ indEstimates <- function(data, epsilon=.1){
   }))
   sigma2s <- with(data, sapply(1:G, function(g){
     (yty[g] - 2*t(xty[,g]) %*% betas[,g] + 
-       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V) + .1 #guard against zeros
+       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V) + epsilon #guard against zeros
   }))
   return(list(beta=betas, sigma2=sigma2s))
 }
