@@ -10,9 +10,9 @@ ratio.cube.to.sphere <- function(n){
 
 #' @title Function \code{initFixed}
 #' @description Produce a formatted list for control arguments
-#' @param priors
-#' @param estimates
-#' @param C
+#' @param priors from formatPriors
+#' @param estimates from indEstimates
+#' @param C matrix of linear combinations describing genewise comparisons of interest
 #' @export
 
 initFixedGrid <- function(priors, estimates, C=NULL){
