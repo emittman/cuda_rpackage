@@ -138,7 +138,10 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
   # if(!(data$G >= priors$K)) stop("G must be <= K!")
   if(control$n_save_P>control$n_iter) stop("n_save_P must be < n_iter!")
   if(is.null(chain)){
-    chain <- initChain(priors, data$G, C, estimates)
+    if(is.null(estimates)){
+      estimates <- indEstimates(data)
+    }
+    chain <- initFixedGrid(priors, estimates, C)  
     if(!control$alpha_fixed & control$methodPi == "symmDirichlet"){
       if(is.null(control$slice_width)){
         message("No value provided for slice_width, but alpha_fixed = F and methodPi = 'symmDirichlet'!\t Defaulting to 1.0")
