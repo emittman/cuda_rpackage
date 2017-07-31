@@ -1,4 +1,5 @@
 #' @title Function \code{ratio.cube.to.sphere}
+#' @description Measure of sparsity in n dimensions
 #' @param n number of dimensions
 
 ratio.cube.to.sphere <- function(n){
