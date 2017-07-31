@@ -23,7 +23,7 @@ initFixedGrid <- function(priors, estimates, C=NULL){
   #get range of empirical estimates
   ranges <- apply(param, 1, range)
   #Include extra points to be trimmed so that what remains resembles
-  #'ball' of uniformly spaced points
+  #ball of uniformly spaced points
   K_corr <- ratio.cube.to.sphere(p) * priors$K
   grid_size <- ceiling(K_corr^(1/p))
   grid <- data.frame(apply(ranges, 2, function(r){
