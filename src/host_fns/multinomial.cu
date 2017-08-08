@@ -41,7 +41,7 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   //ivec_d dummies(K*G);
   typedef thrust::tuple<realIter, gRepEach<realIter>::iterator> mult_tup;
   typedef thrust::zip_iterator<mult_tup> mult_zip;
-  mult_tup mytup = thrust::tuple<realIter, gRepEach<realIter>::iterator>(probs, u_rep);
+  mult_tup mytup = thrust::tuple<realIter, gRepEach<realIter>::iterator>(probs.begin(), u_rep);
   mult_zip myzip = thrust::zip_iterator<mult_tup>(mytup);
   compare_eval f;
   thrust::for_each(my_zip, my_zip + K*G, f);
