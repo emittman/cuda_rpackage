@@ -21,14 +21,14 @@ struct compare_eval{
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
   normalize_wts(probs, K, G);
   
-  #copy last value in cumulative sums to a vector to be used to scale U(0,1) draws
+  /*copy last value in cumulative sums to a vector to be used to scale U(0,1) draws*/
   fvec_d u(G);
   rowIter last_row_iter = getRowIter(K, K-1);
   strideIter strided_iter = thrust::make_permutation_iterator(probs.begin(), last_row_iter);
   thrust::copy(strided_iter, strided_iter + G, u.begin());
   //printVec(u, G, 1);
   
-  #draw uniforms
+  /*draw uniforms*/
   double *u_ptr = thrust::raw_pointer_cast(u.data());
   getUniform<<<G, 1>>>(states, G, u_ptr);
   //std::cout << "u:sampled:\n";
