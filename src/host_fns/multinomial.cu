@@ -44,7 +44,7 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   mult_tup mytup = thrust::tuple<realIter, gRepEach<realIter>::iterator>(probs.begin(), u_rep);
   mult_zip myzip = thrust::zip_iterator<mult_tup>(mytup);
   compare_eval f;
-  thrust::for_each(my_zip, my_zip + K*G, f);
+  thrust::for_each(myzip, myzip + K*G, f);
   //thrust::transform(u_rep, u_rep + K*G, probs.begin(), dummies.begin(), thrust::greater<double>());
   //std::cout << "dummies:\n";
   //printVec(dummies, K, G);
