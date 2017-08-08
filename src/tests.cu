@@ -401,14 +401,15 @@ extern "C" SEXP Rtest_draw_pi(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata,
 extern "C" SEXP Rtest_draw_zeta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
   int seed = INTEGER(Rseed)[0];
   data_t data = Rdata_wrap(Rdata);
-  chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
+  fvec_d big_matrix(data.G*priors.K);
+  chain_t chain = Rchain_wrap(Rchain);
   //instantiate RNGs
   curandState *devStates;
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * sizeof(curandState)));
   setup_kernel<<<data.G, 1>>>(seed, data.G, devStates);
 
-  draw_zeta(devStates, data, chain, priors, 0);
+  draw_zeta(devStates, big_matrix, data, chain, priors, 0);
   //printVec(chain.zeta, data.G, 1);
   ivec_h zeta_h(data.G);
   thrust::copy(chain.zeta.begin(), chain.zeta.end(), zeta_h.begin());
