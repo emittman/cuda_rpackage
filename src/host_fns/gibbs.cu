@@ -183,14 +183,13 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
   }
 }
 
-void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, int verbose=0){
+void draw_zeta(curandState *states, fvec_d &grid, data_t &data, chain_t &chain, priors_t &priors, int verbose=0){
   if(verbose>1){
     std::cout << "Sampling zeta...\n";
   }
   /***
   * Calculate log(pi_k * p(y_g|theta_k)), g=1,...,G, k=1,...,K
   ***/
-  fvec_d grid(data.G*priors.K);
   if(verbose>1){
     std::cout << "Computing weights...\n";
   }

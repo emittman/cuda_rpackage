@@ -261,6 +261,10 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   std::cout << "verbosity level = " << verbose << std::endl;
   data_t data      = Rdata_wrap(Rdata, verbose-1);
   priors_t priors  = Rpriors_wrap(Rpriors, verbose-1);
+  
+  \\allocate big device_vector for reuse
+  fvec_d big_matrix(data.G*priors.K);
+  
   chain_t chain    = Rchain_wrap(Rchain, verbose-1);
   int methodPi     = INTEGER(RmethodPi)[0],
       methodAlpha  = INTEGER(RmethodAlpha)[0],
@@ -343,7 +347,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
     
     //Gibbs steps
     
-    draw_zeta(devStates, data, chain, priors, verbose-1);
+    draw_zeta(devStates, big_matrix, data, chain, priors, verbose-1);
     if(verbose > 1){
       std::cout << "zeta:\n";
       printVec(chain.zeta, data.G, 1);

@@ -26,7 +26,7 @@ void draw_pi(curandState *states, chain_t &chain, priors_t &priors, summary2 &su
 
 void draw_pi_SD(curandState *states, chain_t &chain, priors_t &priors, summary2 &summary, int verbose);
 
-void draw_zeta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, int verbose);
+void draw_zeta(curandState *states, fvec_d &grid, data_t &data, chain_t &chain, priors_t &priors, int verbose);
 
 void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry, int verbose);
 
