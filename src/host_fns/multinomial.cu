@@ -16,7 +16,7 @@ struct compare_eval{
   __host__ __device__ void operator()(T tup){
     thrust::get<0>(tup) = thrust::get<0>(tup) < thrust::get<1>(tup) ? 1 : 0;
   }
-}
+};
 
 void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, int G){
   normalize_wts(probs, K, G);
