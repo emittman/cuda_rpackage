@@ -257,6 +257,11 @@ extern "C" SEXP Rdevice_mmultiply(SEXP AR, SEXP BR, SEXP a1R, SEXP a2R, SEXP b1R
 }
 
 extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP RmethodAlpha, SEXP Rchain, SEXP Rn_iter, SEXP Rn_save_P, SEXP Ridx_save, SEXP Rthin, SEXP Rseed, SEXP Rverbose, SEXP Rwarmup){
+  size_t mem_tot;
+  size_t mem_free;
+  cudaMemGetInfo(&mem_free, &mem_tot);
+  std::cout << "Free memory : " << mem_free << std::endl;
+
   int verbose = INTEGER(Rverbose)[0];
   std::cout << "verbosity level = " << verbose << std::endl;
   data_t data      = Rdata_wrap(Rdata, verbose-1);
@@ -308,7 +313,8 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
   setup_kernel<<<chain.G, chain.V>>>(seed, chain.G*chain.V, devStates);
   
-  
+  cudaMemGetInfo(&mem_free, &mem_tot);
+  std::cout << "Free memory after devStates allocated: " << mem_free << std::endl;
   //progress bar
   boost::progress_display show_progress(n_iter);
   
