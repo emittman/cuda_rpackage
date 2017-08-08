@@ -220,7 +220,13 @@ void draw_zeta(curandState *states, fvec_d &grid, data_t &data, chain_t &chain, 
 
 void draw_beta(curandState *states, data_t &data, chain_t &chain, priors_t &priors, summary2 &smry, int verbose=0){
   fvec_d prec(priors.K * data.V * data.V);
+  size_t mem_tot;
+  size_t mem_free;
+  cudaMemGetInfo(&mem_free, &mem_tot);
+  std::cout << "Free memory after precision alloc: " << mem_free << std::endl;
   fvec_d betahat(priors.K * data.V, 0.0);
+  cudaMemGetInfo(&mem_free, &mem_tot);
+  std::cout << "Free memory after betahat alloc: " << mem_free << std::endl;
   
   //get cluster (inv)scales
   construct_prec(prec, smry, priors, chain, --verbose);
