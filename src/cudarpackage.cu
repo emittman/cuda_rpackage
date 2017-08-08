@@ -262,7 +262,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   data_t data      = Rdata_wrap(Rdata, verbose-1);
   priors_t priors  = Rpriors_wrap(Rpriors, verbose-1);
   
-  \\allocate big device_vector for reuse
+  //allocate big device_vector for reuse
   fvec_d big_matrix(data.G*priors.K);
   
   chain_t chain    = Rchain_wrap(Rchain, verbose-1);
