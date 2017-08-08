@@ -15,16 +15,17 @@ struct fi_multiply: thrust::binary_function<double, int, double>{
 
 // zeta passed by value, data passed by reference
 summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.V), occupied(_K), Mk(_K, 0){
-  size_t mem_tot;
+  /*size_t mem_tot;
   size_t mem_free;
   cudaMemGetInfo(&mem_free, &mem_tot);
-  std::cout << "Free memory before summary perm alloc: " << mem_free << std::endl;
+  std::cout << "Free memory before summary perm alloc: " << mem_free << std::endl;*/
 
 
   // allocate,initialize perm for storing zeta-inverse
   ivec_d perm(G); // will store permutation
-  cudaMemGetInfo(&mem_free, &mem_tot);
-  std::cout << "Free memory after summary perm alloc: " << mem_free << std::endl;
+  
+  /*cudaMemGetInfo(&mem_free, &mem_tot);
+  std::cout << "Free memory after summary perm alloc: " << mem_free << std::endl;*/
   
   thrust::sequence(perm.begin(), perm.end(), 0, 1);
 
@@ -54,8 +55,9 @@ summary2::summary2(int _K, ivec_d zeta, data_t &data): G(data.G), K(_K), V(data.
   ytx_sums.resize(num_occupied*V);
   size_t sz_xtx = num_occupied * V * V;
   xtx_sums.resize(sz_xtx);
-  cudaMemGetInfo(&mem_free, &mem_tot);
-  std::cout << "Free memory after main summary alloc: " << mem_free << std::endl;
+  
+  /*cudaMemGetInfo(&mem_free, &mem_tot);
+  std::cout << "Free memory after main summary alloc: " << mem_free << std::endl;*/
   
   /*yty_sums
    *
