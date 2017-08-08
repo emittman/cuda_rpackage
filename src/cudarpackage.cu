@@ -308,10 +308,11 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   }
   
   
-  //instantiate RNGs
+  //instantiate RNGs (choose the minimum required for parallel ops)
   curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-  setup_kernel<<<chain.G, chain.V>>>(seed, chain.G*chain.V, devStates);
+  size_t n_rngs = data.G > priors.K*priors.V ? data.G : priors.K*priors.V;
+  CUDA_CALL(cudaMalloc((void **) &devStates, n_rngs * sizeof(curandState)));
+  setup_kernel<<<1, n_rngs>>>(seed, n_rngs, devStates);
   
   cudaMemGetInfo(&mem_free, &mem_tot);
   std::cout << "Free memory after devStates allocated: " << mem_free << std::endl;
