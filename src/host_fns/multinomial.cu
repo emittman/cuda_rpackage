@@ -46,8 +46,8 @@ void gnl_multinomial(ivec_d &zeta, fvec_d &probs, curandState *states, int K, in
   compare_eval f;
   thrust::for_each(myzip, myzip + K*G, f);
   //thrust::transform(u_rep, u_rep + K*G, probs.begin(), dummies.begin(), thrust::greater<double>());
-  #std::cout << "dummies:\n";
-  #printVec(probs, K, G);
+  //std::cout << "dummies:\n";
+  //printVec(probs, K, G);
   repEachIter colI = getRepEachIter(K, 1);
   thrust::reduce_by_key(colI, colI + K*G, probs.begin(), thrust::make_discard_iterator(), zeta.begin());
 }
