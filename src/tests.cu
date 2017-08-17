@@ -541,7 +541,6 @@ extern "C" SEXP Rtest_draw_tau2(SEXP Rchain, SEXP Rdata, SEXP Rpriors, SEXP Rn_i
   return samples_out;
 }
 
-void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose){
 extern "C" SEXP Rtest_draw_alpha_SD(SEXP RN, SEXP Rchain, SEXP Rpriors, SEXP Rverbose){
   int verbose = INTEGER(Rverbose)[0], N = INTEGER(RN)[0];
   chain_t chain = Rchain_wrap(Rchain);
