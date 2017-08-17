@@ -34,7 +34,7 @@ void draw_alpha(chain_t &chain, priors_t &priors, int verbose);
 
 //void draw_alpha_SD(chain_t &chain, priors_t &priors, int verbose, bool adapt);
 
-void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool adapt, int warmup_iter);
+void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose);
 
 struct target_alpha{
   double A;
