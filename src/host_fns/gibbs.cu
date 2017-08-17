@@ -365,6 +365,7 @@ void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool ada
     L = L - w0;
     J = J - 1;
   }
+  if(L<0) L=0;
   while(K>0 & y<f(R)){
     R = R + w0;
     K = K - 1;
@@ -379,13 +380,13 @@ void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose, bool ada
       L = x;
   } while(f(x) < y);
   chain.alpha = x;
-  if(adapt){
+  /*if(adapt){
     double w = 2*fabs(x-x0);
-    if(chain.slice_width > w){
+    if(w0 > w){
       chain.slice_width *= .99;
     } else{
       chain.slice_width *= 1.01;
     }
-  }
+  }*/
 }
 
