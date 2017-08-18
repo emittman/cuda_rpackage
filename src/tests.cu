@@ -546,6 +546,9 @@ extern "C" SEXP Rtest_draw_alpha_SD(SEXP RN, SEXP Rchain, SEXP Rpriors, SEXP Rve
   chain_t chain = Rchain_wrap(Rchain);
   priors_t priors = Rpriors_wrap(Rpriors);
 
+  std::cout << "pi:\n";
+  printVec(chain.pi, priors.K, 1);
+
   SEXP out = PROTECT(allocVector(REALSXP, N));
   double *outp = REAL(out);
   
