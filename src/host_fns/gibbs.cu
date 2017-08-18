@@ -338,6 +338,8 @@ double target_alpha::operator()(double arg){
 
     
 void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose){
+  std::cout << "pi:\n";
+  printVec(chain.pi, priors.K, 1);
   double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>()) / priors.K;
   
   if(verbose>0){
