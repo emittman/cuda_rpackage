@@ -342,7 +342,7 @@ void draw_alpha_SD_slice(chain_t &chain, priors_t &priors, int verbose){
   printVec(chain.pi, priors.K, 1);
   double tmppi = thrust::reduce(chain.pi.begin(), chain.pi.end());
   std::cout << "sum of pi:" << tmppi << "\n";
-  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end(), 0, thrust::plus<double>()) / (double)priors.K;
+  double mean_logpi = thrust::reduce(chain.pi.begin(), chain.pi.end()) / (double)priors.K;
   
   if(verbose>0){
     std::cout << "sum(log(pi))/K = " << mean_logpi <<"\n";
