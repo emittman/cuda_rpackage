@@ -553,7 +553,7 @@ extern "C" SEXP Rtest_draw_alpha_SD(SEXP RN, SEXP Rchain, SEXP Rpriors, SEXP Rve
   double *outp = REAL(out);
   
   for(int i=0; i<N; i++){
-    draw_alpha_SD_slice(chain, priors, 2);
+    draw_alpha_SD_slice(chain, priors, verbose);
     outp[i] = chain.alpha;
   }
   

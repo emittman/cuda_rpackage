@@ -1,14 +1,15 @@
 set.seed(13117)
 
-K <- as.integer(500)
-G <- as.integer(1000)
+K <- as.integer(6)
+G <- as.integer(18)
 V <- as.integer(2)
 
 seed <- as.integer(sample(1e4, 1))
 
 n_per_v <- 5
 
-zeta <- sample(0:(K-1), G, replace=T, prob=1/(1:K)^2)
+#zeta <- sample(0:(K-1), G, replace=T, prob=1/(1:K)^2)
+zeta <- rep(0:5, each=2)
 alpha <- 10
 
 #filler
@@ -26,5 +27,5 @@ priors <- formatPriors(K, c(0,0), c(1,1), 1,1,3,3/G^2)
 print(table(zeta))
 pi <- .Call("Rtest_draw_pi", seed, chain, priors, data, as.integer(1))
 #extern "C" SEXP Rtest_draw_beta(SEXP Rseed, SEXP Rchain, SEXP Rpriors, SEXP Rdata){
-
-alpha <- .Call("Rtest_draw_alpha_SD", as.integer(100), chain, priors, as.integer(1))
+chain$pi <- pi
+alpha <- .Call("Rtest_draw_alpha_SD", as.integer(3), chain, priors, as.integer(1))
