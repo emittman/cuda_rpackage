@@ -301,9 +301,13 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   
   //instantiate RNGs
   curandState *devStates;
-  CUDA_CALL(cudaMalloc((void **) &devStates, data.G * data.V * sizeof(curandState)));
-  setup_kernel<<<chain.G, chain.V>>>(seed, chain.G*chain.V, devStates);
-  
+  if(priors.K*priors*V<G){
+    CUDA_CALL(cudaMalloc((void **) &devStates, data.G * sizeof(curandState)));
+    setup_kernel<<<chain.G, 1>>>(seed, chain.G, devStates);
+  } else{
+    CUDA_CALL(cudaMalloc((void **) &devStates, priors.K*priors.V * sizeof(curandState)));
+    setup_kernel<<<priors.K, priors.V>>>(seed, priors.K*priors.V, devStates);
+  }
   
   //progress bar
   boost::progress_display show_progress(n_iter);

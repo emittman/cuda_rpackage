@@ -205,5 +205,6 @@ mcmc <- function(data, priors, control, chain = NULL, C = NULL, estimates=NULL, 
   names(out[[3]]) <- c("beta", "tau2", "pi", "alpha")
   dim(out[[3]][['beta']]) <- c(data$V, priors$K)
   names(out) <- c("samples","summaries","state", "samp_time")
+  class(out) <- "myMcmcObj"
   out
 }

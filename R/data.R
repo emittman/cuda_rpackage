@@ -194,13 +194,13 @@ initChain <- function(priors, G, C=NULL, estimates=NULL){
 #' @param data list, from formatData
 #' @export
 
-indEstimates <- function(data, epsilon=.1){
+indEstimates <- function(data){
   betas <- with(data, sapply(1:G, function(g){
     qr.solve(qr(matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V)), xty[,g])
   }))
   sigma2s <- with(data, sapply(1:G, function(g){
     (yty[g] - 2*t(xty[,g]) %*% betas[,g] + 
-       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V) + epsilon #guard against zeros
+       t(betas[,g]) %*% matrix(xtx[1:(V*V) + (g-1)*voom*(V*V)],V,V) %*% betas[,g])/(N-V)
   }))
   return(list(beta=betas, sigma2=sigma2s))
 }
@@ -213,8 +213,8 @@ indEstimates <- function(data, epsilon=.1){
 #' 
 informPriors <- function(estimates){
   V <- dim(estimates[[1]])[1]
-  pr_tau2_var <- var(1/estimates[[2]] + .01)
-  pr_tau2_mean <- mean(1/estimates[[2]] + .01)
+  pr_tau2_var <- var(1/pmax(estimates[[2]],.01))
+  pr_tau2_mean <- mean(1/pmax(estimates[[2]], .01))
   list(prior_mean = sapply(1:V, function(v) median(estimates[[1]][v,])),
        prior_sd = sapply(1:V, function(v) 2 * sd(estimates[[1]][v,])),
        a = pr_tau2_mean^2 / pr_tau2_var,
