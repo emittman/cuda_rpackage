@@ -301,7 +301,7 @@ extern "C" SEXP Rrun_mcmc(SEXP Rdata, SEXP Rpriors, SEXP RmethodPi, SEXP Rmethod
   
   //instantiate RNGs
   curandState *devStates;
-  if(priors.K*priors*V<G){
+  if(priors.K*priors.V<chain.G){
     CUDA_CALL(cudaMalloc((void **) &devStates, data.G * sizeof(curandState)));
     setup_kernel<<<chain.G, 1>>>(seed, chain.G, devStates);
   } else{
