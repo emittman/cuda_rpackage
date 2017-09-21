@@ -9,7 +9,7 @@
 #' @param voom Logical value indicating whether to compute Voom precision weights
 #' @param test_voom logical Only used for testing purposes. If true, forced separate xtx matrices in memory
 
-formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE, test_voom=FALSE){
+formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x + 1), voom=FALSE, normalize=FALSE, test_voom=FALSE){
   adjustX = FALSE
   if(nrow(X) != ncol(counts)){
     stopifnot(!is.null(groups), length(groups) == ncol(counts))
@@ -23,15 +23,25 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
   G <- nrow(counts)
   V <- ncol(X)
   N <- nrow(X)
+  if(normalize & !voom) cat("TMM normalization without voom is not supported by this function.\nNormalization should be performed manually prior to calling formatData().")
   if(test_voom) cat("Testing voom by simply setting all W_g to 1.\n")
   if (voom & requireNamespace("limma", quietly = TRUE) & !test_voom) {
-    cat("Computing precision weights with voom ...")
-    voom_out <- limma::voomWithQualityWeights(counts, design=X,
-                                            nomalization="none",
-                                            plot = FALSE)
-    cat("done.\n")
-    y <- voom_out[[1]]
-    W <- voom_out[[2]]
+    if(normalize & requireNamespace("edgeR", quietly = TRUE)){
+      cat("Computing scale normalization factors (by sample) using TMM method.")
+      counts <- edgeR::DGEList(counts)
+      counts <- edgeR::calcNormFactors(counts)
+      cat("Computing precision weights with voom ...")
+      voom_out <- limma::voom(counts, design=X, normalize.method="none", plot = FALSE)
+      cat("done.\n")
+      y <- voom_out[[2]]
+      W <- voom_out[[3]]
+    } else{
+      cat("Computing precision weights with voom ...")
+      voom_out <- limma::voom(counts, design=X, normalize.method="none", plot = FALSE)
+      cat("done.\n")
+      y <- voom_out[[1]]
+      W <- voom_out[[2]] 
+    }
     ytWy <- drop(sapply(1:G, function(g) y[g,] %*% diag(W[g,]) %*% y[g,]))
     xtWy <- sapply(1:G, function(g) y[g,] %*% diag(W[g,]) %*% X)
     xtWx <- sapply(1:G, function(g) t(X) %*% diag(W[g,]) %*% X)
@@ -40,7 +50,7 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
                 transformed_counts = y, X = X)
   } else {
     if(voom) print("limma is not installed, defaulting to unweighted version")
-      y <- transform_y(counts)  
+      y <- transform_y(counts)
       xty <- apply(y, 1, function(y) t(y) %*% X)
       yty <- drop(apply(y, 1, crossprod))
       xtx <- as.numeric(t(X) %*% X)
@@ -48,7 +58,7 @@ formatData <- function(counts, X, groups = NULL, transform_y = function(x) log(x
         xtx <- rep(xtx, times=G)
       }
       data = list(yty = yty, xty = xty, xtx = xtx, G = as.integer(G),
-                  V = as.integer(V), N = as.integer(N), voom=as.logical(voom+test_voom),
+                  V = as.integer(V), N = as.integer(N), voom=as.logical(test_voom),
                   transformed_counts = y, X = X)
   } 
   return(data)
